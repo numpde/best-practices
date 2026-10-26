@@ -391,6 +391,10 @@ const nodes=[
       {
         "text": "When cleanup fails after installation, report both the installed artifact and the failed cleanup instead of claiming rollback.",
         "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "For an exact retry while a reservation remains live, return its original signed quote before loading current offer settings.",
+        "origin": "Illustrative case · privacy edited"
       }
     ]
   },
@@ -411,6 +415,10 @@ const nodes=[
       },
       {
         "text": "An operator sees which recovery step remains; an API user sees the action they can take without a hidden internal traceback.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Keep a recovered I/O failure’s safe cause in restricted diagnostics while omitting raw worker text and local socket details.",
         "origin": "Illustrative case · privacy edited"
       }
     ]
@@ -433,6 +441,14 @@ const nodes=[
       {
         "text": "If delivery of a completed result is refused temporarily, keep that result pending and retry delivery instead of repeating the calculation.",
         "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Retry once within the same attempt only after a classified execution failure or unconfirmed response and a ready replacement runner; preserve uncertainty.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "When an upstream feed refuses a read, stop new job admission, retain the runtime owner, and back off until a fresh valid page arrives.",
+        "origin": "Illustrative case · privacy edited"
       }
     ]
   },
@@ -454,6 +470,10 @@ const nodes=[
       {
         "text": "Every malformed request returns only “failed,” hiding which field a caller can correct.",
         "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A recovery event copies the raw runner exception and local socket path into a result visible to an external caller.",
+        "origin": "Illustrative case · privacy edited"
       }
     ]
   },
@@ -474,6 +494,14 @@ const nodes=[
       },
       {
         "text": "An operator deletes unresolved queue records to restore capacity, losing work instead of recovering it.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A runner replays every failure, including cancellation and invalid input, instead of retrying only classified execution failures.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A refused feed read triggers a hot loop or worker restart instead of paused admission under bounded backoff.",
         "origin": "Illustrative case · privacy edited"
       }
     ]
@@ -516,6 +544,10 @@ const nodes=[
       },
       {
         "text": "Admit an archive member by its bytes and metadata, then verify that the downstream parser reads that exact member.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Select a declared artifact from a shared cache, verify its size and digest, then copy those exact bytes into the build’s captured inputs.",
         "origin": "Illustrative case · privacy edited"
       }
     ]
@@ -707,6 +739,10 @@ const nodes=[
       {
         "text": "A file upload returns success, but nobody verifies that a fresh user can find or interpret the result.",
         "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A command records the chosen interface, but its HTTP client bypasses the bound proxy; a passing test never proves which device carried traffic.",
+        "origin": "Illustrative case · privacy edited"
       }
     ]
   },
@@ -727,6 +763,10 @@ const nodes=[
       },
       {
         "text": "A clean artifact manifest misses an extra runtime file that the loader still reads from a writable directory.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A checker treats a shared cache listing as a complete inventory, so an artifact required from another source is omitted from the build.",
         "origin": "Illustrative case · privacy edited"
       }
     ]
@@ -1150,6 +1190,10 @@ const nodes=[
       {
         "text": "Count each retry against the request's total work limit instead of resetting the budget after an error.",
         "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Stream a large encoded response in fixed-size chunks and keep its preparation permit until output drain or abort retirement completes.",
+        "origin": "Illustrative case · privacy edited"
       }
     ]
   },
@@ -1170,6 +1214,10 @@ const nodes=[
       },
       {
         "text": "A failed image-removal request is reconciled against the created container identity before cleanup is tried again.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "The cleanup owner snapshots tasks, awaits that batch, then retires those tasks so completion callbacks can update the live registry.",
         "origin": "Illustrative case · privacy edited"
       }
     ]
@@ -1213,6 +1261,10 @@ const nodes=[
       {
         "text": "A small compressed upload passes admission, then expands beyond the parser limit before processing.",
         "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "The server releases its preparation permit when computation returns, although the large response is still draining to a slow client.",
+        "origin": "Illustrative case · privacy edited"
       }
     ]
   },
@@ -1233,6 +1285,10 @@ const nodes=[
       },
       {
         "text": "A network-disabled test should prove that its effective namespace cannot reach an external endpoint.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A local proxy binds DNS and TCP to the selected interface; failed binding stops acquisition instead of falling back to an unbound route.",
         "origin": "Illustrative case · privacy edited"
       }
     ]
@@ -1654,6 +1710,48 @@ const nodes=[
       },
       {
         "text": "When interpreter fallback recurs, qualify outage, selection order, chosen interpreter, and exact result in the repository's supported lane.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
+  },
+  {
+    "id": "cleanup-callback-starvation",
+    "group": "failures",
+    "kind": "pitfall",
+    "generality": "specific",
+    "title": "A cleanup join starves its own callbacks",
+    "summary": "Waiting on a mutable task set until empty can repeatedly re-await completed work before queued callbacks remove it.",
+    "example": "A join loop keeps gathering completed tasks while their queued done callbacks are the only code that clears the live set.",
+    "scope": "Snapshot the joined task batch and retire it after completion; this case concerns callback-driven asynchronous bookkeeping.",
+    "evidence": [],
+    "examples": [
+      {
+        "text": "An HTTP cleanup loop re-gathers completed response tasks before their done callbacks can clear the registry.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "An interpreter shutdown join repeats over completed response releases while their registry-clearing callbacks remain queued.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
+  },
+  {
+    "id": "pending-quote-time-state",
+    "group": "failures",
+    "kind": "pitfall",
+    "generality": "specific",
+    "title": "Pending quote state is inferred from time or new settings",
+    "summary": "A cleanup deadline does not prove payment was never accepted, and new offer settings do not replace a still-live signed quote.",
+    "example": "A reservation cleanup removes a hold because its local timer expired without checking whether the payment authority recorded acceptance.",
+    "scope": "Reconcile the payment acceptance fact at its owner; keep that separate from the storage owner’s cleanup date.",
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A retry after an offer change returns a newly signed invoice while the original quote remains the live reservation.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "An expired quote is treated as proof of no payment acceptance even though the payment owner has not confirmed that state.",
         "origin": "Illustrative case · privacy edited"
       }
     ]
@@ -2225,6 +2323,20 @@ const edges=[
     "to": "explicit-acquisition",
     "label": "requires",
     "reason": "Dependency lock refresh belongs in the explicit acquisition lane; ordinary offline drift checks consume the reviewed lock without refreshing it.",
+    "tension": false
+  },
+  {
+    "from": "U14",
+    "to": "cleanup-callback-starvation",
+    "label": "prevents",
+    "reason": "Snapshotting owned cleanup tasks lets their completion callbacks retire the live set without a self-blocking join loop.",
+    "tension": false
+  },
+  {
+    "from": "U08",
+    "to": "pending-quote-time-state",
+    "label": "addresses",
+    "reason": "Keep the signed quote, local cleanup deadline, and payment authority’s acceptance state as separate facts.",
     "tension": false
   }
 ];

@@ -45,7 +45,7 @@ for(const node of nodes){
  assert.ok(['property','practice','pitfall'].includes(node.kind),`${node.id}: unknown node kind.`);
  assert.ok(Object.hasOwn(generalityLevels,node.generality),`${node.id}: declare a supported generality level.`);
  for(const field of ['id','title','summary','example','scope'])assert.ok(typeof node[field]==='string'&&node[field].length>0,`${node.id}: ${field} must be nonempty text.`);
- assert.ok(Array.isArray(node.examples)&&node.examples.length===2,`${node.id}: include exactly two additional examples.`);
+ assert.ok(Array.isArray(node.examples)&&node.examples.length>=2,`${node.id}: include at least two additional examples.`);
  for(const [index,example] of node.examples.entries()){
   assert.ok(typeof example.text==='string'&&example.text.trim().length>0,`${node.id}: example ${index+1} must have text.`);
   assert.equal(example.origin,'Illustrative case · privacy edited',`${node.id}: example ${index+1} must be identified as an edited illustration.`);
