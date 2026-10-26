@@ -9,9 +9,11 @@ a change to the site; no separate build or duplicated versioned entrypoint exist
 Interaction
 -----------
 The overview shows every relationship and auto-arranges with Cytoscape's CoSE
-layout. Selecting a concept opens its details and highlights it while retaining
-the full graph, positions, and camera. Overview closes the panel and rearranges
-the full graph. Search,
+layout. Keep the canvas hidden and announce “Arranging…” until initial positions
+and the camera are settled; do not expose intermediate solver positions.
+Selecting a concept opens its details and highlights it while retaining the full
+graph, positions, and camera. Overview closes the panel and rearranges the full
+graph. Search,
 Fit, dragging, pan, and wheel zoom support exploration. Source context stays
 behind a disclosure. Pointer buttons and keyboard arrows provide alternatives
 to dragging.
