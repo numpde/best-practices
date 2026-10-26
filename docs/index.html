@@ -2558,6 +2558,14 @@ function activateNode(id){
  element('graph').focus({preventScroll:true});
 }
 
+function nodeFromURL(){
+ try{return byId.get(decodeURIComponent(location.hash.slice(1)));}
+ catch(error){
+  if(error instanceof URIError)return undefined;
+  throw error;
+ }
+}
+
 function closeSearch(){
  if(element('matches').hidden)return;
  results=[];activeResult=-1;
@@ -2627,9 +2635,9 @@ function initialize(){
  });
  cy.on('tap','node',event=>activateNode(event.target.id()));
  cy.on('grab drag free','node',startLiveLayout);
- const id=decodeURIComponent(location.hash.slice(1));
+ const node=nodeFromURL();
  showOverview();
- if(byId.has(id))selectNode(id);
+ if(node)selectNode(node.id);
 }
 
 element('search').addEventListener('input',searchIdeas);
@@ -2661,7 +2669,7 @@ element('live-layout').addEventListener('click',()=>{
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopLiveLayout();else startLiveLayout();});
 element('info').addEventListener('click',event=>{const follow=event.target.closest('[data-follow]'),move=event.target.closest('[data-nudge]');if(follow)activateNode(follow.dataset.follow);if(move)nudge(move.dataset.nudge);});
 element('graph').addEventListener('keydown',event=>{const directions={ArrowLeft:'left',ArrowUp:'up',ArrowDown:'down',ArrowRight:'right'};if(selectedId&&directions[event.key]){event.preventDefault();nudge(directions[event.key]);}if(event.key==='Escape')showOverview();});
-addEventListener('hashchange',()=>{const id=decodeURIComponent(location.hash.slice(1));if(byId.has(id))selectNode(id);else showOverview();});
+addEventListener('hashchange',()=>{const node=nodeFromURL();if(node)selectNode(node.id);else showOverview();});
 initialize();
 </script>
 </body>

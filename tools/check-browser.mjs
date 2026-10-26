@@ -56,6 +56,12 @@ async function waitFor(expression){
 const waitReady=()=>waitFor(`!!document.querySelector('#graph') &&
  getComputedStyle(document.querySelector('#graph')).visibility==='visible' &&
  document.querySelector('#graph').getAttribute('aria-busy')==='false'`);
+async function loadPage(url){
+ await call('Page.navigate',{url:'about:blank'});
+ await waitFor(`!document.querySelector('#graph')`);
+ await call('Page.navigate',{url});
+ await waitReady();
+}
 const snapshot=()=>evaluate(`({
  positions:cy.nodes().map(node=>({id:node.id(),...node.position()})),
  zoom:cy.zoom(),pan:cy.pan(),nodes:cy.nodes().length,edges:cy.edges().length,
@@ -242,16 +248,28 @@ try{
  console.log('Browser viewport resizing keeps every node inside the canvas.');
 
  await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
- await call('Page.navigate',{url:'about:blank'});
- await waitFor(`!document.querySelector('#graph')`);
- await call('Page.navigate',{url:pageURL+'#'+concept.id});
- await waitReady();
+ await loadPage(pageURL+'#'+concept.id);
  assert.equal(await evaluate(`cy.nodes('.focused').first().id()`),concept.id);
  assert.equal(await evaluate(`document.querySelector('#live-layout').getAttribute('aria-checked')`),'false');
  assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'),true);
  const mobile=await snapshot();
  await delay(150);
  assert.deepEqual(await snapshot(),mobile);
+ await loadPage(pageURL+'?view=links#%E0%A4%A');
+ assert.equal(await evaluate(`document.querySelector('#info').hidden`),true);
+ assert.equal(await evaluate('location.search'),'?view=links');
+ const overview=await snapshot();
+ const encodedId='%'+concept.id.charCodeAt(0).toString(16)+concept.id.slice(1);
+ await evaluate(`location.hash=${JSON.stringify(encodedId)}`);
+ await waitFor(`cy.nodes('.focused').first().id()==='${concept.id}'`);
+ assert.deepEqual(await snapshot(),overview);
+ await evaluate(`location.hash='%'`);
+ await waitFor(`document.querySelector('#info').hidden&&document.querySelector('#graph').getAttribute('aria-busy')==='false'`);
+ assert.equal(await evaluate(`cy.nodes('.focused').length`),0);
+ assert.equal(await evaluate('location.hash'),'');
+ assert.equal(await evaluate('location.search'),'?view=links');
+ assert.equal((await snapshot()).nodes,initial.nodes);
+ console.log('Malformed links open the full graph; encoded selections work and malformed fragment changes recover.');
  assert.deepEqual(errors,[]);
  console.log('Narrow deep links restore selection and remain still with reduced motion; no browser runtime errors.');
 }finally{

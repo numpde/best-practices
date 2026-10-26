@@ -30,6 +30,10 @@ of the search control, or clicking outside dismisses the popup and clears its
 active option. User activation by graph, search, or related concept returns
 focus to the graph so its movement keys work. Restoring a selection from a URL
 does not move focus.
+Initial loads and later fragment changes share one parser. Malformed percent
+encoding and unknown concept IDs open the overview, as does an empty fragment.
+Valid encoded IDs select the concept without changing positions or the camera.
+Selection and overview preserve the URL's existing query string.
 
 Live layout is an explicit, page-local opt-in switch beside Fit, initially off.
 A spring/repulsion loop lets visible nodes respond while the grabbed node stays
