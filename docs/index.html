@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M7%208%2024%2010%2016%2025Z%22%20fill%3D%22none%22%20stroke%3D%22%23587264%22%20stroke-width%3D%222%22%2F%3E%3Cg%20fill%3D%22%23587264%22%3E%3Ccircle%20cx%3D%227%22%20cy%3D%228%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2210%22%20r%3D%224%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2225%22%20r%3D%224%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
 <title>Practices, connected</title>
-<meta name="description" content="Explore engineering practices by following their connections. Drag nodes, pan, zoom, and select an idea to reorganize its neighborhood.">
+<meta name="description" content="Explore engineering practices by following their connections. Drag nodes, pan, zoom, and select an idea to read its details.">
 <style>
 :root{color-scheme:light;--paper:#f6f4ef;--panel:#fffefb;--ink:#252b28;--muted:#666d66;--line:#d7d5cc;--focus:#245fc0}
 *{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:13px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}button,input{font:inherit;color:inherit}button{cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:7px 12px}button:hover{border-color:#7d877d;background:white}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible,#graph:focus-visible{outline:3px solid var(--focus);outline-offset:3px}a{color:var(--focus);text-underline-offset:3px}header{display:flex;align-items:center;gap:20px;padding:15px 23px;border-bottom:1px solid var(--line);background:var(--panel);flex:none;z-index:3}h1{font:400 25px/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.65px;margin:0;white-space:nowrap}.search-wrap{position:relative;width:min(340px,32vw);margin-left:auto}input{width:100%;border:1px solid var(--line);border-radius:5px;background:#faf9f5;padding:8px 11px}input::placeholder{color:#747a72}.actions{display:flex;gap:6px}.stage{flex:1;min-height:140px;position:relative;isolation:isolate;background-image:radial-gradient(#d6d4cb .7px,transparent .7px);background-size:20px 20px}#graph{position:absolute;inset:0;outline-offset:-4px}.canvas-note{position:absolute;left:20px;top:14px;z-index:1;color:var(--muted);font-size:11px;pointer-events:none}.canvas-note strong{color:var(--ink);font-weight:500}.legend{position:absolute;bottom:12px;left:20px;right:20px;display:flex;gap:8px 18px;flex-wrap:wrap;z-index:1;pointer-events:none;font-size:10px;color:#50594f}.legend span{display:flex;align-items:center;gap:5px;background:#f6f4efe8}.legend i{display:inline-block;width:7px;height:7px;border-radius:2px}.matches{position:absolute;top:calc(100% + 7px);left:0;right:0;border:1px solid var(--line);border-radius:6px;background:var(--panel);box-shadow:0 12px 26px #252b2815;max-height:min(470px,65vh);overflow:auto;padding:5px}.matches[hidden]{display:none}.match{display:block;width:100%;border:0;border-radius:3px;text-align:left;padding:8px 9px}.match:hover,.match.active{background:#eaf0e9}.match small{display:block;font-size:10px;color:var(--muted);margin-top:3px}.match-empty{padding:10px;color:var(--muted);font-size:12px}.info{flex:none;border-top:1px solid var(--line);background:var(--panel);padding:15px 23px 12px;max-height:42dvh;overflow:auto;scrollbar-gutter:stable}.info[hidden]{display:none}.info-top{display:flex;gap:24px;align-items:baseline}.identity{flex:0 0 320px;max-width:34%}.identity .kind{font-size:10px;color:var(--accent);margin-bottom:4px}.identity h2{font:400 22px/1.18 Georgia,'Times New Roman',serif;letter-spacing:-.25px;margin:0}.summary{margin:0;max-width:780px;font-size:13px;line-height:1.65}.info details{margin-top:10px;font-size:11px}.info summary{cursor:pointer;color:var(--muted);width:max-content;padding:3px 0}.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:13px}.detail-grid h3{font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 8px}.detail-grid p{line-height:1.7;margin:0 0 12px}.related{display:block;width:100%;text-align:left;border:0;border-top:1px solid #e7e5df;border-radius:0;padding:7px 0;background:none;font-size:11px}.related span{display:block;color:var(--muted);font-size:10px}.source-location{font:10px/1.7 ui-monospace,SFMono-Regular,monospace;overflow-wrap:anywhere;white-space:pre-wrap;margin:9px 0}.source-item{margin-bottom:13px}.source-item small{display:block;color:var(--muted)}.original{font:11px/1.7 inherit;white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;padding:10px;background:#f6f4ef;border-left:2px solid var(--accent)}.nudge{display:flex;gap:5px;margin:10px 0}.nudge button{padding:3px 11px;min-height:30px}.evidence-note{font-size:10px;color:var(--muted);line-height:1.7}.sr-only{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}.fallback{padding:30px;max-width:700px;margin:20px auto}.fallback button{margin:4px}.result-count{font-size:10px;padding:5px 9px;color:var(--muted)}
@@ -24,7 +24,7 @@
  <div class="actions"><button id="overview" type="button" title="Show and automatically arrange the full graph">Overview</button><button id="fit" type="button" title="Fit the current graph to the canvas">Fit</button><button id="live-layout" class="live-switch" type="button" role="switch" aria-checked="false" title="Let connected nodes move in response to dragging"><span class="switch-track" aria-hidden="true"></span>Live layout</button></div>
 </header>
 <main class="stage" id="stage">
- <div id="graph" tabindex="0" role="region" aria-label="Movable graph of engineering ideas. Select a node to reveal its connections. Drag nodes to arrange them; drag the background to pan. When a node is selected, arrow keys move it."></div>
+ <div id="graph" tabindex="0" role="region" aria-label="Movable graph of engineering ideas. Select a node to read its details without hiding the graph. Drag nodes to arrange them; drag the background to pan. When a node is selected, arrow keys move it."></div>
  <div class="canvas-note"><strong id="status" role="status" aria-live="polite">Loading the graph…</strong><span id="hint"> · drag nodes · pan · scroll to zoom</span></div>
  <div class="legend" id="legend" aria-label="Node types and subjects"></div>
 </main>
@@ -1496,7 +1496,6 @@ const researchSource=JSON.parse(document.getElementById('research-source').textC
 const criteriaURL='https://numpde.github.io/nmrnet-repro/notes/013_sibling_practices_20261016.html';
 const element=id=>document.getElementById(id);
 const html=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
 let cy=null, selectedId=null, runningLayout=null, layoutGeneration=0;
 let results=[], activeResult=-1;
 let liveEnabled=false, liveFrame=null, liveHeat=0;
@@ -1582,7 +1581,7 @@ function showOverview(){
  element('info').hidden=true;
  closeSearch();
  history.replaceState(null,'',location.pathname+location.search);
- cy.elements().removeClass('hidden focused');
+ cy.nodes().removeClass('focused');
  element('status').textContent=`${nodes.length} ideas · ${edges.length} connections · select one to explore`;
  requestAnimationFrame(()=>{
   if(generation!==layoutGeneration)return;
@@ -1602,34 +1601,12 @@ function showOverview(){
 
 function selectNode(id){
  if(!byId.has(id)||!cy)return;
- stopLayout();selectedId=id;
- const generation=layoutGeneration;
+ selectedId=id;
  closeSearch();
  history.replaceState(null,'',`#${encodeURIComponent(id)}`);
- const selected=cy.getElementById(id), neighborhood=selected.closedNeighborhood();
- cy.batch(()=>{
-  cy.elements().addClass('hidden').removeClass('focused');
-  neighborhood.removeClass('hidden');
-  selected.addClass('focused');
- });
+ cy.nodes().removeClass('focused');
+ cy.getElementById(id).addClass('focused');
  showInfo(byId.get(id));
- element('status').textContent=`${neighborhood.nodes().length} of ${nodes.length} ideas · ${selected.connectedEdges().length} connections`;
- requestAnimationFrame(()=>{
-  if(generation!==layoutGeneration)return;
-  cy.resize();
-  runningLayout=neighborhood.layout({
-   name:'concentric',fit:false,padding:70,avoidOverlap:true,nodeDimensionsIncludeLabels:true,
-   minNodeSpacing:innerWidth<570?65:95,spacingFactor:1.05,equidistant:true,
-   concentric:node=>node.id()===id?2:1,levelWidth:()=>1,
-   sort:(a,b)=>a.id()===id?-1:b.id()===id?1:a.data('group').localeCompare(b.data('group'))||a.data('label').localeCompare(b.data('label')),
-   animate:!reduceMotion.matches,animationDuration:340,animationEasing:'ease-out-cubic',
-  });
-  runningLayout.one('layoutstop',()=>{
-   if(generation!==layoutGeneration)return;
-   runningLayout=null;fitView();startLiveLayout();
-  });
-  runningLayout.run();
- });
 }
 
 function closeSearch(){
@@ -1687,15 +1664,15 @@ function initialize(){
    {selector:'node.focused',style:{'border-width':3.5}},
    {selector:'edge',style:{width:1.5,'line-color':'#9aa49a','target-arrow-color':'#7c897d','target-arrow-shape':'triangle','curve-style':'bezier',label:'data(label)','font-size':11,'font-family':'system-ui, sans-serif',color:'#596258','text-background-color':'#f6f4ef','text-background-opacity':.96,'text-background-padding':'4px','text-rotation':'none','text-wrap':'wrap','text-max-width':110,'arrow-scale':.9}},
    {selector:'edge.tension',style:{'line-style':'dashed'}},
-   {selector:'.hidden',style:{display:'none'}},
   ]
  });
  cy.on('tap','node',event=>selectNode(event.target.id()));
  cy.on('grab','node',()=>{stopLayout();startLiveLayout();});
  cy.on('drag free','node',()=>{if(liveEnabled)startLiveLayout();});
- new ResizeObserver(()=>{cy.resize();if(!runningLayout)fitView();}).observe(element('stage'));
+ new ResizeObserver(()=>cy.resize()).observe(element('stage'));
  const id=decodeURIComponent(location.hash.slice(1));
- byId.has(id)?selectNode(id):showOverview();
+ showOverview();
+ if(byId.has(id))selectNode(id);
 }
 
 element('search').addEventListener('input',searchIdeas);

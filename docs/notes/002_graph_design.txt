@@ -9,8 +9,9 @@ a change to the site; no separate build or duplicated versioned entrypoint exist
 Interaction
 -----------
 The overview shows every relationship and auto-arranges with Cytoscape's CoSE
-layout. Selecting a concept reveals only its direct neighborhood and arranges
-that neighborhood concentrically. Overview restores the full graph. Search,
+layout. Selecting a concept opens its details and highlights it while retaining
+the full graph, positions, and camera. Overview closes the panel and rearranges
+the full graph. Search,
 Fit, dragging, pan, and wheel zoom support exploration. Source context stays
 behind a disclosure. Pointer buttons and keyboard arrows provide alternatives
 to dragging.
@@ -19,9 +20,9 @@ Live layout is an explicit, page-local opt-in switch beside Fit, initially off.
 A spring/repulsion loop lets visible nodes respond while the grabbed node stays
 under the pointer. Turning it off freezes positions. The loop settles when idle
 and pauses in a background tab. It preserves camera position during movement.
-Selecting a new neighborhood retires the preceding simulation. Opting into
-Live layout explicitly requests motion; selection animation otherwise respects
-the system's reduced-motion preference.
+Opening another concept's panel does not interrupt the simulation. Live layout
+explicitly opts into motion, including with a reduced-motion system preference.
+Panel resizing preserves the camera; Fit is available to reframe the graph.
 
 Visual meaning
 --------------
@@ -54,7 +55,8 @@ Validation and limits
 ---------------------
 Source checks cover graph references, complete generality classification,
 relationship field types, connectivity, local links, and privacy patterns.
-Browser checks exercise selection, overview, dragging, search, source disclosure,
+Browser checks exercise node details without filtering or repositioning, overview, dragging, search,
+source disclosure,
 node sizing, anti-pattern styling, live-layout switching and cancellation,
 settling, camera stability, and desktop/mobile layout. Chromium-emulated touch
 also exercises the switch and responsive neighbors. No browser runtime errors
