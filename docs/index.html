@@ -2597,7 +2597,6 @@ function initialize(){
  cy.on('tap','node',event=>selectNode(event.target.id()));
  cy.on('grab','node',()=>{stopLayout();startLiveLayout();});
  cy.on('drag free','node',()=>{if(liveEnabled)startLiveLayout();});
- new ResizeObserver(()=>cy.resize()).observe(element('stage'));
  const id=decodeURIComponent(location.hash.slice(1));
  showOverview();
  if(byId.has(id))selectNode(id);
