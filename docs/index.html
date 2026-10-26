@@ -109,7 +109,17 @@ const nodes=[
     "summary": "Keep the scientific behavior in one owner. Checkpoint-specific adapters supply real differences without duplicating the underlying computation.",
     "example": "A hydrogen and a carbon checkpoint share tensor preparation, while each keeps its own scaler and selection.",
     "scope": "Share mechanisms only where their semantics agree.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Two checkpoint variants share tensor preparation; each retains its own scaler and atom-selection rules.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Coordinate-file and SMILES inputs use distinct parsers, then meet at one shared model-admission boundary.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "one-owner",
@@ -120,7 +130,17 @@ const nodes=[
     "summary": "Put transport parsing, product decisions, persistence, and composition at the narrowest boundary where each fact is inherently true.",
     "example": "The signed artifact owns its authenticated contents. A database projection needs a concrete indexing or accounting purpose.",
     "scope": "One owner per kind of fact does not mean one master file.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A signed invoice owns its amount; a database view may index it for browsing without becoming a second authority.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "An API contract owns whether a user may perform an action; the interface renders that decision and the API enforces it.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "boundary-validation",
@@ -131,7 +151,17 @@ const nodes=[
     "summary": "Establish the necessary invariant where the raw input and its context are available. Carry the established fact onward without repeatedly proving it.",
     "example": "A verified input parser measures the selected bytes once; internal records do not rehash the same text.",
     "scope": "Another trust boundary or mutable state can justify a new check.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A loader verifies the selected checkpoint bytes once, then passes the same open file to the model loader.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A service validates and bounds the external request before decoding its large payload; later internal steps use the admitted value.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U09",
@@ -142,7 +172,17 @@ const nodes=[
     "summary": "Keep configuration descriptions and pure validation distinct from acquisition, process launch, model loading, and writes.",
     "example": "Validate an endpoint configuration before loading its TLS resources or starting a worker.",
     "scope": "Use a coordinating boundary; avoid a universal context bag.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Parse and validate an endpoint description first; only a valid configuration may open trust files or start a worker.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A benchmark command discovers its input image before launch; image download stays in the separate preparation step.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "signed-identity",
@@ -153,7 +193,17 @@ const nodes=[
     "summary": "Carry the public signing identity inside authenticated content, or recover it through the protocol. Decide authorization separately.",
     "example": "An acceptance carries its signer; the application compares it with an independently trusted key.",
     "scope": "A carried key establishes no authority by itself.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A signed acceptance carries the signer identity; the consumer still checks that identity against a trusted key.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A voucher signature covers the payment terms and time, while the receiver applies its own authorization policy.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "derived",
@@ -164,7 +214,17 @@ const nodes=[
     "summary": "Group convenience projections under derived. Consumers use the authoritative signed artifact and reject disagreement.",
     "example": "A response may expose a convenient invoice amount beside the signed invoice, but the copy does not replace verification.",
     "scope": "Keep a projection only for a concrete consumer.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "An API returns a convenient balance projection beside the signed invoice, while verification continues to use the invoice.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A viewer may display a shortened identifier for scanning, but copying or signing still uses the complete underlying value.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "canonical",
@@ -175,7 +235,17 @@ const nodes=[
     "summary": "Use the shared canonical encoder when creating JSON signatures or semantic hashes. Keep original received signed bytes authoritative.",
     "example": "After a signature failure, report a safe canonicality hint as a potential cause. Do not rewrite the payload and retry.",
     "scope": "Strict canonical admission belongs only to contracts that require it.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "When signature verification fails, suggest checking JSON canonical form but keep the received bytes unchanged.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A numeric JSON value is encoded without first rounding it through a floating-point conversion.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "earned-structure",
@@ -186,7 +256,17 @@ const nodes=[
     "summary": "Add a type, field, helper, abstraction, dependency, or directory when it protects a real invariant or serves a current consumer.",
     "example": "A protocol earns its place when real substitute implementations need the boundary.",
     "scope": "Parsimony concerns the resulting design, not simply the smallest diff.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Two input formats needed different decoding but shared the same admitted geometry; a thin adapter unified only that common path.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A new resource budget gained a named value because three independent stages had to carry it without changing its meaning.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "end-state",
@@ -197,7 +277,17 @@ const nodes=[
     "summary": "Choose the durable result first. Reviewable implementation slices are a method for reaching it, not a ceiling on the refactor.",
     "example": "Replace a displaced internal architecture fully instead of leaving aliases and parallel paths behind.",
     "scope": "Retained external contracts may still require narrow compatibility.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "When an internal parser is replaced, remove the superseded parser and its private compatibility path after moving its callers.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A new request route becomes part of the supported discovery surface, tests, and user guidance rather than remaining a local prototype.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U10",
@@ -208,7 +298,17 @@ const nodes=[
     "summary": "Use a few coherent named values at stable handoffs. Preserve meaningful distinctions instead of boolean combinations or positional conventions.",
     "example": "Unavailable evidence and an observed zero must remain different values.",
     "scope": "Short local tuples do not automatically need new types; frozen records do not freeze nested lists.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Represent “request accepted” and “effect confirmed” as separate outcomes instead of a success flag that means both.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Keep a missing measurement distinct from a measured zero so a report cannot silently substitute one for the other.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A05",
@@ -219,7 +319,17 @@ const nodes=[
     "summary": "A sibling’s cache, launcher, schema, proof registry, or compatibility path is not a reason to add another owner here.",
     "example": "Reuse an existing verified wheelhouse rather than creating another cache-admission system.",
     "scope": "Borrow mechanisms together with their reasons; keep local differences explicit.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A service copies a sibling’s second image cache even though its existing reviewed wheelhouse already serves that build.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A team adds matching permission tables to the client and API, then the two copies disagree after a new action ships.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "config-normalization",
@@ -230,7 +340,17 @@ const nodes=[
     "summary": "Normalize a supported historical configuration at its loading boundary, then let execution consume one current shape.",
     "example": "Patch a missing loader_transforms field after loading an old configuration instead of carrying fallback tuples through the loader.",
     "scope": "This is deliberate compatibility for retained artifacts, not permission for silent defaults.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A retained older configuration receives its one missing field during load; execution then sees the current complete shape.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A legacy launch option is converted to the current option at the command boundary instead of threading fallback logic through every task.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "common-standard",
@@ -241,7 +361,17 @@ const nodes=[
     "summary": "Existing behavior is evidence to examine. Choose a principled common target rather than preserving each implementation’s accidents.",
     "example": "Bring providers to a useful diagnostic standard, even when their existing failure messages differ.",
     "scope": "Respect real external commitments while deliberately changing internal behavior.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Provider errors that used to reveal different amounts of detail are brought to one safe, actionable level.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A new input guide follows the same clear supported/unsupported structure as the existing API operation description.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U08",
@@ -252,7 +382,17 @@ const nodes=[
     "summary": "Keep failure causes, effect state, durability, and cleanup outcomes distinct. A lost reply does not establish whether a mutation occurred.",
     "example": "Report “installed, durability unconfirmed” separately from “never installed” and “installed, cleanup failed”.",
     "scope": "Translate errors without replacing the primary cause or claiming rollback.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "After a lost response to a write, report that the result is unknown until a readback resolves whether the write committed.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "When cleanup fails after installation, report both the installed artifact and the failed cleanup instead of claiming rollback.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U23",
@@ -263,7 +403,17 @@ const nodes=[
     "summary": "Carry safe causal detail through catches, protocols, storage, and the final renderer. Explain effects, uncertainty, and the next useful action.",
     "example": "An operator sees the phase and recovery step; a caller sees the specific correction they can make.",
     "scope": "Disclosure depends on recipient authorization. A safe outer message does not make its traceback safe.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A parser rejection reaches the caller with the safe field name and correction, while raw private input stays in restricted diagnostics.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "An operator sees which recovery step remains; an API user sees the action they can take without a hidden internal traceback.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U27",
@@ -274,7 +424,17 @@ const nodes=[
     "summary": "Resume useful work after ordinary dependency outages within an explicit unattended operating envelope. Preserve unresolved effects and use owned recovery.",
     "example": "Reconcile a lost publication reply using the retained command; do not repeat scientific computation to send its result again.",
     "scope": "Retry only where the contract allows it. An explicitly pure native computation may have its own bounded replacement contract.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "If an API refuses a terminal result temporarily, retain the result and retry delivery instead of rerunning the model.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "If delivery of a completed result is refused temporarily, keep that result pending and retry delivery instead of repeating the calculation.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A03",
@@ -285,7 +445,17 @@ const nodes=[
     "summary": "Do not erase helpful reasons merely because they are external text. Bound diagnostic presentation without changing an ordinary rejection into execution failure.",
     "example": "A long unknown-solvent value remains a repairable rejection, and the worker can serve the next request.",
     "scope": "Remove sensitive material and preserve adjacent diagnosis. Do not classify every ValueError as caller error.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "An unrecognized solvent produces an unbounded exception and kills the worker, turning a repairable input refusal into an outage.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Every malformed request returns only “failed,” hiding which field a caller can correct.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A11",
@@ -296,7 +466,17 @@ const nodes=[
     "summary": "Refusal may preserve effect truth while still failing the service’s availability requirement. A documented stop is not automatic recovery.",
     "example": "Routine API downtime should not require deleting queue records, raising limits, or creating a new installation.",
     "scope": "Hard limits and unresolved obligations remain real boundaries.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A worker stops safely during a routine outage, but never retries the retained result, leaving ordinary jobs stuck.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "An operator deletes unresolved queue records to restore capacity, losing work instead of recovering it.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "bounded-causes",
@@ -307,7 +487,17 @@ const nodes=[
     "summary": "An outer error should add distinct context. Avoid repeating the same input-bearing cause or smuggling an unbounded value back through a traceback.",
     "example": "After intentionally bounding an unknown-category value, do not chain a KeyError that prints the complete value again.",
     "scope": "Keep a cause when it contributes useful, authorized evidence.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "After shortening an unrecognized input value in a rejection, do not attach a nested exception that prints the full value again.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "When startup fails, add the affected phase to the error once instead of repeating the same parser stack in every wrapper.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U05",
@@ -318,7 +508,17 @@ const nodes=[
     "summary": "Bind checking to the actual bytes later parsed or deserialized. A verified pathname alone can be replaced before use.",
     "example": "Hash and rewind an admitted checkpoint descriptor, then load from that descriptor.",
     "scope": "A held descriptor prevents pathname replacement, not in-place writes; stronger nonmutation guarantees need their own mechanism.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Hash and parse the same opened checkpoint descriptor so replacing its pathname cannot switch the consumed file.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Admit an archive member by its bytes and metadata, then verify that the downstream parser reads that exact member.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U06",
@@ -329,7 +529,18 @@ const nodes=[
     "summary": "Retain reviewed inputs, raw observations, producer identity, and reproducible derived reports. Establish the exact population before iterating over it.",
     "example": "A fixture campaign checks the expected set of case keys before validating each case.",
     "scope": "A compact evidence bundle is useful; another proof registry is not implied.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Before testing every saved output, compare observed filenames with the expected case inventory so missing cases are visible.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Keep the raw timing samples beside the hardware, software, precision, and run order used to produce the benchmark summary.",
+        "origin": "Illustrative case · privacy edited",
+        "href": "https://github.com/numpde/nmrpeak-repro/commit/4fcce7eb6ab93fa42820dcb8f59c10673fd14adb"
+      }
+    ]
   },
   {
     "id": "U07",
@@ -340,7 +551,17 @@ const nodes=[
     "summary": "Test real handoffs, installed artifacts, runtime wiring, and boundary capacities alongside component behavior.",
     "example": "A direct importer call cannot prove that its Docker launcher attached stdin correctly.",
     "scope": "Small components and real boundary tests prove different things.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A parser unit test checks decoded values; an installed-client run checks whether the published package can actually find and call the parser.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A direct API call does not prove that the launched container receives its input stream, so test the real launcher handoff too.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U11",
@@ -351,7 +572,17 @@ const nodes=[
     "summary": "Cover both what must happen and what must never happen, including genuine dependency boundaries and successful reachability.",
     "example": "Rejected input never launches expensive computation; lightweight parsing works when heavy backends are unavailable.",
     "scope": "A broken fixture must not masquerade as successful rejection.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A rejected malformed request must not start model execution, while a valid small request still reaches the model.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Test both that an expired command is refused and that a current command still completes through the real handler.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U16",
@@ -362,7 +593,17 @@ const nodes=[
     "summary": "Identify exact sources and explain why they apply, what was adapted, and what remains unknown. Preserve producer, revision, and execution context.",
     "example": "Record which upstream version defines a fixture and why its behavior belongs in this application.",
     "scope": "A link alone does not preserve reasoning.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Record which upstream fixture release supplied the expected file and why its format matches the application input.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A benchmark cites the exact input set and software revision so another run can distinguish new data from a new implementation.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U19",
@@ -373,7 +614,17 @@ const nodes=[
     "summary": "Retain the observations needed to reproduce or assess a claim, together with durable rationale. Triage scratch only after identifying its consumers.",
     "example": "Keep an important checkpoint with its run configuration and investigation history.",
     "scope": "A summary cannot replace unique observations; this rule is not blanket retention of every run.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Keep the one raw output needed to diagnose a numerical change with its input and run configuration; discard duplicate scratch copies.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Preserve the original signed bytes alongside a parsed view so a future investigation can reproduce signature verification.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U24",
@@ -384,7 +635,17 @@ const nodes=[
     "summary": "Record a deliberately accepted limitation with a focused current-behavior test, consequence, scope, and a reason to revisit it.",
     "example": "A known accounting gap stays executable rather than disappearing into a skipped suite.",
     "scope": "Do not turn a known defect into the desired permanent contract.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A documented unsupported input format has a focused test that keeps the current refusal and its user-visible consequence explicit.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A known accounting limitation stays in an executable scenario until the behavior is fixed or the accepted risk is withdrawn.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U25",
@@ -395,7 +656,17 @@ const nodes=[
     "summary": "Keep bounded correctness in normal discovery. Put expensive exhaustive witnesses and performance checks into deliberate named lanes.",
     "example": "Fast digest and sentinel checks run routinely; full all-output parse-back runs when the exhaustive claim needs qualification.",
     "scope": "A small default check cannot support an exhaustive claim.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Run fast digest and sentinel checks on ordinary changes; parse every generated prediction only when qualifying the exhaustive-output claim.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Keep a short API contract suite in routine CI and run the long, resource-heavy model comparison in its named qualification lane.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U26",
@@ -406,7 +677,17 @@ const nodes=[
     "summary": "Distinguish unit, integration, contract, and scenario scope from normative and adversarial purpose. Use each distinction where it helps.",
     "example": "A restart-and-exact-replay scenario is different from a parser’s malformed-input campaign.",
     "scope": "No mandatory Cartesian directory tree, empty scaffolding, or duplicated assertions.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A parser's malformed-input cases are adversarial tests; a restarted service that replays a saved request is a multi-step scenario.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A unit test for a button and an integration test through the API answer different questions even when they cover the same feature.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A01",
@@ -417,7 +698,17 @@ const nodes=[
     "summary": "A healthy process, successful invocation, or receipt cannot substitute for scientific qualification or the completed public workflow.",
     "example": "A model starts successfully; that alone says nothing about numerical correctness or a user’s ability to discover and use it.",
     "scope": "Label implementation, test, qualification, deployment, and live proof separately.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A model container starts and the report calls it scientifically qualified even though no reference outputs were checked.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A file upload returns success, but nobody verifies that a fresh user can find or interpret the result.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A04",
@@ -428,7 +719,17 @@ const nodes=[
     "summary": "Checksums prove identity of listed bytes. They do not prove that all required files were listed or that execution used only those files.",
     "example": "A checkpoint projection hashes correctly while an imported state_dict module is absent from its inventory.",
     "scope": "Check closure independently, then execute from the admitted files.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Every listed checkpoint hashes correctly, while an omitted imported module makes the delivered inventory incomplete.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A clean artifact manifest misses an extra runtime file that the loader still reads from a writable directory.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "red-first",
@@ -439,7 +740,17 @@ const nodes=[
     "summary": "Reproduce a confirmed issue with a test that fails for the intended reason, then fix the shared rule behind similar failures.",
     "example": "Test relevant action combinations and draft preservation, not only one broken screenshot.",
     "scope": "Generality should follow the invariant, not introduce a generic testing framework.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "First reproduce the submitted form that loses its draft; then make the regression fail before changing the shared submit path.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "For a missing recovery response, write a case that demonstrates the lost outcome before altering the retry policy.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "fixture-rights",
@@ -450,7 +761,18 @@ const nodes=[
     "summary": "Explain where each specimen and expected output came from, including generated and derived fixtures. Distinguish data rights from code licensing.",
     "example": "A copied repository’s code licence does not automatically establish redistribution rights for its scientific dataset.",
     "scope": "Unclear rights stay an explicit gap.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A test includes an upstream spectral fixture only after recording its collection and redistribution terms.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A copied software license covers the parser code, not automatically the example data shipped beside it.",
+        "origin": "Illustrative case · privacy edited",
+        "href": "https://github.com/numpde/secs-repro/commit/4247b409e88c98bec2fbec2fc26b0c85fb16a4ff"
+      }
+    ]
   },
   {
     "id": "U02",
@@ -461,7 +783,18 @@ const nodes=[
     "summary": "Expose the real sequence of casts, normalization, centering, masking, special tokens, and padding. Preserve the algorithm rather than its superficial shape.",
     "example": "Averaging a piecewise-linear signal over bins is not interchangeable with ordinary point interpolation.",
     "scope": "Order and arithmetic are scientific behavior.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Convert declared input units before admission, then apply centering, masking, and padding in the documented model order.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "When a JSON coordinate file declares angstroms, convert those values once before model admission.",
+        "origin": "Illustrative case · privacy edited",
+        "href": "https://github.com/numpde/nmrnet-repro/commit/530292720f85cf250ede5fff4e7c4cd62d2d9587"
+      }
+    ]
   },
   {
     "id": "U03",
@@ -472,7 +805,17 @@ const nodes=[
     "summary": "Derive returned identities and computational selection from the same ordered traversal. Preserve correspondence through every transform.",
     "example": "The mask that gathers nucleus features also supplies the crosswalk back to original atom indices.",
     "scope": "Do not reconstruct identity afterward by reparsing or canonicalizing.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Use the same atom mask to gather model features and produce the returned atom-index map.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Keep the file's original entry order through filtering so a result still identifies the input observation that produced it.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U04",
@@ -483,7 +826,17 @@ const nodes=[
     "summary": "Matching tensor keys and dimensions does not establish compatible normalization, vocabulary ordering, device, dtype, or scaler identity.",
     "example": "Compare expected normalization buffers before strict checkpoint loading overwrites them.",
     "scope": "Keep semantic and mechanical compatibility as distinct checks.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Reject a checkpoint whose vocabulary order differs even when tensor names and dimensions match.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Compare saved normalization buffers before loading can overwrite them and conceal an incompatible scaler.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U21",
@@ -494,7 +847,17 @@ const nodes=[
     "summary": "Pin version-sensitive expectations. A new reference version without fixtures is a reviewable change, not a reason to regenerate expected results silently.",
     "example": "RDKit writer parity remains tied to the exact version that produced the expected output set.",
     "scope": "Sampled agreement cannot establish exhaustive equality.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "When a writer library changes, run the pinned reference fixtures before updating expected files.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A newer tokenizer is a qualification change; do not silently regenerate outputs and call the differences equivalent.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A02",
@@ -505,7 +868,17 @@ const nodes=[
     "summary": "Do not relax an allowance to fit an observed difference, or use numerical tolerance to excuse an identity mismatch.",
     "example": "An atom-index permutation is not an acceptable floating-point discrepancy.",
     "scope": "Storage, parameter, compute, and output precision are separate facts.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "After a numerical comparison fails, the tolerance is widened until the new result passes, making the test unable to reject the change.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A wrong atom-index mapping is accepted as a small floating-point difference, although the result now refers to the wrong atom.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A06",
@@ -516,7 +889,17 @@ const nodes=[
     "summary": "Reuse structure without making different scientific inputs and outputs look identical. State what the model actually supplies.",
     "example": "One model generates hydrogens and local maps; another preserves supplied atoms and original indices.",
     "scope": "J candidates without partner identity are not assigned physical couplings.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Documentation says two model families produce the same atoms even though one generates them and the other preserves supplied atoms.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A list of unpaired candidate values is presented as measured physical couplings, despite lacking partner identities.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A07",
@@ -527,7 +910,17 @@ const nodes=[
     "summary": "Identify which supplied features actually drive the computation. A richer file format does not mean the model uses every feature.",
     "example": "Equal token and distance tensors can drive equal predictions even when coordinate configurations differ.",
     "scope": "Source reasoning alone does not qualify broad stereochemical performance.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A stereochemistry-rich file is advertised as a capability although the model input discards that feature before prediction.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Two geometries produce identical encoded tokens and distances, yet the description claims the model distinguishes their coordinates.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A08",
@@ -538,7 +931,17 @@ const nodes=[
     "summary": "Carry explicit producer units and reference conventions. Numerical overlap cannot establish scientific referencing.",
     "example": "A bare Hz/MHz conversion does not supply the missing chemical-shift reference metadata.",
     "scope": "Resolve producer-to-release units before qualifying external input.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A bare frequency value is converted from Hz to MHz by guess, despite missing the producer’s unit and reference convention.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "An unlabelled shift list is called qualified because its numbers fall in a familiar range.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "random-cache",
@@ -549,7 +952,17 @@ const nodes=[
     "summary": "Reuse deterministic candidate preparation without freezing stochastic decisions that are meant to vary by epoch.",
     "example": "A run cache holds candidate spectra. Each epoch selects and materializes its own spectrum dataset before packing.",
     "scope": "The exact pipeline is model-specific; randomness must remain reproducible and correctly scoped.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Cache deterministic candidate preparation across a run, but select the intended random candidate again for each epoch.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A rerun with the same seed reproduces choices; a cache hit must not freeze the previous epoch's sample.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "diagnose-first",
@@ -560,7 +973,17 @@ const nodes=[
     "summary": "Record observation → diagnosis → chosen knob → expected effect → falsifier before launching a changed experiment.",
     "example": "Measure checkpoint gradient pressure before adjusting regularization weights or learning rates.",
     "scope": "Keep the control value when the audit does not justify a change.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Inspect the model's training gradients before changing learning rate; write down the expected response and what would disprove it.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Find which input cases dominate the slow run before changing batch size or concurrency limits.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "comparison-metrics",
@@ -571,7 +994,17 @@ const nodes=[
     "summary": "Add conventional metrics for comparison without silently replacing the chosen objective. Declare units, matching, populations, and filtering.",
     "example": "Loss variants with different weights cannot be ranked by an incomparable aggregate validation loss.",
     "scope": "A comparable evaluation metric is not necessarily the right training objective.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Report one fixed validation metric for comparing checkpoints while keeping the weighted training objective unchanged.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Compare providers over the same samples, units, and filters instead of ranking totals calculated on different populations.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "controlled-updates",
@@ -582,7 +1015,17 @@ const nodes=[
     "summary": "Restore the same model and optimizer state when isolating an update’s effect. Hold scoring populations and randomness policies explicit.",
     "example": "Independent one-step improvements on held batches do not show that those gains accumulate along a training trajectory.",
     "scope": "State restoration for a probe is different from the optimizer policy of a continuation run.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Compare one optimizer step by restoring identical model and optimizer state for each probe.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Hold the validation samples and random policy fixed while testing whether a configuration change improves the same measured objective.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "experiment-config",
@@ -593,7 +1036,17 @@ const nodes=[
     "summary": "Express justified variants through configuration, run a proper control, and avoid maintaining parallel experimental training paths.",
     "example": "Compare two configurations through the same trainer rather than adding a second optimizer loop.",
     "scope": "Investigate performance options in the actual workload; do not assume a universal winning setting.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Run two model settings through the maintained trainer rather than keeping a second one-off optimization loop.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Add a supported configuration value for a justified variant and compare it with the unchanged control.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "training-competence",
@@ -604,7 +1057,17 @@ const nodes=[
     "summary": "Diagnose whether the model learns the training task before interpreting validation as the main limiting signal.",
     "example": "Inspect training objectives and representation health before choosing remedies for a supposed generalization gap.",
     "scope": "This never removes the need for held-out evaluation or authorizes test-set selection.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Check whether the training objective improves before attributing a validation gap to overfitting.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Inspect representation and train-set fit before tuning regularization against one held-out score.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "error-populations",
@@ -615,7 +1078,17 @@ const nodes=[
     "summary": "Find which concrete samples contribute most to error in training and validation. Separate the observation from an explanation of its cause.",
     "example": "Inspect source reports, conditioning, peak counts, and predictions for high-error molecules.",
     "scope": "Large error alone is not evidence that a datum is wrong.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "List the highest-error validation cases, then inspect their inputs and predictions before calling any label incorrect.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Break the aggregate by input category to find which samples drive the reported score change.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "repro-environment",
@@ -626,7 +1099,17 @@ const nodes=[
     "summary": "Keep hardware, software, resource limits, workload, timing method, run order, and relevant background activity with the result.",
     "example": "A throughput comparison names the GPU, precision, batch construction, and concurrent load.",
     "scope": "Mark unrecorded facts as unknown rather than reconstructing them.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Record GPU model, software versions, precision, input batch, and run order beside the throughput result.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Record the input cases, device, software versions, precision, and raw timing samples beside the benchmark summary.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U12",
@@ -637,7 +1120,17 @@ const nodes=[
     "summary": "Protect Make’s internal literal captures from command-line alias replacement. Parse operator inputs deliberately before using them as code.",
     "example": "A literal value containing $(shell …) must not become executable Make syntax through an overridden internal alias.",
     "scope": "This is a concrete Make guarantee, not a new command framework.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A Make variable passed as literal text remains data even when its characters resemble a nested make expression.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Parse a user-provided job name as a value, then pass it as one argument rather than re-evaluating it as shell syntax.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U13",
@@ -648,7 +1141,17 @@ const nodes=[
     "summary": "Charge work as it is consumed, including decompression failures, retries, growing sources, and partial reads.",
     "example": "A failed archive expansion still consumes its byte and CPU budget.",
     "scope": "Successful output sizes alone cannot bound the work performed.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Charge the byte budget for a corrupt archive member that consumed work before decompression failed.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Count each retry against the request's total work limit instead of resetting the budget after an error.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U14",
@@ -659,7 +1162,17 @@ const nodes=[
     "summary": "Retire only the resource this operation owns. Handle reusable names and descriptors carefully, and prove retirement at the actual engine boundary.",
     "example": "A failed close may already release a descriptor; blindly retrying could close an unrelated reused descriptor.",
     "scope": "Exclusive private scratch and shared reusable names need different protections.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "After an interrupted close, an operation records whether it still owns the descriptor before attempting any retry.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A failed image-removal request is reconciled against the created container identity before cleanup is tried again.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U20",
@@ -670,7 +1183,17 @@ const nodes=[
     "summary": "Deterministic artifacts get a writer and a no-write drift checker. Dependency locks get an explicit reviewed acquisition/refresh lane.",
     "example": "Offline lock checks establish package identity and format, not freshness against a changing index.",
     "scope": "Do not add generator machinery where there is no generated artifact.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A generator writes the reviewed lock snapshot; a normal offline check only reports whether regenerated bytes would differ.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Refresh the dependency lock in an explicit review step, then run deployment checks with network access disabled.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "A09",
@@ -681,7 +1204,17 @@ const nodes=[
     "summary": "A wrapper accepting a token count does not prove that the actual padded model input fits its runtime capacity.",
     "example": "Test the maximum admitted molecule through special-token insertion, padding, and real model execution.",
     "scope": "A source-visible mismatch is a finding, not a reproduced runtime defect.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "The wrapper accepts the token count, but padding and special tokens push the actual model input past its runtime capacity.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A small compressed upload passes admission, then expands beyond the parser limit before processing.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "contained-checks",
@@ -692,7 +1225,17 @@ const nodes=[
     "summary": "Use maintained contained lanes with exact inputs, no unnecessary grants, and finite resource budgets. Inspect effective runtime restrictions.",
     "example": "Check UID, root mount, capabilities, interfaces, and cgroup limits inside the check process.",
     "scope": "A container marker or printed Compose command is not live posture proof.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Inspect the test process's actual user, mounts, capabilities, and cgroup limits rather than trusting the container command printed by CI.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A network-disabled test should prove that its effective namespace cannot reach an external endpoint.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "explicit-acquisition",
@@ -703,7 +1246,17 @@ const nodes=[
     "summary": "Keep downloads, lock refreshes, image preparation, build, and tests distinct. Ordinary checks consume prepared reviewed inputs.",
     "example": "A test does not silently install dependencies, update a lock, or pull a mutable image.",
     "scope": "Review exact dependency versions and advisories before installation.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Download and verify a pinned model image in preparation, then build and test using the cached image without pulling again.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Refresh a package lock in the review lane; routine CI checks its format and installed package identity offline.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "operation-snapshot",
@@ -714,7 +1267,17 @@ const nodes=[
     "summary": "Load and validate configuration at the owning operation boundary; retain the snapshot through awaits and effects.",
     "example": "A multi-stage operation does not mix environment settings that changed between rows or retries.",
     "scope": "Physical resources and budgets remain fixed for their constructor lifetime.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Read and validate a worker's resource limits once when the job starts; don't let a mid-job environment change mix budgets.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Capture a configuration revision before an asynchronous request so later stages use the same reviewed settings.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "owned-retention",
@@ -725,7 +1288,17 @@ const nodes=[
     "summary": "Give finite history, disk, and allocation resources an owned renewal or retention policy that preserves unresolved work and required evidence.",
     "example": "A queue does not require periodic deletion of unresolved records to keep accepting work.",
     "scope": "Deletion eligibility alone is not authorization to run a purger.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Expire completed diagnostic records under an owned retention rule while preserving unresolved requests for reconciliation.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Renew a retained output only after its consumer is done; do not make queue health depend on deleting open work.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U17",
@@ -736,7 +1309,17 @@ const nodes=[
     "summary": "Explain purpose, what happened, important limits, and the next useful action without requiring hidden project context.",
     "example": "A failure names the blocked operation and the concrete input the caller can correct.",
     "scope": "Include implementation detail when it helps the reader decide.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Tell a caller which field is invalid and what value the endpoint accepts, without sending the parser stack.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A service status page says which dependency is unavailable and whether the submitted job remains queued.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "reader-teachback",
@@ -747,7 +1330,17 @@ const nodes=[
     "summary": "Show the actual message or explanation with just enough task context. Ask what happened, what took effect, and what the reader would do next.",
     "example": "Fresh readers apply the description to concrete cases instead of merely repeating its words.",
     "scope": "Reader understanding and scientific correctness need separate checks.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Show a new reader the actual rejection and ask what they think happened before explaining the intended diagnosis.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Ask a fresh consumer to find the supported input example and identify which fields are required.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "visible-value",
@@ -758,7 +1351,17 @@ const nodes=[
     "summary": "Make the value users see authoritative for the action they are about to take. Remove unnecessary selection or confirmation steps.",
     "example": "Entering a hosted metadata URI should not leave submission pointing at an unseen empty selection.",
     "scope": "When draft and committed states are genuinely needed, make their distinction explicit.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "The URI shown in the editor is the URI submitted; typing a new value does not leave an unseen old selection active.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "An approval screen displays the exact command and arguments that the user is about to authorize.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "minimal-ui-policy",
@@ -769,7 +1372,17 @@ const nodes=[
     "summary": "Render authoritative permissions and availability rather than reconstructing business policy from role names or labels.",
     "example": "Show an action and its fields from the contract’s declared available actions.",
     "scope": "The API or contract still enforces the rule.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Render the available actions returned by the contract instead of inferring permissions from a user's role label.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "An admin page disables a task when the API says it is unavailable and still lets the API enforce that rule.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "stable-approval",
@@ -780,7 +1393,17 @@ const nodes=[
     "summary": "Keep reviewed command identities, order, and arguments stable. Show withdrawal and expiry rather than silently shrinking the list.",
     "example": "A command can be cancelled, but its entry stays visible with a changed status.",
     "scope": "This records the design requirement; it does not claim an implemented approval model.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Keep a cancelled command in the reviewed list with a cancelled status instead of silently removing it before approval.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "If a command's arguments change after review, require a new approval for the new visible command.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "discovery-owner",
@@ -791,7 +1414,17 @@ const nodes=[
     "summary": "Put supported behavior where the consumer already discovers the contract before adding another document, schema, or entrypoint.",
     "example": "Clarify signing and consume-retention behavior in the existing OpenAPI descriptions, then test a fresh consumer.",
     "scope": "Add a new surface only when the current owner cannot meet the need.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Add required signing fields to the API operation description users already open, then verify a new client can follow it.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Put input and recovery guidance beside the existing action instead of making users search a second guide.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "scientific-caveats",
@@ -802,7 +1435,17 @@ const nodes=[
     "summary": "Place real scientific limitations beside the interpretation they affect. Remove generic defensive prose that offers no useful decision.",
     "example": "Explain unassigned coupling partners; omit self-evident warnings unrelated to the task.",
     "scope": "A concise interface must not erase a limit that changes the result’s meaning.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Say that a predicted coupling count does not identify which atoms are coupled when partner identities are absent.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "State the unverified calibration limit beside the reported shifts so readers do not mistake output for calibrated measurement.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U15",
@@ -813,7 +1456,17 @@ const nodes=[
     "summary": "Find the meaning a check protects. Preserve that obligation while removing ceremonial or implementation-shaped assertions.",
     "example": "Replace a prose-equality assertion with a check that the rendered failure explains cause, effect, and recovery.",
     "scope": "An applicable failing check is not permission to weaken the requirement.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Test that an error names the failed action and safe next step rather than asserting one fixed sentence character-for-character.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Keep the requirement that malformed input has no effect while replacing a test coupled to one helper call.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U18",
@@ -824,7 +1477,17 @@ const nodes=[
     "summary": "Complete meaningful reviewed slices, preserve unrelated work, and say what is implemented, tested, qualified, and deployed.",
     "example": "Commit one concern with explicit paths and report remaining uncertainty before repeated status requests are needed.",
     "scope": "Commit, push, deployment, and notification authority remain task-specific.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A release report separates a passing unit suite from an unrun installed-artifact check and a deployment not yet attempted.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A commit contains the reviewed graph files while preserving an unrelated change already in the checkout.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "U22",
@@ -835,7 +1498,18 @@ const nodes=[
     "summary": "Update active designs, instructions, tests, and specifications when facts change. Preserve historical observations and date their corrections.",
     "example": "A later qualified result supersedes an old finding without pretending that the earlier run observed the new behavior.",
     "scope": "Keep unresolved questions explicit.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Date the benchmark correction so the old run still describes what was measured at that time.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "When benchmark setup or API arguments change, update the maintained guide to match the supported command.",
+        "origin": "Illustrative case · privacy edited",
+        "href": "https://github.com/numpde/nmrpeak-repro/commit/1697dc84dd1d76ae25b04efc8183fd80614000e5"
+      }
+    ]
   },
   {
     "id": "A10",
@@ -846,7 +1520,17 @@ const nodes=[
     "summary": "Preserve enduring knowledge and scientific evidence without keeping abandoned entrypoints, duplicate summaries, or obsolete runtime trees.",
     "example": "Extract a useful decision into its owning note before retiring a superseded operational path.",
     "scope": "Do not delete the only supporting observation because a newer summary exists.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A retired launcher remains beside its replacement, so users can still start two paths with conflicting defaults.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "The same setup instructions are copied into two guides and quietly diverge after one is updated.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "critical-choices",
@@ -857,7 +1541,17 @@ const nodes=[
     "summary": "Challenge whether the proposed design is necessary, appropriate, and durable before merely checking that it was implemented correctly.",
     "example": "A perfect implementation of an unnecessary key registry is still the wrong change.",
     "scope": "Use independent review when it resolves a consequential uncertainty.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Before implementing another cache, verify whether the current build already reuses the prepared image and whether a consumer needs a second one.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Review whether a proposed registry solves a real missing boundary before checking whether its code passes tests.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "verified-followthrough",
@@ -868,7 +1562,17 @@ const nodes=[
     "summary": "An instruction sent to a worker or an acknowledgement is not a resolved finding. Inspect the resulting change and the appropriate evidence.",
     "example": "Keep a recovery requirement open until the implementation and matching boundary scenario have been reviewed.",
     "scope": "Review ownership includes adjudication and follow-through.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "After a reviewer requests a regression case, inspect the changed test and confirm it exercises the reported failure before closing the comment.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A worker's acknowledgement does not resolve a release finding until the resulting artifact and its check have been reviewed.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "instruction-scope",
@@ -879,7 +1583,17 @@ const nodes=[
     "summary": "Distinguish a user requirement from an agent interpretation, and keep its original operation and authority explicit.",
     "example": "A Wi-Fi choice for artifact downloads must not silently become the networking policy for running services.",
     "scope": "Historical authorization for tests, commits, or deployment does not grant those actions now.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "A request to route downloads over Wi-Fi does not authorize running the service on that same interface.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "Permission to run a test locally does not imply permission to deploy its output to a public endpoint.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "copy-with-reasons",
@@ -890,7 +1604,17 @@ const nodes=[
     "summary": "Port established code, vectors, tests, and maintained workflows where meaningful. Record exact provenance and deliberate adaptations.",
     "example": "Copy the training pipeline together with its cache lifetime and batching rationale, not just the model class.",
     "scope": "A donor implementation is evidence to assess, not a universal template.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "When reusing a donor parser, bring its vectors and boundary tests, then adapt its accepted input contract deliberately.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "A copied container check keeps the limits it was designed to prove, while removing grants this new workload does not need.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "proportional-checks",
@@ -901,7 +1625,17 @@ const nodes=[
     "summary": "Run meaningful focused checks, broaden where changed boundaries warrant it, and state what remains unproved.",
     "example": "A requested clean cut may defer broad testing in a running note while preserving essential correctness checks.",
     "scope": "A task-specific deferral is not a universal policy against tests.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Run a focused parser suite for a parser-only edit; include the installed-package lane when package contents changed.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "State that a local smoke run proves startup only when no representative scientific outputs were checked.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   },
   {
     "id": "owned-qualification",
@@ -912,10 +1646,19 @@ const nodes=[
     "summary": "Use scratch probes to investigate, then put recurring capability checks in the supported repository lane.",
     "example": "An endpoint-fallback check covers outage, endpoint order, selected fallback, and result correctness in the maintained qualification suite.",
     "scope": "An explicitly chosen endpoint fallback is different from a silent fallback for broken internal wiring.",
-    "evidence": []
+    "evidence": [],
+    "examples": [
+      {
+        "text": "Keep the outage-and-delivery replay scenario in the maintained suite after the temporary investigation script is removed.",
+        "origin": "Illustrative case · privacy edited"
+      },
+      {
+        "text": "When interpreter fallback recurs, qualify outage, selection order, chosen interpreter, and exact result in the repository's supported lane.",
+        "origin": "Illustrative case · privacy edited"
+      }
+    ]
   }
 ];
-
 const edges=[
   {
     "from": "one-owner",
@@ -1617,7 +2360,7 @@ function closeSearch(){
 function searchIdeas(){
  const query=element('search').value.trim().toLowerCase();
  if(!query){closeSearch();return;}
- const matched=nodes.filter(node=>[node.id,node.title,node.summary,node.example,byGroup.get(node.group).name].join(' ').toLowerCase().includes(query));
+ const matched=nodes.filter(node=>[node.id,node.title,node.summary,node.example,...node.examples.map(example=>example.text),byGroup.get(node.group).name].join(' ').toLowerCase().includes(query));
  results=matched.slice(0,12);activeResult=-1;
  element('matches').innerHTML=results.length?results.map((node,index)=>`<button class="match" role="option" aria-selected="false" tabindex="-1" id="match-${index}" data-match="${node.id}">${html(node.title)}<small>${html(byGroup.get(node.group).name)} · ${html(kinds[node.kind])}</small></button>`).join('')+(matched.length>12?`<div class="result-count">First 12 of ${matched.length} matches. Keep typing to narrow the search.</div>`:''):'<div class="match-empty" role="status">No matching ideas. Try another term.</div>';
  element('matches').hidden=false;element('search').setAttribute('aria-expanded','true');
@@ -1637,7 +2380,7 @@ function sourceMarkup(node){
 function showInfo(node){
  const group=byGroup.get(node.group),related=edges.filter(edge=>edge.from===node.id||edge.to===node.id);
  element('info').style.setProperty('--accent',group.color);
- element('info').innerHTML=`<div class="info-top"><div class="identity"><div class="kind">${html(kinds[node.kind])} · ${html(group.name)} · ${html(generalityLevels[node.generality].label)}</div><h2 id="item-title">${html(node.title)}</h2></div><p class="summary">${html(node.summary)}</p></div><details id="context"><summary>Context &amp; sources</summary><div class="detail-grid"><section><h3>In practice</h3><p>${html(node.example)}</p><h3>Scope</h3><p>${html(node.scope)}</p><h3>Move selected node</h3><div class="nudge" aria-label="Move selected node without dragging"><button type="button" data-nudge="left" aria-label="Move selected node left">←</button><button type="button" data-nudge="up" aria-label="Move selected node up">↑</button><button type="button" data-nudge="down" aria-label="Move selected node down">↓</button><button type="button" data-nudge="right" aria-label="Move selected node right">→</button></div></section><section><h3>Follow a connection</h3>${related.map(edge=>{const other=byId.get(edge.from===node.id?edge.to:edge.from);return `<button class="related" type="button" data-follow="${other.id}" aria-label="${html(byId.get(edge.from).title+' '+edge.label+' '+byId.get(edge.to).title)}">${html(other.title)}<span>${html(edge.label)} ${edge.from===node.id?'→':'←'} · ${html(edge.reason)}</span></button>`;}).join('')}</section><section><h3>Sources</h3>${sourceMarkup(node)}<p class="evidence-note">These are synthesized recommendations and scoped observations. Source history is not fresh runtime proof. Graph relationships are editorial explanations.</p><p><a href="notes/002_graph_design.txt">Graph design &amp; implementation notes</a></p></section></div></details>`;
+ element('info').innerHTML=`<div class="info-top"><div class="identity"><div class="kind">${html(kinds[node.kind])} · ${html(group.name)} · ${html(generalityLevels[node.generality].label)}</div><h2 id="item-title">${html(node.title)}</h2></div><p class="summary">${html(node.summary)}</p></div><details id="context"><summary>Context &amp; sources</summary><div class="detail-grid"><section><h3>Illustrative examples</h3><p>${html(node.example)}</p>${node.examples.map(example=>`<p>${html(example.text)}${example.href?` <a href="${html(example.href)}" target="_blank" rel="noopener">Source commit ↗</a>`:''}</p>`).join('')}<h3>Scope</h3><p>${html(node.scope)}</p><h3>Move selected node</h3><div class="nudge" aria-label="Move selected node without dragging"><button type="button" data-nudge="left" aria-label="Move selected node left">←</button><button type="button" data-nudge="up" aria-label="Move selected node up">↑</button><button type="button" data-nudge="down" aria-label="Move selected node down">↓</button><button type="button" data-nudge="right" aria-label="Move selected node right">→</button></div></section><section><h3>Follow a connection</h3>${related.map(edge=>{const other=byId.get(edge.from===node.id?edge.to:edge.from);return `<button class="related" type="button" data-follow="${other.id}" aria-label="${html(byId.get(edge.from).title+' '+edge.label+' '+byId.get(edge.to).title)}">${html(other.title)}<span>${html(edge.label)} ${edge.from===node.id?'→':'←'} · ${html(edge.reason)}</span></button>`;}).join('')}</section><section><h3>Sources</h3>${sourceMarkup(node)}<p class="evidence-note">Examples are edited illustrations, not implementation or runtime proof. Graph relationships are editorial explanations.</p><p><a href="notes/003_examples_and_review.txt">Examples and editorial review</a></p><p><a href="notes/002_graph_design.txt">Graph design &amp; implementation notes</a></p></section></div></details>`;
  element('info').hidden=false;element('info').scrollTop=0;
 }
 

@@ -45,6 +45,12 @@ for(const node of nodes){
  assert.ok(['property','practice','pitfall'].includes(node.kind),`${node.id}: unknown node kind.`);
  assert.ok(Object.hasOwn(generalityLevels,node.generality),`${node.id}: declare a supported generality level.`);
  for(const field of ['id','title','summary','example','scope'])assert.ok(typeof node[field]==='string'&&node[field].length>0,`${node.id}: ${field} must be nonempty text.`);
+ assert.ok(Array.isArray(node.examples)&&node.examples.length===2,`${node.id}: include exactly two additional examples.`);
+ for(const [index,example] of node.examples.entries()){
+  assert.ok(typeof example.text==='string'&&example.text.trim().length>0,`${node.id}: example ${index+1} must have text.`);
+  assert.equal(example.origin,'Illustrative case · privacy edited',`${node.id}: example ${index+1} must be identified as an edited illustration.`);
+  if(example.href)assert.match(example.href,/^https:\/\/github\.com\/numpde\/[a-z0-9-]+\/commit\/[0-9a-f]{40}$/,`${node.id}: example source must be a direct public commit link.`);
+ }
 }
 for(const [level,size] of Object.entries(generalityLevels)){
  for(const field of ['width','height','fontSize'])assert.ok(Number.isFinite(size[field])&&size[field]>0,`${level}: invalid ${field}.`);

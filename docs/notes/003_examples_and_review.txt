@@ -1,0 +1,29 @@
+Examples and editorial review
+==============================
+
+Every graph item has three illustrative examples: the original example retained
+from the first edition, plus two privacy-edited additions. The 148 additions
+were written as short, concrete illustrations of the criteria and findings
+collected from repository changes and Codex discussions. They are not verbatim
+quotes or a claim that each scenario occurred exactly as described. A small
+number link to public commits that directly support the adjacent point; links
+were omitted where the source included private workstation details or did not
+support the wording closely enough.
+
+The additions were reviewed against each item's title, summary, and scope. The
+review checked that practice examples describe an actor, action, and outcome;
+anti-pattern examples show the harmful behavior or its consequence; scientific
+examples preserve distinctions such as prediction versus measurement; and
+claims do not exceed the stated scope. Search includes all three examples.
+
+The examples illustrate the recommendations; they do not establish that a
+current implementation follows them or that a test has passed. Their evidence
+limits remain those stated in each item and in the research method note.
+
+Reader validation
+-----------------
+A context-isolated reader teach-back was not available for this update. The
+editorial and source-aware review is not a substitute for independent reader
+validation, so clarity has not been independently established. The examples
+are compact by design and retain some field-specific vocabulary for an
+engineering audience.
