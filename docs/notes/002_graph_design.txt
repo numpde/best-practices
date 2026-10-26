@@ -93,11 +93,23 @@ render-before-reveal, live switching before computation and before presentation,
 replacement of pending arrangements, selection and disabled movement controls
 during arrangement, stable camera and positions through details and selection,
 keyboard movement and switching, dragging with live motion, viewport refitting,
-and a fresh narrow deep link with reduced motion.
+and a fresh narrow deep link with reduced motion. Touch input checks dragging
+with live motion off and on, switching, freezing, and camera preservation.
+HEADED=1 additionally checks native tab visibility, pausing, and resuming in a
+full Chromium build with a display; headless targets do not report background
+visibility and cannot establish that behavior.
+Both modes check that idle motion settles while the switch stays enabled and
+that moving the selected node starts neighbor motion again without reframing.
 Two failures were reproduced before correction: switching live layout during
 arrangement left the graph hidden indefinitely; resizing from desktop to phone
 width left every node outside the canvas. Both checks now pass. Browser checks
-use Chromium with an isolated temporary profile; other engines remain unverified.
+normally launch Chromium with an isolated temporary profile. CDP_PORT instead
+attaches to a running local Chromium and closes only its temporary test tab.
+Unless HEADED=1, that tab uses focus emulation and a small screencast capture
+to keep frames running even when the window is minimized; captured images are
+immediately acknowledged and discarded. This capture mode leaves the existing
+window state and original tab untouched. It establishes interaction and rendering
+behavior, not native background visibility. Other engines remain unverified.
 
 The public repository starts with a reviewed clean history. Private research and
 historical local snapshots are excluded from both its files and its ancestry.

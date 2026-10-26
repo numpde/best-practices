@@ -5,39 +5,56 @@ import {mkdtempSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
-const profile=mkdtempSync(join(tmpdir(),'practices-browser-'));
-const browser=spawn(process.env.CHROMIUM||'chromium',[
- ...process.argv.slice(2),'--headless','--disable-gpu','--remote-debugging-pipe',
- `--user-data-dir=${profile}`,
+const debugPort=process.env.CDP_PORT;
+const attach=debugPort!==undefined;
+const profile=attach?null:mkdtempSync(join(tmpdir(),'practices-browser-'));
+const headed=process.env.HEADED==='1';
+const browser=attach?null:spawn(process.env.CHROMIUM||'chromium',[
+ ...process.argv.slice(2),...(headed?[]:['--headless']),'--disable-gpu','--remote-debugging-pipe',
+ '--no-first-run','--no-default-browser-check',`--user-data-dir=${profile}`,
 ],{stdio:['ignore','ignore','inherit','pipe','pipe']});
-const closed=new Promise(resolve=>browser.once('close',resolve));
-const requests=new Map(),errors=[];
-let sequence=0,buffer='',session;
-browser.stdio[4].setEncoding('utf8');
-browser.stdio[4].on('data',chunk=>{
- buffer+=chunk;
- let end;
- while((end=buffer.indexOf('\0'))>=0){
-  const message=JSON.parse(buffer.slice(0,end));
-  buffer=buffer.slice(end+1);
-  const request=requests.get(message.id);
-  if(request){
-   requests.delete(message.id);
-   if(message.error)request.reject(Error(JSON.stringify(message.error)));
-   else request.resolve(message.result);
-  }else if(message.method==='Runtime.exceptionThrown')errors.push(message.params.exceptionDetails);
+const closed=browser?new Promise(resolve=>browser.once('close',resolve)):null;
+const requests=new Map(),errors=[],failures=[],openedTargets=new Set();
+let sequence=0,buffer='',session,socket=null,connected=false,targetId;
+function receive(message){
+ const request=requests.get(message.id);
+ if(request){
+  requests.delete(message.id);
+  if(message.error)request.reject(Error(`${request.method}: ${message.error.message} (code ${message.error.code})`));
+  else request.resolve(message.result);
+ }else if(message.method==='Runtime.exceptionThrown')errors.push(message.params.exceptionDetails);
+ else if(message.method==='Page.screencastFrame'&&connected&&(!socket||socket.readyState===WebSocket.OPEN)){
+  send({id:++sequence,method:'Page.screencastFrameAck',params:{sessionId:message.params.sessionId},sessionId:message.sessionId});
  }
-});
-browser.on('exit',()=>{
- for(const request of requests.values())request.reject(Error('Chromium exited before replying.'));
+}
+function disconnected(){
+ connected=false;
+ for(const request of requests.values())request.reject(Error(`Cannot complete ${request.method}; the Chromium debug connection closed before replying.`));
  requests.clear();
-});
+}
+if(browser){
+ browser.stdio[4].setEncoding('utf8');
+ browser.stdio[4].on('data',chunk=>{
+  buffer+=chunk;
+  let end;
+  while((end=buffer.indexOf('\0'))>=0){
+   receive(JSON.parse(buffer.slice(0,end)));
+   buffer=buffer.slice(end+1);
+  }
+ });
+ browser.on('exit',disconnected);
+}
 function call(method,params={},sessionId=session){
+ if(!connected)return Promise.reject(Error('The Chromium debug connection is not open.'));
  return new Promise((resolve,reject)=>{
   const id=++sequence;
-  requests.set(id,{resolve,reject});
-  browser.stdio[3].write(JSON.stringify({id,method,params,sessionId})+'\0');
+  requests.set(id,{resolve,reject,method});
+  send({id,method,params,sessionId:sessionId??undefined});
  });
+}
+function send(message){
+ const encoded=JSON.stringify(message);
+ if(socket)socket.send(encoded);else browser.stdio[3].write(encoded+'\0');
 }
 async function evaluate(expression){
  const result=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});
@@ -45,13 +62,20 @@ async function evaluate(expression){
  return result.result.value;
 }
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const nextFrames=()=>evaluate(`new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))))`);
 async function waitFor(expression){
  const end=Date.now()+5000;
  do{
   if(await evaluate(expression))return;
   await delay(30);
  }while(Date.now()<end);
- throw Error(`Timed out waiting for ${expression}`);
+ const state=await evaluate(`({
+  document:document.readyState,visibility:document.visibilityState,
+  graphBusy:document.querySelector('#graph')?.getAttribute('aria-busy'),
+  status:document.querySelector('#status')?.textContent,
+ })`);
+ const failures=errors.slice(-3).map(error=>error.exception?.description?.slice(0,300)||error.text);
+ throw Error(`Browser check timed out waiting for ${expression}; page=${JSON.stringify(state)}; runtime errors=${JSON.stringify(failures)}`);
 }
 const waitReady=()=>waitFor(`!!document.querySelector('#graph') &&
  getComputedStyle(document.querySelector('#graph')).visibility==='visible' &&
@@ -66,24 +90,52 @@ const snapshot=()=>evaluate(`({
  positions:cy.nodes().map(node=>({id:node.id(),...node.position()})),
  zoom:cy.zoom(),pan:cy.pan(),nodes:cy.nodes().length,edges:cy.edges().length,
 })`);
-async function click(selector){
- const point=await evaluate(`(()=>{
+const centerOf=selector=>evaluate(`(()=>{
   const bounds=document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();
   return {x:bounds.x+bounds.width/2,y:bounds.y+bounds.height/2};
  })()`);
+async function click(selector){
+ const point=await centerOf(selector);
  await call('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...point});
  await call('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...point});
+}
+async function tap(selector){
+ const point=await centerOf(selector);
+ await call('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{...point,id:1,radiusX:1,radiusY:1,force:1}]});
+ await call('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
 }
 async function pressKey(key,code,windowsVirtualKeyCode){
  await call('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode});
  await call('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});
 }
-const deadline=setTimeout(()=>browser.kill(),30000);
+const deadline=setTimeout(()=>{if(browser)browser.kill();else socket?.close();},30000);
 try{
- await once(browser,'spawn');
- const {targetId}=await call('Target.createTarget',{url:'about:blank'});
+ if(attach){
+  const port=Number(debugPort);
+  assert.ok(Number.isInteger(port)&&port>0&&port<=65535,'CDP_PORT must be a localhost port between 1 and 65535.');
+  assert.equal(typeof WebSocket,'function','Attaching to CDP_PORT requires Node.js 22 or newer.');
+  const version=await(await fetch(`http://127.0.0.1:${port}/json/version`,{signal:AbortSignal.timeout(5000)})).json();
+  socket=new WebSocket(version.webSocketDebuggerUrl);
+  socket.addEventListener('message',event=>receive(JSON.parse(event.data)));
+  socket.addEventListener('close',disconnected);
+  await new Promise((resolve,reject)=>{
+   socket.addEventListener('open',resolve,{once:true});
+   socket.addEventListener('error',reject,{once:true});
+   socket.addEventListener('close',()=>reject(Error('The Chromium debug connection closed while opening.')),{once:true});
+  });
+ }else await once(browser,'spawn');
+ connected=true;
+ ({targetId}=await call('Target.createTarget',{url:'about:blank',background:attach}));
+ openedTargets.add(targetId);
  ({sessionId:session}=await call('Target.attachToTarget',{targetId,flatten:true}));
+ if(attach&&!headed)await call('Emulation.setFocusEmulationEnabled',{enabled:true});
+ else await call('Target.activateTarget',{targetId});
  await call('Page.enable');
+ if(attach&&!headed){
+  // Capture keeps frames running in a minimized window; discard each image
+  // after acknowledging it. Only this temporary tab is captured.
+  await call('Page.startScreencast',{format:'jpeg',quality:10,maxWidth:128,maxHeight:128,everyNthFrame:1});
+ }
  await call('Runtime.enable');
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
  await call('Page.addScriptToEvaluateOnNewDocument',{source:`
@@ -237,7 +289,58 @@ try{
  assert.equal(moved.zoom,moving.zoom);
  assert.deepEqual(moved.pan,moving.pan);
  await click('#live-layout');
+ assert.equal(await evaluate(`document.querySelector('#live-layout').getAttribute('aria-checked')`),'false','The live switch must turn off after dragging.');
  console.log('Keyboard movement and switching work; dragging with live layout moves neighbors while preserving the camera.');
+
+ if(headed){
+  await click('#live-layout');
+  const {targetId:otherTarget}=await call('Target.createTarget',{url:'about:blank'});
+  openedTargets.add(otherTarget);
+  await call('Target.activateTarget',{targetId:otherTarget});
+  await waitFor('document.hidden');
+  const background=await snapshot();
+  await delay(200);
+  assert.deepEqual(await snapshot(),background);
+  await call('Target.activateTarget',{targetId});
+  await waitFor('!document.hidden');
+  await nextFrames();
+  const resumed=await snapshot();
+  assert.notDeepEqual(resumed.positions,background.positions);
+  assert.equal(resumed.zoom,background.zoom);
+  assert.deepEqual(resumed.pan,background.pan);
+  await call('Target.closeTarget',{targetId:otherTarget});
+  openedTargets.delete(otherTarget);
+  await click('#live-layout');
+  console.log('Native background tabs pause live motion and resume without changing the camera.');
+ }
+
+ await click('#live-layout');
+ assert.equal(await evaluate(`document.querySelector('#live-layout').getAttribute('aria-checked')`),'true','The live switch must turn on before checking idle motion.');
+ const warming=await snapshot();
+ await nextFrames();
+ let resting=await snapshot(),settledLive=false;
+ assert.ok(JSON.stringify(resting.positions)!==JSON.stringify(warming.positions),'Live motion did not move a node after the switch was enabled.');
+ const settlingDeadline=Date.now()+5000;
+ while(Date.now()<settlingDeadline){
+  await delay(200);
+  await nextFrames();
+  const next=await snapshot();
+  if(JSON.stringify(next.positions)===JSON.stringify(resting.positions)){settledLive=true;break;}
+  resting=next;
+ }
+ assert.ok(settledLive,'Live motion must settle while idle.');
+ assert.equal(await evaluate(`document.querySelector('#live-layout').getAttribute('aria-checked')`),'true');
+ await pressKey('Tab','Tab',9);
+ assert.equal(await evaluate('document.activeElement.id'),'graph');
+ await pressKey('ArrowRight','ArrowRight',39);
+ await nextFrames();
+ const reheated=await snapshot();
+ assert.ok(reheated.positions.filter((position,index)=>
+  position.x!==resting.positions[index].x||position.y!==resting.positions[index].y).length>1);
+ assert.equal(reheated.zoom,resting.zoom);
+ assert.deepEqual(reheated.pan,resting.pan);
+ await click('#live-layout');
+ console.log('Idle live motion settles without disabling the mode; moving a node restarts its neighbors.');
 
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  await waitFor('cy.width()===390');
@@ -255,6 +358,34 @@ try{
  const mobile=await snapshot();
  await delay(150);
  assert.deepEqual(await snapshot(),mobile);
+ await call('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:2});
+ for(const live of [false,true]){
+  if(live)await tap('#live-layout');
+  const touchNode=await evaluate(`(()=>{
+   const node=cy.nodes().filter(node=>{
+    const p=node.renderedPosition();return p.x>40&&p.x<cy.width()-40&&p.y>60&&p.y<cy.height()-70;
+   })[0],bounds=document.querySelector('#graph').getBoundingClientRect(),p=node.renderedPosition();
+   return {x:bounds.x+p.x,y:bounds.y+p.y};
+  })()`);
+  const beforeTouch=await snapshot();
+  await call('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{...touchNode,id:1,radiusX:1,radiusY:1,force:1}]});
+  for(let step=1;step<=5;step++){
+   await call('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:touchNode.x+step*4,y:touchNode.y,id:1,radiusX:1,radiusY:1,force:1}]});
+   await delay(25);
+  }
+  await call('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  const afterTouch=await snapshot();
+  const changed=afterTouch.positions.filter((position,index)=>
+   position.x!==beforeTouch.positions[index].x||position.y!==beforeTouch.positions[index].y).length;
+  if(live)assert.ok(changed>1);else assert.equal(changed,1);
+  assert.equal(afterTouch.zoom,beforeTouch.zoom);
+  assert.deepEqual(afterTouch.pan,beforeTouch.pan);
+ }
+ await tap('#live-layout');
+ const touchFrozen=await snapshot();
+ await delay(150);
+ assert.deepEqual(await snapshot(),touchFrozen);
+ console.log('Touch dragging respects live mode, preserves the camera, and freezes when switched off.');
  await loadPage(pageURL+'?view=links#%E0%A4%A');
  assert.equal(await evaluate(`document.querySelector('#info').hidden`),true);
  assert.equal(await evaluate('location.search'),'?view=links');
@@ -272,9 +403,27 @@ try{
  console.log('Malformed links open the full graph; encoded selections work and malformed fragment changes recover.');
  assert.deepEqual(errors,[]);
  console.log('Narrow deep links restore selection and remain still with reduced motion; no browser runtime errors.');
+}catch(error){
+ failures.push(error);
 }finally{
  clearTimeout(deadline);
- browser.kill();
- await closed;
- rmSync(profile,{recursive:true,force:true});
+ if(browser){
+  try{
+   browser.kill();
+   await closed;
+   rmSync(profile,{recursive:true,force:true});
+  }catch(error){failures.push(error);}
+ }else{
+  if(connected){
+   for(const targetId of [...openedTargets].reverse()){
+    try{await call('Target.closeTarget',{targetId},null);}
+    catch(error){failures.push(error);}
+   }
+  }else if(openedTargets.size){
+   failures.push(Error(`Cannot confirm cleanup of ${openedTargets.size} temporary tabs because the Chromium debug connection is closed.`));
+  }
+  socket?.close();
+ }
 }
+if(failures.length===1)throw failures[0];
+if(failures.length>1)throw new AggregateError(failures,'The browser check failed and cleanup also failed.');
