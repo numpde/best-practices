@@ -143,10 +143,23 @@ try{
  document.addEventListener('DOMContentLoaded',()=>{
   const graph=document.querySelector('#graph');
   if(!graph)return;
-  let fittedDraws=0;
-  cy.on('render',()=>{if(cy.zoom()!==1)fittedDraws++;});
+  const view=()=>({positions:cy.nodes().map(node=>({id:node.id(),...node.position()})),zoom:cy.zoom(),pan:cy.pan(),width:cy.width(),height:cy.height()});
+  let painted=null;
+  const layouts=new Set();
+  cy.on('layoutstart',event=>layouts.add(event.layout));
+  cy.on('layoutstop',event=>layouts.delete(event.layout));
+  cy.on('render',()=>{painted=JSON.stringify(view());});
   new MutationObserver(()=>{
-   window.loadFrames.push({visible:getComputedStyle(graph).visibility==='visible',busy:graph.getAttribute('aria-busy'),fittedDraws});
+   const current=view();
+   window.loadFrames.push({
+    visible:getComputedStyle(graph).visibility==='visible',busy:graph.getAttribute('aria-busy'),
+    completed:layouts.size===0,painted:painted===JSON.stringify(current),
+    distinct:new Set(current.positions.map(position=>position.x+','+position.y)).size===current.positions.length,
+    fitted:current.positions.every(position=>{
+     const x=position.x*current.zoom+current.pan.x,y=position.y*current.zoom+current.pan.y;
+     return x>=0&&x<=current.width&&y>=0&&y<=current.height;
+    }),
+   });
   }).observe(graph,{attributes:true});
  });`});
  const pageURL=new URL('../docs/index.html',import.meta.url).href;
@@ -155,8 +168,8 @@ try{
  const initial=await snapshot();
  assert.equal(initial.nodes,await evaluate('nodes.length'));
  assert.equal(initial.edges,await evaluate('edges.length'));
- assert.ok(await evaluate(`window.loadFrames.some(frame=>frame.visible&&frame.fittedDraws>0)&&
-  window.loadFrames.every(frame=>!frame.visible||frame.busy==='false'&&frame.fittedDraws>0)`));
+ assert.ok(await evaluate(`window.loadFrames.some(frame=>frame.visible)&&
+  window.loadFrames.every(frame=>!frame.visible||frame.busy==='false'&&frame.completed&&frame.painted&&frame.distinct&&frame.fitted)`));
  console.log('Initial graph appears after a fitted draw with every idea and connection.');
 
  const searchState={};
