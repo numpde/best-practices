@@ -1,0 +1,46 @@
+Research method and evidence limits
+===================================
+26 October 2026
+
+The graph combines a public repository-practice survey with reviewed editorial
+synthesis from broader engineering research. It distinguishes patterns from
+anti-patterns, conceptual scope from importance, and causal relationships from
+mere topic similarity.
+
+Public source criteria
+----------------------
+Practices from sibling repositories:
+https://numpde.github.io/nmrnet-repro/notes/013_sibling_practices_20261016.html
+Source:
+https://github.com/numpde/nmrnet-repro/blob/main/docs/notes/013_sibling_practices_20261016.html
+
+The 38 original public criteria are embedded in the graph with their source
+references. Examples are scoped: adapting an underlying obligation does not
+make every scientific mechanism universal. Original source wording is retained
+as evidence, rather than presented as a fresh runtime result.
+
+Additional synthesis
+--------------------
+Sixteen research summaries cover deterministic caches and randomness,
+diagnosis before experiment changes, comparable metrics, experiment machinery,
+controlled updates, training fit, high-error populations, configuration
+adaptation, scientific limitations, reader understanding, principled common
+standards, maintained qualification, reproducible measurements, purposeful
+preservation, stable approval, and discovery at the existing owner.
+
+The public page contains reviewed summaries and generic examples. It does not
+publish private source conversations, machine identities, local filesystem
+locations, session IDs, or private repository provenance. These summaries are
+editorial recommendations; they are not publicly reproducible quotations from
+the underlying private research. Do not treat them as independent proof of a
+particular implementation's behavior.
+
+Relationships
+-------------
+Each edge states a directional relationship and the reason for it. Connections
+are synthesis judgments. Being connected does not establish logical equivalence
+or imply that one rule applies without the scope stated by the other.
+
+Implementation, tests, scientific qualification, deployment, and live proof
+remain distinct evidence. Historical source material is not a current runtime
+qualification. Source and browser checks are described in the graph-design note.

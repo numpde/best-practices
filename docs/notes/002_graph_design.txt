@@ -1,0 +1,66 @@
+Graph design and implementation
+===============================
+26 October 2026
+
+The application is a standalone HTML page served directly from docs/index.html.
+Its nodes and edges arrays own graph data. A change to the page is immediately
+a change to the site; no separate build or duplicated versioned entrypoint exists.
+
+Interaction
+-----------
+The overview shows every relationship and auto-arranges with Cytoscape's CoSE
+layout. Selecting a concept reveals only its direct neighborhood and arranges
+that neighborhood concentrically. Overview restores the full graph. Search,
+Fit, dragging, pan, and wheel zoom support exploration. Source context stays
+behind a disclosure. Pointer buttons and keyboard arrows provide alternatives
+to dragging.
+
+Live layout is an explicit, page-local opt-in switch beside Fit, initially off.
+A spring/repulsion loop lets visible nodes respond while the grabbed node stays
+under the pointer. Turning it off freezes positions. The loop settles when idle
+and pauses in a background tab. It preserves camera position during movement.
+Selecting a new neighborhood retires the preceding simulation. Opting into
+Live layout explicitly requests motion; selection animation otherwise respects
+the system's reduced-motion preference.
+
+Visual meaning
+--------------
+Subject controls color. Patterns have rounded solid cards; anti-patterns have
+clipped corners, dashed borders, a warning fill and symbol. Dashed edges express
+an editorial tension between concepts, independently of anti-pattern borders.
+
+Each node declares conceptual generality: specific technique, domain practice,
+or broad principle. Those levels set card size and text size. These are reviewed
+scope judgments, not measured importance, popularity, or connection counts.
+Selection changes border weight without changing semantic size.
+
+Sources and dependencies
+------------------------
+Cytoscape.js 3.34.4 (MIT) is embedded, including its license. No runtime resource
+is fetched from a CDN. The downloaded distribution was checked against npm's
+published tarball integrity before use. An exact-version OSV query on 26 October
+2026 returned no advisories; this dated check is not a security guarantee.
+Distribution SHA-256:
+  081591ab735b2b6a3b31a3c60f8f3a3e2fee8c92939e0c7820ad1208571b6cd8
+
+Public technical references:
+  https://js.cytoscape.org/#layouts
+  https://js.cytoscape.org/#core/viewport-manipulation/cy.resize
+  https://www.w3.org/TR/pointerevents/
+  https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html
+  https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
+
+Validation and limits
+---------------------
+Source checks cover graph references, complete generality classification,
+relationship field types, connectivity, local links, and privacy patterns.
+Browser checks exercise selection, overview, dragging, search, source disclosure,
+node sizing, anti-pattern styling, live-layout switching and cancellation,
+settling, camera stability, and desktop/mobile layout. Chromium-emulated touch
+also exercises the switch and responsive neighbors. No browser runtime errors
+were observed. Physical touch devices, other browser engines, and screen-reader
+announcements remain unverified. No exhaustive accessibility audit is claimed.
+
+The public repository starts with a reviewed clean history. Private research and
+historical local snapshots are excluded from both its files and its ancestry.
+Only docs/ is uploaded as the Pages artifact; developer tooling stays outside it.
