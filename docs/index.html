@@ -2005,9 +2005,9 @@ const edges=[
   },
   {
     "from": "A08",
-    "to": "U03",
+    "to": "U02",
     "label": "extends",
-    "reason": "Physical meaning needs explicit units as well as stable identity.",
+    "reason": "Convert magnitudes through explicit ordered steps before interpreting the resulting physical values.",
     "tension": false
   },
   {
@@ -2071,13 +2071,6 @@ const edges=[
     "to": "U20",
     "label": "must distinguish",
     "reason": "Changing experiment configuration is not permission to rewrite generated results or locks.",
-    "tension": false
-  },
-  {
-    "from": "U12",
-    "to": "instruction-scope",
-    "label": "requires",
-    "reason": "Literal operator values must remain distinct from implementation-owned executable syntax.",
     "tension": false
   },
   {
@@ -2190,13 +2183,6 @@ const edges=[
     "to": "A01",
     "label": "addresses",
     "reason": "Report the slice and the capability separately, with evidence labels.",
-    "tension": false
-  },
-  {
-    "from": "instruction-scope",
-    "to": "U15",
-    "label": "preserves",
-    "reason": "Apply the intended requirement without expanding its operation or authority.",
     "tension": false
   },
   {
@@ -2337,6 +2323,90 @@ const edges=[
     "to": "pending-quote-time-state",
     "label": "addresses",
     "reason": "Keep the signed quote, local cleanup deadline, and payment authority’s acceptance state as separate facts.",
+    "tension": false
+  },
+  {
+    "from": "A06",
+    "to": "U01",
+    "label": "warns against violating",
+    "reason": "One implementation beneath multiple variants must not turn one sibling’s semantics into a universal promise.",
+    "tension": false
+  },
+  {
+    "from": "canonical",
+    "to": "U23",
+    "label": "supports",
+    "reason": "A safe canonicality hint makes the useful cause available to the recipient without rewriting the signed evidence.",
+    "tension": false
+  },
+  {
+    "from": "U10",
+    "to": "U23",
+    "label": "supports",
+    "reason": "Named stable handoff facts let useful causes and effect status reach the recipient intact.",
+    "tension": false
+  },
+  {
+    "from": "A05",
+    "to": "copy-with-reasons",
+    "label": "warns against violating",
+    "reason": "Copying parallel machinery without a demonstrated need skips the review of what the donor solved and what must change.",
+    "tension": false
+  },
+  {
+    "from": "U24",
+    "to": "owned-qualification",
+    "label": "requires",
+    "reason": "An accepted limitation stays reviewable when its current behavior has maintained qualification in the owning lane.",
+    "tension": false
+  },
+  {
+    "from": "owned-retention",
+    "to": "A11",
+    "label": "addresses",
+    "reason": "Preserving unresolved obligations lets the service recover from routine outages instead of stopping safely and remaining stuck.",
+    "tension": false
+  },
+  {
+    "from": "visible-value",
+    "to": "stable-approval",
+    "label": "supports",
+    "reason": "Approval can refer to the exact active value when the visible input is the value the action will use.",
+    "tension": false
+  },
+  {
+    "from": "contained-checks",
+    "to": "A01",
+    "label": "guards against overclaiming",
+    "reason": "Inspecting effective restrictions establishes what the local lane contained, not broader qualification or deployment claims.",
+    "tension": false
+  },
+  {
+    "from": "U18",
+    "to": "U06",
+    "label": "supports",
+    "reason": "A coherent progress report carries the reviewed inputs, observations, and qualification limits needed to assess its claims.",
+    "tension": false
+  },
+  {
+    "from": "verified-followthrough",
+    "to": "U18",
+    "label": "supports",
+    "reason": "Verified closure of findings makes a delivered slice coherent enough to report accurately.",
+    "tension": false
+  },
+  {
+    "from": "pending-quote-time-state",
+    "to": "owned-retention",
+    "label": "requires",
+    "reason": "A pending quote’s payment obligation must survive local cleanup deadlines until the payment owner resolves acceptance.",
+    "tension": false
+  },
+  {
+    "from": "instruction-scope",
+    "to": "U09",
+    "label": "constrains",
+    "reason": "Tracing the requested operation keeps its description and authority separate from unrelated effects.",
     "tension": false
   }
 ];
