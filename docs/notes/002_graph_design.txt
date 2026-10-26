@@ -23,6 +23,14 @@ graph. Search, Fit, dragging, pan, and wheel zoom support exploration. Source co
 behind a disclosure. Pointer buttons and keyboard arrows provide alternatives
 to dragging.
 
+Search keeps focus in the input while arrow keys choose a result; the first
+Down selects the first result and the first Up selects the last. Escape closes
+an open popup without clearing the query. Clearing the query, moving focus out
+of the search control, or clicking outside dismisses the popup and clears its
+active option. User activation by graph, search, or related concept returns
+focus to the graph so its movement keys work. Restoring a selection from a URL
+does not move focus.
+
 Live layout is an explicit, page-local opt-in switch beside Fit, initially off.
 A spring/repulsion loop lets visible nodes respond while the grabbed node stays
 under the pointer. Turning it off freezes positions. The loop settles when idle
@@ -60,6 +68,7 @@ Public technical references:
   https://js.cytoscape.org/#core/viewport-manipulation/cy.resize
   https://www.w3.org/TR/pointerevents/
   https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html
+  https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
   https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
 
 Validation and limits

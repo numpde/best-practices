@@ -2553,9 +2553,17 @@ function selectNode(id){
  showInfo(byId.get(id));
 }
 
+function activateNode(id){
+ selectNode(id);
+ element('graph').focus({preventScroll:true});
+}
+
 function closeSearch(){
+ if(element('matches').hidden)return;
+ results=[];activeResult=-1;
  element('matches').hidden=true;element('search').setAttribute('aria-expanded','false');
- element('search').removeAttribute('aria-activedescendant');activeResult=-1;
+ element('search').removeAttribute('aria-activedescendant');
+ element('matches').replaceChildren();
 }
 
 function searchIdeas(){
@@ -2617,7 +2625,7 @@ function initialize(){
   viewportWidth=innerWidth;viewportHeight=innerHeight;
   if(!arrangement)fitView();
  });
- cy.on('tap','node',event=>selectNode(event.target.id()));
+ cy.on('tap','node',event=>activateNode(event.target.id()));
  cy.on('grab drag free','node',startLiveLayout);
  const id=decodeURIComponent(location.hash.slice(1));
  showOverview();
@@ -2626,16 +2634,22 @@ function initialize(){
 
 element('search').addEventListener('input',searchIdeas);
 element('search').addEventListener('keydown',event=>{
- if(event.key==='Escape'){closeSearch();return;}
+ if(event.key==='Escape'){
+  if(!element('matches').hidden)event.preventDefault();
+  closeSearch();return;
+ }
  if(event.key==='ArrowDown'||event.key==='ArrowUp'){
   event.preventDefault();if(element('matches').hidden)searchIdeas();if(!results.length)return;
-  activeResult=(activeResult+(event.key==='ArrowDown'?1:-1)+results.length)%results.length;
+  if(activeResult<0)activeResult=event.key==='ArrowDown'?0:results.length-1;
+  else activeResult=(activeResult+(event.key==='ArrowDown'?1:-1)+results.length)%results.length;
   element('matches').querySelectorAll('[role=option]').forEach((option,index)=>{option.classList.toggle('active',index===activeResult);option.setAttribute('aria-selected',String(index===activeResult));});
   const option=element('match-'+activeResult);element('search').setAttribute('aria-activedescendant',option.id);option.scrollIntoView({block:'nearest'});
  }
- if(event.key==='Enter'&&!element('matches').hidden&&results.length){event.preventDefault();selectNode(results[Math.max(0,activeResult)].id);element('graph').focus({preventScroll:true});}
+ if(event.key==='Enter'&&!element('matches').hidden&&results.length){event.preventDefault();activateNode(results[Math.max(0,activeResult)].id);}
 });
-element('matches').addEventListener('click',event=>{const button=event.target.closest('[data-match]');if(button){selectNode(button.dataset.match);element('graph').focus({preventScroll:true});}});
+element('matches').addEventListener('click',event=>{const button=event.target.closest('[data-match]');if(button)activateNode(button.dataset.match);});
+element('matches').addEventListener('mousedown',event=>{if(event.button===0&&event.target.closest('[data-match]'))event.preventDefault();});
+element('search-wrap').addEventListener('focusout',event=>{if(!event.currentTarget.contains(event.relatedTarget))closeSearch();});
 document.addEventListener('pointerdown',event=>{if(!element('search-wrap').contains(event.target))closeSearch();});
 element('overview').addEventListener('click',()=>{element('search').value='';showOverview();});
 element('fit').addEventListener('click',fitView);
@@ -2645,7 +2659,7 @@ element('live-layout').addEventListener('click',()=>{
  if(liveEnabled)startLiveLayout();else stopLiveLayout();
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopLiveLayout();else startLiveLayout();});
-element('info').addEventListener('click',event=>{const follow=event.target.closest('[data-follow]'),move=event.target.closest('[data-nudge]');if(follow){selectNode(follow.dataset.follow);element('graph').focus({preventScroll:true});}if(move)nudge(move.dataset.nudge);});
+element('info').addEventListener('click',event=>{const follow=event.target.closest('[data-follow]'),move=event.target.closest('[data-nudge]');if(follow)activateNode(follow.dataset.follow);if(move)nudge(move.dataset.nudge);});
 element('graph').addEventListener('keydown',event=>{const directions={ArrowLeft:'left',ArrowUp:'up',ArrowDown:'down',ArrowRight:'right'};if(selectedId&&directions[event.key]){event.preventDefault();nudge(directions[event.key]);}if(event.key==='Escape')showOverview();});
 addEventListener('hashchange',()=>{const id=decodeURIComponent(location.hash.slice(1));if(byId.has(id))selectNode(id);else showOverview();});
 initialize();

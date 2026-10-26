@@ -68,6 +68,10 @@ async function click(selector){
  await call('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...point});
  await call('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...point});
 }
+async function pressKey(key,code,windowsVirtualKeyCode){
+ await call('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode});
+ await call('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});
+}
 const deadline=setTimeout(()=>browser.kill(),30000);
 try{
  await once(browser,'spawn');
@@ -97,6 +101,36 @@ try{
   window.loadFrames.every(frame=>!frame.visible||frame.busy==='false'&&frame.fittedDraws>0)`));
  console.log('Initial graph appears after a fitted draw with every idea and connection.');
 
+ const searchState={};
+ await evaluate(`document.querySelector('#search').focus();document.querySelector('#search').value='a';document.querySelector('#search').dispatchEvent(new Event('input'))`);
+ await pressKey('ArrowUp','ArrowUp',38);
+ searchState.upStartsAtLast=await evaluate(`document.querySelector('#search').getAttribute('aria-activedescendant')===document.querySelector('#matches [role=option]:last-of-type').id`);
+ await pressKey('Escape','Escape',27);
+ searchState.escapePreservesQuery=await evaluate(`document.querySelector('#search').value==='a'`);
+ await evaluate(`document.querySelector('#search').value='';document.querySelector('#search').dispatchEvent(new Event('input'))`);
+ await pressKey('ArrowDown','ArrowDown',40);
+ searchState.emptyHasNoActiveOption=await evaluate(`document.querySelector('#matches').hidden&&!document.querySelector('#search').hasAttribute('aria-activedescendant')`);
+ await evaluate(`document.querySelector('#search').value='graph';document.querySelector('#search').dispatchEvent(new Event('input'))`);
+ await pressKey('Tab','Tab',9);
+ searchState.tabClosesPopup=await evaluate(`document.querySelector('#matches').hidden`);
+ assert.deepEqual(searchState,{upStartsAtLast:true,escapePreservesQuery:true,emptyHasNoActiveOption:true,tabClosesPopup:true});
+ assert.deepEqual(await snapshot(),initial);
+ console.log('Search has coherent first-arrow, empty, Escape, and keyboard-dismissal states.');
+ const concept=await evaluate('({id:nodes[0].id,title:nodes[0].title})');
+ for(const method of ['pointer','keyboard']){
+  await click('#search');
+  await evaluate(`document.querySelector('#search').value=${JSON.stringify(concept.title)};document.querySelector('#search').dispatchEvent(new Event('input'))`);
+  if(method==='pointer')await click(`[data-match="${concept.id}"]`);
+  else{
+   await pressKey('ArrowDown','ArrowDown',40);
+   await pressKey('Enter','Enter',13);
+  }
+  assert.equal(await evaluate(`cy.nodes('.focused').first().id()`),concept.id);
+  assert.equal(await evaluate(`document.activeElement.id`),'graph');
+  assert.equal(await evaluate(`document.querySelector('#matches').hidden`),true);
+ }
+ console.log('Pointer and keyboard result selection complete without dismissal swallowing activation.');
+
  await evaluate(`document.querySelector('#overview').click();document.querySelector('#live-layout').click()`);
  await waitReady();
  assert.equal(await evaluate(`document.querySelector('#live-layout').getAttribute('aria-checked')`),'true');
@@ -122,7 +156,6 @@ try{
  assert.deepEqual(await snapshot(),settled);
  console.log('Repeated Overview replaces pending work without late position or camera changes.');
 
- const concept=await evaluate('({id:nodes[0].id,title:nodes[0].title})');
  const pendingControls=await evaluate(`(()=>{
  document.querySelector('#overview').click();
  document.querySelector('#search').value=${JSON.stringify(concept.title)};
@@ -165,9 +198,9 @@ try{
  assert.deepEqual(await snapshot(),prior);
  assert.equal(await evaluate(`document.querySelector('#info').hidden`),false);
  assert.equal(await evaluate(`cy.nodes('.focused').first().id()`),concept.id);
+ assert.equal(await evaluate('document.activeElement.id'),'graph');
  console.log('Pointer selection opens details without hiding, rearranging, or reframing the graph.');
 
- await evaluate(`document.querySelector('#graph').focus()`);
  await call('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
  await call('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
  const nudged=await snapshot();
