@@ -9,12 +9,17 @@ a change to the site; no separate build or duplicated versioned entrypoint exist
 Interaction
 -----------
 The overview shows every relationship and auto-arranges with Cytoscape's CoSE
-layout. Keep the canvas hidden and announce “Arranging…” until initial positions
-and the camera are settled; do not expose intermediate solver positions.
+layout. One pending arrangement owns computation, camera fitting, and reveal.
+Keep the canvas hidden and announce “Arranging…” until Cytoscape reports that
+it has rendered the fitted positions; frame-count delays do not prove readiness.
+The graph's aria-busy attribute also controls canvas visibility, so accessible
+and visible readiness cannot diverge.
+Overview replaces the pending arrangement, cancelling both its scheduled work
+and its render listener. Other controls do not cancel it. Fit and node movement
+are disabled while arranging; search and concept details remain available.
 Selecting a concept opens its details and highlights it while retaining the full
 graph, positions, and camera. Overview closes the panel and rearranges the full
-graph. Search,
-Fit, dragging, pan, and wheel zoom support exploration. Source context stays
+graph. Search, Fit, dragging, pan, and wheel zoom support exploration. Source context stays
 behind a disclosure. Pointer buttons and keyboard arrows provide alternatives
 to dragging.
 
@@ -22,9 +27,13 @@ Live layout is an explicit, page-local opt-in switch beside Fit, initially off.
 A spring/repulsion loop lets visible nodes respond while the grabbed node stays
 under the pointer. Turning it off freezes positions. The loop settles when idle
 and pauses in a background tab. It preserves camera position during movement.
+The live switch changes the motion preference without cancelling automatic
+arrangement; motion starts after reveal and while the tab is visible.
 Opening another concept's panel does not interrupt the simulation. Live layout
 explicitly opts into motion, including with a reduced-motion system preference.
 Panel resizing preserves the camera; Fit is available to reframe the graph.
+Browser viewport resizing refits the graph through Cytoscape's existing resize
+notification. There is no second container observer or resize notification.
 
 Visual meaning
 --------------
@@ -64,6 +73,18 @@ settling, camera stability, and desktop/mobile layout. Chromium-emulated touch
 also exercises the switch and responsive neighbors. No browser runtime errors
 were observed. Physical touch devices, other browser engines, and screen-reader
 announcements remain unverified. No exhaustive accessibility audit is claimed.
+
+The optional make check-browser command runs the graph lifecycle regressions
+against a local Chromium executable without package dependencies. It checks
+render-before-reveal, live switching before computation and before presentation,
+replacement of pending arrangements, selection and disabled movement controls
+during arrangement, stable camera and positions through details and selection,
+keyboard movement and switching, dragging with live motion, viewport refitting,
+and a fresh narrow deep link with reduced motion.
+Two failures were reproduced before correction: switching live layout during
+arrangement left the graph hidden indefinitely; resizing from desktop to phone
+width left every node outside the canvas. Both checks now pass. Browser checks
+use Chromium with an isolated temporary profile; other engines remain unverified.
 
 The public repository starts with a reviewed clean history. Private research and
 historical local snapshots are excluded from both its files and its ancestry.

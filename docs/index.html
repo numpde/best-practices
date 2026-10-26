@@ -8,9 +8,10 @@
 <meta name="description" content="Explore engineering practices by following their connections. Drag nodes, pan, zoom, and select an idea to read its details.">
 <style>
 :root{color-scheme:light;--paper:#f6f4ef;--panel:#fffefb;--ink:#252b28;--muted:#666d66;--line:#d7d5cc;--focus:#245fc0}
-*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:13px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}button,input{font:inherit;color:inherit}button{cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:7px 12px}button:hover{border-color:#7d877d;background:white}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible,#graph:focus-visible{outline:3px solid var(--focus);outline-offset:3px}a{color:var(--focus);text-underline-offset:3px}header{display:flex;align-items:center;gap:20px;padding:15px 23px;border-bottom:1px solid var(--line);background:var(--panel);flex:none;z-index:3}h1{font:400 25px/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.65px;margin:0;white-space:nowrap}.search-wrap{position:relative;width:min(340px,32vw);margin-left:auto}input{width:100%;border:1px solid var(--line);border-radius:5px;background:#faf9f5;padding:8px 11px}input::placeholder{color:#747a72}.actions{display:flex;gap:6px}.stage{flex:1;min-height:140px;position:relative;isolation:isolate;background-image:radial-gradient(#d6d4cb .7px,transparent .7px);background-size:20px 20px}#graph{position:absolute;inset:0;outline-offset:-4px;visibility:hidden}#graph.ready{visibility:visible}.canvas-note{position:absolute;left:20px;top:14px;z-index:1;color:var(--muted);font-size:11px;pointer-events:none}.canvas-note strong{color:var(--ink);font-weight:500}.legend{position:absolute;bottom:12px;left:20px;right:20px;display:flex;gap:8px 18px;flex-wrap:wrap;z-index:1;pointer-events:none;font-size:10px;color:#50594f}.legend span{display:flex;align-items:center;gap:5px;background:#f6f4efe8}.legend i{display:inline-block;width:7px;height:7px;border-radius:2px}.matches{position:absolute;top:calc(100% + 7px);left:0;right:0;border:1px solid var(--line);border-radius:6px;background:var(--panel);box-shadow:0 12px 26px #252b2815;max-height:min(470px,65vh);overflow:auto;padding:5px}.matches[hidden]{display:none}.match{display:block;width:100%;border:0;border-radius:3px;text-align:left;padding:8px 9px}.match:hover,.match.active{background:#eaf0e9}.match small{display:block;font-size:10px;color:var(--muted);margin-top:3px}.match-empty{padding:10px;color:var(--muted);font-size:12px}.info{flex:none;border-top:1px solid var(--line);background:var(--panel);padding:15px 23px 12px;max-height:42dvh;overflow:auto;scrollbar-gutter:stable}.info[hidden]{display:none}.info-top{display:flex;gap:24px;align-items:baseline}.identity{flex:0 0 320px;max-width:34%}.identity .kind{font-size:10px;color:var(--accent);margin-bottom:4px}.identity h2{font:400 22px/1.18 Georgia,'Times New Roman',serif;letter-spacing:-.25px;margin:0}.summary{margin:0;max-width:780px;font-size:13px;line-height:1.65}.info details{margin-top:10px;font-size:11px}.info summary{cursor:pointer;color:var(--muted);width:max-content;padding:3px 0}.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:13px}.detail-grid h3{font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 8px}.detail-grid p{line-height:1.7;margin:0 0 12px}.related{display:block;width:100%;text-align:left;border:0;border-top:1px solid #e7e5df;border-radius:0;padding:7px 0;background:none;font-size:11px}.related span{display:block;color:var(--muted);font-size:10px}.source-location{font:10px/1.7 ui-monospace,SFMono-Regular,monospace;overflow-wrap:anywhere;white-space:pre-wrap;margin:9px 0}.source-item{margin-bottom:13px}.source-item small{display:block;color:var(--muted)}.original{font:11px/1.7 inherit;white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;padding:10px;background:#f6f4ef;border-left:2px solid var(--accent)}.nudge{display:flex;gap:5px;margin:10px 0}.nudge button{padding:3px 11px;min-height:30px}.evidence-note{font-size:10px;color:var(--muted);line-height:1.7}.sr-only{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}.fallback{padding:30px;max-width:700px;margin:20px auto}.fallback button{margin:4px}.result-count{font-size:10px;padding:5px 9px;color:var(--muted)}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:13px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}button,input{font:inherit;color:inherit}button{cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:7px 12px}button:hover{border-color:#7d877d;background:white}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible,#graph:focus-visible{outline:3px solid var(--focus);outline-offset:3px}a{color:var(--focus);text-underline-offset:3px}header{display:flex;align-items:center;gap:20px;padding:15px 23px;border-bottom:1px solid var(--line);background:var(--panel);flex:none;z-index:3}h1{font:400 25px/1.1 Georgia,'Times New Roman',serif;letter-spacing:-.65px;margin:0;white-space:nowrap}.search-wrap{position:relative;width:min(340px,32vw);margin-left:auto}input{width:100%;border:1px solid var(--line);border-radius:5px;background:#faf9f5;padding:8px 11px}input::placeholder{color:#747a72}.actions{display:flex;gap:6px}.stage{flex:1;min-height:140px;position:relative;isolation:isolate;background-image:radial-gradient(#d6d4cb .7px,transparent .7px);background-size:20px 20px}#graph{position:absolute;inset:0;outline-offset:-4px;visibility:hidden}#graph[aria-busy="false"]{visibility:visible}.canvas-note{position:absolute;left:20px;top:14px;z-index:1;color:var(--muted);font-size:11px;pointer-events:none}.canvas-note strong{color:var(--ink);font-weight:500}.legend{position:absolute;bottom:12px;left:20px;right:20px;display:flex;gap:8px 18px;flex-wrap:wrap;z-index:1;pointer-events:none;font-size:10px;color:#50594f}.legend span{display:flex;align-items:center;gap:5px;background:#f6f4efe8}.legend i{display:inline-block;width:7px;height:7px;border-radius:2px}.matches{position:absolute;top:calc(100% + 7px);left:0;right:0;border:1px solid var(--line);border-radius:6px;background:var(--panel);box-shadow:0 12px 26px #252b2815;max-height:min(470px,65vh);overflow:auto;padding:5px}.matches[hidden]{display:none}.match{display:block;width:100%;border:0;border-radius:3px;text-align:left;padding:8px 9px}.match:hover,.match.active{background:#eaf0e9}.match small{display:block;font-size:10px;color:var(--muted);margin-top:3px}.match-empty{padding:10px;color:var(--muted);font-size:12px}.info{flex:none;border-top:1px solid var(--line);background:var(--panel);padding:15px 23px 12px;max-height:42dvh;overflow:auto;scrollbar-gutter:stable}.info[hidden]{display:none}.info-top{display:flex;gap:24px;align-items:baseline}.identity{flex:0 0 320px;max-width:34%}.identity .kind{font-size:10px;color:var(--accent);margin-bottom:4px}.identity h2{font:400 22px/1.18 Georgia,'Times New Roman',serif;letter-spacing:-.25px;margin:0}.summary{margin:0;max-width:780px;font-size:13px;line-height:1.65}.info details{margin-top:10px;font-size:11px}.info summary{cursor:pointer;color:var(--muted);width:max-content;padding:3px 0}.detail-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:13px}.detail-grid h3{font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 8px}.detail-grid p{line-height:1.7;margin:0 0 12px}.related{display:block;width:100%;text-align:left;border:0;border-top:1px solid #e7e5df;border-radius:0;padding:7px 0;background:none;font-size:11px}.related span{display:block;color:var(--muted);font-size:10px}.source-location{font:10px/1.7 ui-monospace,SFMono-Regular,monospace;overflow-wrap:anywhere;white-space:pre-wrap;margin:9px 0}.source-item{margin-bottom:13px}.source-item small{display:block;color:var(--muted)}.original{font:11px/1.7 inherit;white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;padding:10px;background:#f6f4ef;border-left:2px solid var(--accent)}.nudge{display:flex;gap:5px;margin:10px 0}.nudge button{padding:3px 11px;min-height:30px}.evidence-note{font-size:10px;color:var(--muted);line-height:1.7}.sr-only{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}.fallback{padding:30px;max-width:700px;margin:20px auto}.fallback button{margin:4px}.result-count{font-size:10px;padding:5px 9px;color:var(--muted)}
 @media(max-width:850px){header{padding:12px 15px;gap:12px}h1{font-size:22px}.search-wrap{width:min(310px,36vw)}.info{padding:13px 17px;max-height:45dvh}.info-top{display:block}.identity{max-width:none;margin-bottom:8px}.identity h2{font-size:21px}.identity .kind{margin-bottom:2px}.detail-grid{grid-template-columns:1fr 1fr}.detail-grid>section:last-child{grid-column:1/-1}.summary{font-size:12px}.legend{gap:5px 11px;font-size:9px;left:14px;right:14px}.canvas-note{left:15px;font-size:10px}}
 @media(max-width:570px){header{flex-wrap:wrap;gap:9px;padding:11px 13px}h1{font-size:23px;flex:1}.actions{order:0}.search-wrap{order:1;width:100%;margin:0}input{padding:7px 10px}.actions button{font-size:11px;padding:6px 10px}.canvas-note{top:10px;right:12px}.legend{bottom:8px;gap:4px 9px}.info{padding:11px 14px;max-height:43dvh}.info-top{display:block}.detail-grid{display:block}.detail-grid>section{margin-bottom:15px}.summary{font-size:11px}.identity h2{font-size:19px}.info details{margin-top:5px}}
+button:disabled{cursor:default;opacity:.5}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 .legend .type-key{font-weight:600}.legend .pattern-key{width:17px;height:11px;border:1.3px solid #596b60;border-radius:4px;background:#edf2eb}.legend .anti-key{width:17px;height:11px;border:1.5px dashed #9c5546;border-radius:0;background:#fbe8e3}
 .legend .size-key{gap:3px;margin:0 5px}.legend .size-key i{border:1px solid #66736a;background:transparent;border-radius:50%;width:5px;height:5px}.legend .size-key i:nth-child(2){width:8px;height:8px}.legend .size-key i:nth-child(3){width:12px;height:12px;margin-right:3px}
@@ -21,11 +22,11 @@
 <header>
  <h1>Practices, connected.</h1>
  <div class="search-wrap" id="search-wrap"><label class="sr-only" for="search">Find a pattern or anti-pattern</label><input id="search" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="matches" placeholder="Find a pattern or anti-pattern…" autocomplete="off"><div class="matches" id="matches" role="listbox" aria-label="Matching ideas" hidden></div></div>
- <div class="actions"><button id="overview" type="button" title="Show and automatically arrange the full graph">Overview</button><button id="fit" type="button" title="Fit the current graph to the canvas">Fit</button><button id="live-layout" class="live-switch" type="button" role="switch" aria-checked="false" title="Let connected nodes move in response to dragging"><span class="switch-track" aria-hidden="true"></span>Live layout</button></div>
+ <div class="actions"><button id="overview" type="button" title="Show and automatically arrange the full graph">Overview</button><button id="fit" type="button" title="Fit the current graph to the canvas" disabled>Fit</button><button id="live-layout" class="live-switch" type="button" role="switch" aria-checked="false" title="Let connected nodes move in response to dragging"><span class="switch-track" aria-hidden="true"></span>Live layout</button></div>
 </header>
 <main class="stage" id="stage">
- <div id="graph" tabindex="0" role="region" aria-label="Movable graph of engineering ideas. Select a node to read its details without hiding the graph. Drag nodes to arrange them; drag the background to pan. When a node is selected, arrow keys move it."></div>
- <div class="canvas-note"><strong id="status" role="status" aria-live="polite">Loading the graph…</strong><span id="hint"> · drag nodes · pan · scroll to zoom</span></div>
+ <div id="graph" tabindex="0" role="region" aria-busy="true" aria-label="Movable graph of engineering ideas. Select a node to read its details without hiding the graph. Drag nodes to arrange them; drag the background to pan. When a node is selected, arrow keys move it."></div>
+ <div class="canvas-note"><strong id="status" role="status" aria-live="polite">Loading the graph…</strong><span id="hint" hidden> · drag nodes · pan · scroll to zoom</span></div>
  <div class="legend" id="legend" aria-label="Node types and subjects"></div>
 </main>
 <section class="info" id="info" aria-labelledby="item-title" hidden></section>
@@ -2424,15 +2425,14 @@ const researchSource=JSON.parse(document.getElementById('research-source').textC
 const criteriaURL='https://numpde.github.io/nmrnet-repro/notes/013_sibling_practices_20261016.html';
 const element=id=>document.getElementById(id);
 const html=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let cy=null, selectedId=null, runningLayout=null, layoutGeneration=0;
+let cy=null, selectedId=null, arrangement=null;
 let results=[], activeResult=-1;
-let liveEnabled=false, liveFrame=null, liveHeat=0, graphReady=false;
+let liveEnabled=false, liveFrame=null, liveHeat=0;
 
-function stopLayout(){
- stopLiveLayout();
- layoutGeneration++;
- if(runningLayout){runningLayout.stop();runningLayout=null;}
- if(cy){cy.stop();cy.elements().stop();}
+function updateGraphControls(){
+ element('fit').disabled=arrangement!==null;
+ element('hint').hidden=arrangement!==null;
+ element('info').querySelectorAll('[data-nudge]').forEach(button=>{button.disabled=arrangement!==null;});
 }
 
 function stopLiveLayout(){
@@ -2443,7 +2443,7 @@ function stopLiveLayout(){
 // The simulation owns positions only while enabled. Cytoscape owns the grabbed
 // node's position, so it acts as a moving anchor without fighting the pointer.
 function startLiveLayout(){
- if(!liveEnabled||!cy||runningLayout||!graphReady)return;
+ if(!liveEnabled||!cy||arrangement||document.hidden)return;
  liveHeat=1;
  if(liveFrame!==null)return;
  const visible=cy.nodes(':visible').toArray();
@@ -2499,40 +2499,48 @@ function startLiveLayout(){
 function fitView(){
  if(!cy)return;
  const visible=cy.nodes(':visible');
- cy.resize();cy.fit(visible,Math.max(innerWidth<570?45:65,element('legend').offsetHeight+20));
+ cy.fit(visible,Math.max(innerWidth<570?45:65,element('legend').offsetHeight+20));
  if(cy.zoom()>1.1){cy.zoom(1.1);cy.center(visible);}
 }
 
-function showOverview(){
- stopLayout();selectedId=null;
- const generation=layoutGeneration;
- graphReady=false;
- element('info').hidden=true;
- closeSearch();
- element('graph').classList.remove('ready');
- history.replaceState(null,'',location.pathname+location.search);
- cy.nodes().removeClass('focused');
+function arrangeGraph(){
+ stopLiveLayout();
+ if(arrangement){
+  cancelAnimationFrame(arrangement.frame);
+  cy.off('render',arrangement.reveal);
+ }
+ const pending={frame:null,reveal:()=>{
+  arrangement=null;
+  element('graph').setAttribute('aria-busy','false');
+  element('status').textContent=`${nodes.length} ideas · ${edges.length} connections · select one to explore`;
+  updateGraphControls();
+  startLiveLayout();
+ }};
+ arrangement=pending;
+ element('graph').setAttribute('aria-busy','true');
  element('status').textContent=`Arranging ${nodes.length} ideas and ${edges.length} connections…`;
- requestAnimationFrame(()=>{
-  if(generation!==layoutGeneration)return;
+ updateGraphControls();
+ pending.frame=requestAnimationFrame(()=>{
   cy.resize();
-  runningLayout=cy.layout({
+  // CoSE with animate:false computes positions synchronously. Reveal only after
+  // Cytoscape has drawn those positions with the fitted camera.
+  cy.layout({
    name:'cose',fit:false,animate:false,randomize:true,
    nodeDimensionsIncludeLabels:true,nodeRepulsion:4500,nodeOverlap:20,
    idealEdgeLength:65,componentSpacing:80,gravity:1,numIter:1000,
-  });
-  runningLayout.one('layoutstop',()=>{
-   if(generation!==layoutGeneration)return;
-   runningLayout=null;fitView();
-   requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    if(generation!==layoutGeneration)return;
-    graphReady=true;element('graph').classList.add('ready');
-    element('status').textContent=`${nodes.length} ideas · ${edges.length} connections · select one to explore`;
-    startLiveLayout();
-   }));
-  });
-  runningLayout.run();
+  }).run();
+  cy.one('render',pending.reveal);
+  fitView();
  });
+}
+
+function showOverview(){
+ selectedId=null;
+ element('info').hidden=true;
+ closeSearch();
+ history.replaceState(null,'',location.pathname+location.search);
+ cy.nodes().removeClass('focused');
+ arrangeGraph();
 }
 
 function selectNode(id){
@@ -2575,11 +2583,12 @@ function showInfo(node){
  element('info').style.setProperty('--accent',group.color);
  element('info').innerHTML=`<div class="info-top"><div class="identity"><div class="kind">${html(kinds[node.kind])} · ${html(group.name)} · ${html(generalityLevels[node.generality].label)}</div><h2 id="item-title">${html(node.title)}</h2></div><p class="summary">${html(node.summary)}</p></div><details id="context"><summary>Context &amp; sources</summary><div class="detail-grid"><section><h3>Illustrative examples</h3><p>${html(node.example)}</p>${node.examples.map(example=>`<p>${html(example.text)}${example.href?` <a href="${html(example.href)}" target="_blank" rel="noopener">Source commit ↗</a>`:''}</p>`).join('')}<h3>Scope</h3><p>${html(node.scope)}</p><h3>Move selected node</h3><div class="nudge" aria-label="Move selected node without dragging"><button type="button" data-nudge="left" aria-label="Move selected node left">←</button><button type="button" data-nudge="up" aria-label="Move selected node up">↑</button><button type="button" data-nudge="down" aria-label="Move selected node down">↓</button><button type="button" data-nudge="right" aria-label="Move selected node right">→</button></div></section><section><h3>Follow a connection</h3>${related.map(edge=>{const other=byId.get(edge.from===node.id?edge.to:edge.from);return `<button class="related" type="button" data-follow="${other.id}" aria-label="${html(byId.get(edge.from).title+' '+edge.label+' '+byId.get(edge.to).title)}">${html(other.title)}<span>${html(edge.label)} ${edge.from===node.id?'→':'←'} · ${html(edge.reason)}</span></button>`;}).join('')}</section><section><h3>Sources</h3>${sourceMarkup(node)}<p class="evidence-note">Examples are edited illustrations, not implementation or runtime proof. Graph relationships are editorial explanations.</p><p><a href="notes/003_examples_and_review.txt">Examples and editorial review</a></p><p><a href="notes/002_graph_design.txt">Graph design &amp; implementation notes</a></p></section></div></details>`;
  element('info').hidden=false;element('info').scrollTop=0;
+ updateGraphControls();
 }
 
 function nudge(direction){
- if(!selectedId)return;
- stopLayout();
+ if(!selectedId||arrangement)return;
+ stopLiveLayout();
  const node=cy.getElementById(selectedId),pos=node.position();
  const step=20/cy.zoom();
  const delta={left:[-step,0],right:[step,0],up:[0,-step],down:[0,step]}[direction];
@@ -2602,9 +2611,14 @@ function initialize(){
    {selector:'edge.tension',style:{'line-style':'dashed'}},
   ]
  });
+ let viewportWidth=innerWidth,viewportHeight=innerHeight;
+ cy.on('resize',()=>{
+  if(viewportWidth===innerWidth&&viewportHeight===innerHeight)return;
+  viewportWidth=innerWidth;viewportHeight=innerHeight;
+  if(!arrangement)fitView();
+ });
  cy.on('tap','node',event=>selectNode(event.target.id()));
- cy.on('grab','node',()=>{stopLayout();startLiveLayout();});
- cy.on('drag free','node',()=>{if(liveEnabled)startLiveLayout();});
+ cy.on('grab drag free','node',startLiveLayout);
  const id=decodeURIComponent(location.hash.slice(1));
  showOverview();
  if(byId.has(id))selectNode(id);
@@ -2628,14 +2642,13 @@ element('fit').addEventListener('click',fitView);
 element('live-layout').addEventListener('click',()=>{
  liveEnabled=!liveEnabled;
  element('live-layout').setAttribute('aria-checked',String(liveEnabled));
- stopLayout();
- if(liveEnabled)startLiveLayout();
+ if(liveEnabled)startLiveLayout();else stopLiveLayout();
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopLiveLayout();else startLiveLayout();});
 element('info').addEventListener('click',event=>{const follow=event.target.closest('[data-follow]'),move=event.target.closest('[data-nudge]');if(follow){selectNode(follow.dataset.follow);element('graph').focus({preventScroll:true});}if(move)nudge(move.dataset.nudge);});
 element('graph').addEventListener('keydown',event=>{const directions={ArrowLeft:'left',ArrowUp:'up',ArrowDown:'down',ArrowRight:'right'};if(selectedId&&directions[event.key]){event.preventDefault();nudge(directions[event.key]);}if(event.key==='Escape')showOverview();});
 addEventListener('hashchange',()=>{const id=decodeURIComponent(location.hash.slice(1));if(byId.has(id))selectNode(id);else showOverview();});
-requestAnimationFrame(()=>requestAnimationFrame(initialize));
+initialize();
 </script>
 </body>
 </html>
