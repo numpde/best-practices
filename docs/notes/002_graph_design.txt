@@ -22,6 +22,8 @@ graph, positions, and camera. Overview closes the panel and rearranges the full
 graph. Search, Fit, dragging, pan, and wheel zoom support exploration. Source context stays
 behind a disclosure. Pointer buttons and keyboard arrows provide alternatives
 to dragging.
+Escape clears selection and closes details while retaining positions, camera,
+and keyboard focus. It does not invoke Overview or interrupt live motion.
 
 Search keeps focus in the input while arrow keys choose a result; the first
 Down selects the first result and the first Up selects the last. Escape closes
@@ -31,7 +33,8 @@ active option. User activation by graph, search, or related concept returns
 focus to the graph so its movement keys work. Restoring a selection from a URL
 does not move focus.
 Initial loads and later fragment changes share one parser. Malformed percent
-encoding and unknown concept IDs open the overview, as does an empty fragment.
+encoding, unknown concept IDs, and empty fragments clear selection. Initial
+loads still arrange the full graph; later fragment changes retain its layout.
 Valid encoded IDs select the concept without changing positions or the camera.
 Selection and overview preserve the URL's existing query string.
 

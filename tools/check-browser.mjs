@@ -259,6 +259,23 @@ try{
  assert.equal(await evaluate('document.activeElement.id'),'graph');
  console.log('Pointer selection opens details without hiding, rearranging, or reframing the graph.');
 
+ const selectionView=await snapshot();
+ await pressKey('Escape','Escape',27);
+ await waitFor(`document.querySelector('#info').hidden`);
+ await nextFrames();
+ const dismissed=await snapshot();
+ assert.equal(dismissed.positions.filter((position,index)=>
+  position.x!==selectionView.positions[index].x||position.y!==selectionView.positions[index].y).length,0,'Dismissing details must preserve node positions.');
+ assert.equal(dismissed.zoom,selectionView.zoom);
+ assert.deepEqual(dismissed.pan,selectionView.pan);
+ assert.equal(await evaluate('document.activeElement.id'),'graph');
+ await pressKey('Escape','Escape',27);
+ await nextFrames();
+ assert.deepEqual(await snapshot(),dismissed);
+ await evaluate(`location.hash='${concept.id}'`);
+ await waitFor(`cy.nodes('.focused').first().id()==='${concept.id}'`);
+ console.log('Escape dismisses selection without arranging, losing focus, or replaying work.');
+
  await call('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
  await call('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowRight',code:'ArrowRight',windowsVirtualKeyCode:39});
  const nudged=await snapshot();
@@ -400,6 +417,7 @@ try{
  assert.equal(await evaluate('location.hash'),'');
  assert.equal(await evaluate('location.search'),'?view=links');
  assert.equal((await snapshot()).nodes,initial.nodes);
+ assert.deepEqual(await snapshot(),overview);
  console.log('Malformed links open the full graph; encoded selections work and malformed fragment changes recover.');
  assert.deepEqual(errors,[]);
  console.log('Narrow deep links restore selection and remain still with reduced motion; no browser runtime errors.');

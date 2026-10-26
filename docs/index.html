@@ -25,7 +25,7 @@ button:disabled{cursor:default;opacity:.5}
  <div class="actions"><button id="overview" type="button" title="Show and automatically arrange the full graph">Overview</button><button id="fit" type="button" title="Fit the current graph to the canvas" disabled>Fit</button><button id="live-layout" class="live-switch" type="button" role="switch" aria-checked="false" title="Let connected nodes move in response to dragging"><span class="switch-track" aria-hidden="true"></span>Live layout</button></div>
 </header>
 <main class="stage" id="stage">
- <div id="graph" tabindex="0" role="region" aria-busy="true" aria-label="Movable graph of engineering ideas. Select a node to read its details without hiding the graph. Drag nodes to arrange them; drag the background to pan. When a node is selected, arrow keys move it."></div>
+ <div id="graph" tabindex="0" role="region" aria-busy="true" aria-label="Movable graph of engineering ideas. Select a node to read its details without hiding the graph. Drag nodes to arrange them; drag the background to pan. When a node is selected, arrow keys move it. Escape closes details."></div>
  <div class="canvas-note"><strong id="status" role="status" aria-live="polite">Loading the graph…</strong><span id="hint" hidden> · drag nodes · pan · scroll to zoom</span></div>
  <div class="legend" id="legend" aria-label="Node types and subjects"></div>
 </main>
@@ -2534,12 +2534,16 @@ function arrangeGraph(){
  });
 }
 
-function showOverview(){
+function clearSelection(){
  selectedId=null;
  element('info').hidden=true;
  closeSearch();
  history.replaceState(null,'',location.pathname+location.search);
  cy.nodes().removeClass('focused');
+}
+
+function showOverview(){
+ clearSelection();
  arrangeGraph();
 }
 
@@ -2668,8 +2672,8 @@ element('live-layout').addEventListener('click',()=>{
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopLiveLayout();else startLiveLayout();});
 element('info').addEventListener('click',event=>{const follow=event.target.closest('[data-follow]'),move=event.target.closest('[data-nudge]');if(follow)activateNode(follow.dataset.follow);if(move)nudge(move.dataset.nudge);});
-element('graph').addEventListener('keydown',event=>{const directions={ArrowLeft:'left',ArrowUp:'up',ArrowDown:'down',ArrowRight:'right'};if(selectedId&&directions[event.key]){event.preventDefault();nudge(directions[event.key]);}if(event.key==='Escape')showOverview();});
-addEventListener('hashchange',()=>{const node=nodeFromURL();if(node)selectNode(node.id);else showOverview();});
+element('graph').addEventListener('keydown',event=>{const directions={ArrowLeft:'left',ArrowUp:'up',ArrowDown:'down',ArrowRight:'right'};if(selectedId&&directions[event.key]){event.preventDefault();nudge(directions[event.key]);}if(event.key==='Escape'&&selectedId)clearSelection();});
+addEventListener('hashchange',()=>{const node=nodeFromURL();if(node)selectNode(node.id);else clearSelection();});
 initialize();
 </script>
 </body>
