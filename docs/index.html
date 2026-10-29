@@ -227,7 +227,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helveti
 .wheel-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .wheel-title h1{margin:0;width:31%;line-height:0}
 .goal-tiles{--columns:6;--gap:16px;max-width:1240px;margin:0 auto;padding:40px 20px 60px;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--gap)}
-.goal-tile{flex:0 0 calc((100% - (var(--columns) - 1)*var(--gap))/var(--columns));min-width:0;container-type:inline-size;aspect-ratio:1;background:var(--goal-color);color:white;padding:18px;display:grid;grid-template-rows:35% 65%}
+/* Reserve 1.5 heading lines so icon centering sits between one- and two-line titles. */
+.goal-tile{flex:0 0 calc((100% - (var(--columns) - 1)*var(--gap))/var(--columns));min-width:0;container-type:inline-size;aspect-ratio:1;background:var(--goal-color);color:white;padding:18px;display:grid;grid-template-rows:clamp(1.215rem,14.58%,2.025rem) minmax(0,1fr)}
 .goal-tile h2{font-family:WheelWordmark,Arial,sans-serif;font-weight:900;font-size:clamp(.75rem,9cqw,1.25rem);line-height:1.08;text-transform:uppercase;margin:0;letter-spacing:-.02em}
 .goal-tile svg{display:block;width:54%;height:auto;aspect-ratio:1;margin:auto;flex-shrink:0}
 .wheel-tile{display:flex;background:#f1f1f1;align-items:center;justify-content:center}.wheel-tile svg{width:82%;margin:0}

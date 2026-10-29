@@ -13,12 +13,13 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   await call('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:false});
   const positions=await evaluate(`([...document.querySelectorAll('.goal-tile:not(.wheel-tile)')].map(tile=>{
    const box=tile.getBoundingClientRect(),icon=tile.querySelector('svg').getBoundingClientRect(),title=tile.querySelector('h2');
-   return {offset:icon.y-box.y,size:icon.width,titleFits:title.scrollHeight<=title.clientHeight};
+   const text=document.createRange();text.selectNodeContents(title);
+   return {offset:icon.y-box.y,size:icon.width,titleFits:text.getBoundingClientRect().bottom<=icon.top};
   }))`);
   const first=positions[0];
   for(const p of positions){
    assert.ok(Math.abs(p.offset-first.offset)<1&&Math.abs(p.size-first.size)<1,`${width}px: tile icons must share size and vertical position regardless of title wrapping.`);
-   assert.ok(p.titleFits,`${width}px: goal titles must fit their reserved row.`);
+   assert.ok(p.titleFits,`${width}px: goal titles must not overlap their icons.`);
   }
  }
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
