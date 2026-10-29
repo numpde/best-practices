@@ -9,7 +9,9 @@ const check=process.argv.includes('--check');
 assert.ok(process.argv.slice(2).every(arg=>arg==='--check'),'Usage: node tools/export-logos.mjs [--check]');
 const source=readFileSync(join(root,'docs/index.html'),'utf8').replace("fetch('goals.json')",
  `Promise.resolve({ok:true,json:()=>${readFileSync(join(root,'docs/goals.json'),'utf8').trim()}})`);
-const exportSource=source.replace('await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));','await Promise.resolve();').replace('<script src="tile-interactions.js"></script>',`<script>${readFileSync(join(root,'docs/tile-interactions.js'),'utf8')}</script>`);
+const exportSource=source
+ .replace('await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));','await Promise.resolve();')
+ .replace(/<script src="([^"]+)"><\/script>/g,(_,filename)=>`<script>${readFileSync(join(root,'docs',filename),'utf8')}</script>`);
 const fontLicense=source.match(/<!-- (Embedded Roboto Black,[\s\S]*?)-->/)?.[1];
 assert.ok(fontLicense,'The page must retain the embedded font license.');
 const temporary=mkdtempSync(join(root,'.logo-export-'));

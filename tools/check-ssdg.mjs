@@ -30,6 +30,26 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await waitFor(`getComputedStyle(document.querySelector('main')).opacity==='1'`);
  await waitFor(`document.querySelectorAll('.rotation-surface').length===3`);
  await evaluate('document.fonts.ready');
+ const sliderPoint=await evaluate(`(()=>{
+  const button=document.querySelector('[aria-label="Informed control"]');button.scrollIntoView({block:'center'});
+  const svg=button.querySelector('svg'),b=button.getBoundingClientRect();
+  const p=new DOMPoint(7,16).matrixTransform(svg.getScreenCTM());
+  return {x:p.x,top:b.top+2,bottom:b.bottom-2};
+ })()`);
+ const sliderState=()=>evaluate(`(()=>{
+  const drawing=document.querySelector('[aria-label="Informed control"] svg');
+  return {positions:[...drawing.querySelectorAll('[data-motion-part="slider"]')].map(s=>s.y.baseVal.value),shared:[...document.querySelectorAll('#icon-control [data-motion-part="slider"]')].map(s=>s.y.baseVal.value)};
+ })()`);
+ const originalSliders=await sliderState();
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:sliderPoint.x,y:sliderPoint.bottom});
+ const movedSliders=await sliderState();
+ assert.equal(movedSliders.positions[0],22,'The nearest slider must stop at the bottom of its track.');
+ assert.deepEqual(movedSliders.positions.slice(1),originalSliders.positions.slice(1));
+ assert.deepEqual(movedSliders.shared,originalSliders.shared,'Tile motion must not change the wheel icon.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ assert.deepEqual(await sliderState(),movedSliders,'Sliders must freeze on mouse leave.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:sliderPoint.x,y:sliderPoint.top});
+ assert.equal((await sliderState()).positions[0],4,'The slider must stop at the top of its track.');
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});

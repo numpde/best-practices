@@ -292,6 +292,7 @@ html{-webkit-user-select:none;user-select:none}
 <noscript><style>.page-loader{display:none}</style><p>Enable JavaScript to display the goal wheel and its goal tiles.</p></noscript>
 <svg class="symbol-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs id="symbols"></defs></svg>
 <script src="tile-interactions.js"></script>
+<script src="icon-interactions.js"></script>
 <script>
 // One record supplies each segment and its goal tile. Icons use a shared
 // 32-unit drawing space; the wheel keeps them upright for easy recognition.
@@ -419,6 +420,7 @@ for(const [index,goal] of goals.entries()){
  card.back.innerHTML='<span class="explanation"></span>';
  card.back.firstElementChild.textContent=goal.explanation;
  tileInteractions.flip(card.button,card);
+ if(goal.motion)iconInteractions[goal.motion](card.button,card.front.querySelector('svg'),symbol);
  item.append(card.button);
  tiles.append(item);
 }
