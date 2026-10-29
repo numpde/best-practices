@@ -9,6 +9,19 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await call('Page.navigate',{url:new URL('../docs/index.html',import.meta.url).href});
  await waitFor(`document.querySelectorAll('.rotation-surface').length===3`);
  await evaluate('document.fonts.ready');
+ for(const width of [1440,768,390]){
+  await call('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:false});
+  const positions=await evaluate(`([...document.querySelectorAll('.goal-tile:not(.wheel-tile)')].map(tile=>{
+   const box=tile.getBoundingClientRect(),icon=tile.querySelector('svg').getBoundingClientRect(),title=tile.querySelector('h2');
+   return {offset:icon.y-box.y,size:icon.width,titleFits:title.scrollHeight<=title.clientHeight};
+  }))`);
+  const first=positions[0];
+  for(const p of positions){
+   assert.ok(Math.abs(p.offset-first.offset)<1&&Math.abs(p.size-first.size)<1,`${width}px: tile icons must share size and vertical position regardless of title wrapping.`);
+   assert.ok(p.titleFits,`${width}px: goal titles must fit their reserved row.`);
+  }
+ }
+ await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
  const iconBounds=await evaluate(`(()=>{
   const probe=document.createElementNS('http://www.w3.org/2000/svg','svg');
   document.body.append(probe);
