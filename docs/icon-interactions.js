@@ -1,9 +1,7 @@
 const iconInteractions={
  sliders(button,svg,symbol){
-  // Give this tile its own mutable instance of the shared SVG drawing.
-  // Updating the symbol itself would also move the main wheel's sliders.
-  const drawing=symbol.firstElementChild.cloneNode(true);
-  svg.replaceChildren(drawing);
+  // The tile and wheel reference this same drawing and retain its edited state.
+  const drawing=symbol.firstElementChild;
   const tracks=drawing.querySelector('[data-motion-part="tracks"]');
   const sliders=[...drawing.querySelectorAll('[data-motion-part="slider"]')];
   button.addEventListener('pointermove',event=>{

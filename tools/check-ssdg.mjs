@@ -37,15 +37,15 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   return {x:p.x,top:b.top+2,bottom:b.bottom-2};
  })()`);
  const sliderState=()=>evaluate(`(()=>{
-  const drawing=document.querySelector('[aria-label="Informed control"] svg');
-  return {positions:[...drawing.querySelectorAll('[data-motion-part="slider"]')].map(s=>s.y.baseVal.value),shared:[...document.querySelectorAll('#icon-control [data-motion-part="slider"]')].map(s=>s.y.baseVal.value)};
+  const drawing=document.querySelector('#icon-control');
+  return {positions:[...drawing.querySelectorAll('[data-motion-part="slider"]')].map(s=>s.y.baseVal.value)};
  })()`);
  const originalSliders=await sliderState();
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:sliderPoint.x,y:sliderPoint.bottom});
  const movedSliders=await sliderState();
  assert.equal(movedSliders.positions[0],22,'The nearest slider must stop at the bottom of its track.');
  assert.deepEqual(movedSliders.positions.slice(1),originalSliders.positions.slice(1));
- assert.deepEqual(movedSliders.shared,originalSliders.shared,'Tile motion must not change the wheel icon.');
+ assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Informed control"] svg').innerHTML,wheel:document.querySelector('[data-goal="control"] use').getAttribute('href')})`),{tile:'<use href="#icon-control"></use>',wheel:'#icon-control'},'Both instances must reference one drawing without a copy.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
  assert.deepEqual(await sliderState(),movedSliders,'Sliders must freeze on mouse leave.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:sliderPoint.x,y:sliderPoint.top});
