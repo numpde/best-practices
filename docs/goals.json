@@ -75,8 +75,9 @@
     "id": "resources",
     "name": "Bounded resource use",
     "color": "#FD9D24",
-    "icon": "<path d=\"M4 27V5h24v22ZM10 22v-7m6 7V9m6 13v-10\"/>",
-    "explanation": "Set limits for time, memory, storage, and repeated work. Count retries and failures, and stop when more won't help."
+    "icon": "<path data-motion-part=\"frame\" d=\"M4 27V5h24v22Z\"/><line data-motion-part=\"bar\" x1=\"10\" y1=\"22\" x2=\"10\" y2=\"15\"/><line data-motion-part=\"bar\" x1=\"16\" y1=\"22\" x2=\"16\" y2=\"9\"/><line data-motion-part=\"bar\" x1=\"22\" y1=\"22\" x2=\"22\" y2=\"12\"/>",
+    "explanation": "Set limits for time, memory, storage, and repeated work. Count retries and failures, and stop when more won't help.",
+    "motion": "bars"
   },
   {
     "id": "evidence",

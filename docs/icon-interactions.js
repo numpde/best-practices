@@ -5,6 +5,20 @@ const iconInteractions={
    move(new DOMPoint(event.clientX,event.clientY).matrixTransform(svg.getScreenCTM().inverse()));
   });
  },
+ nearestColumn(parts,x){
+  const distance=part=>{const b=part.getBBox();return Math.abs(x-b.x-b.width/2);};
+  return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
+ },
+ bars(button,svg,symbol){
+  const frame=symbol.querySelector('[data-motion-part="frame"]');
+  const bars=[...symbol.querySelectorAll('[data-motion-part="bar"]')];
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const bar=iconInteractions.nearestColumn(bars,point.x);
+   const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
+   const ceiling=frame.getBBox().y+stroke*1.5;
+   bar.setAttribute('y2',Math.max(ceiling,Math.min(bar.y1.baseVal.value,point.y)));
+  });
+ },
  clock(button,svg,symbol){
   const minute=symbol.querySelector('[data-motion-part="minute"]');
   const hour=symbol.querySelector('[data-motion-part="hour"]');
@@ -26,10 +40,7 @@ const iconInteractions={
   const tracks=drawing.querySelector('[data-motion-part="tracks"]');
   const sliders=[...drawing.querySelectorAll('[data-motion-part="slider"]')];
   iconInteractions.onMouseMove(button,svg,point=>{
-   const nearest=sliders.reduce((best,slider)=>{
-    const distance=knob=>Math.abs(point.x-knob.x.baseVal.value-knob.width.baseVal.value/2);
-    return distance(slider)<distance(best)?slider:best;
-   });
+   const nearest=iconInteractions.nearestColumn(sliders,point.x);
    const track=tracks.getBBox(),height=nearest.height.baseVal.value;
    const top=Math.max(track.y,Math.min(track.y+track.height-height,point.y-height/2));
    nearest.setAttribute('y',top);

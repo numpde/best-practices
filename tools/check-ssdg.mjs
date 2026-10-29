@@ -82,6 +82,22 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.ok(Math.abs(hands[0]+270)<.001&&Math.abs(hands[1]+22.5)<.001,'Turning backwards must reverse both hands at the same 12:1 ratio.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
  assert.deepEqual(await clockHands(),hands,'Both hands must freeze on mouse leave.');
+ const barPoint=await evaluate(`(()=>{
+  const card=document.querySelector('[aria-label="Bounded resource use"]');card.scrollIntoView({block:'center'});
+  const b=card.getBoundingClientRect(),p=new DOMPoint(10,16).matrixTransform(card.querySelector('svg').getScreenCTM());
+  return {x:p.x,top:b.top+2,bottom:b.bottom-2};
+ })()`);
+ const barPositions=()=>evaluate(`([...document.querySelectorAll('#icon-resources [data-motion-part="bar"]')].map(bar=>bar.y2.baseVal.value))`);
+ const originalBars=await barPositions();
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:barPoint.x,y:barPoint.top});
+ let bars=await barPositions();
+ assert.equal(bars[0],8,'A resource bar must stop below the frame ceiling.');
+ assert.deepEqual(bars.slice(1),originalBars.slice(1),'Only the nearest bar should move.');
+ assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Bounded resource use"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="resources"] use').getAttribute('href')})`),{tile:'#icon-resources',wheel:'#icon-resources'});
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ assert.deepEqual(await barPositions(),bars,'Resource bars must retain their values on mouse leave.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:barPoint.x,y:barPoint.bottom});
+ assert.equal((await barPositions())[0],22,'A resource bar must not fall below its baseline.');
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});
