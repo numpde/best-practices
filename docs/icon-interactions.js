@@ -1,5 +1,5 @@
 const iconInteractions={
- settings:{bookLiftRatio:.5,lockOpenAngle:45},
+ settings:{bookLiftRatio:.5,lockOpenAngle:45,snakeSamplesPerUnit:4,bulbMinimumBrightness:.45},
  onMouseMove(button,svg,move){
   button.addEventListener('pointermove',event=>{
    if(event.pointerType!=='mouse'||event.buttons!==0||button.getAttribute('aria-expanded')==='true')return;
@@ -10,15 +10,64 @@ const iconInteractions={
   const distance=part=>{const b=part.getBBox();return Math.abs(x-b.x-b.width/2);};
   return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
  },
+ trackWithin(button,svg,part,anchor,area,inset){
+  const bounds=part.getBBox();
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const x=Math.max(area.x+inset-bounds.x,Math.min(area.x+area.width-inset-bounds.x-bounds.width,point.x-anchor.x));
+   const y=Math.max(area.y+inset-bounds.y,Math.min(area.y+area.height-inset-bounds.y-bounds.height,point.y-anchor.y));
+   part.setAttribute('transform',`translate(${x} ${y})`);
+  });
+ },
  magnifier(button,svg,symbol){
   const glass=symbol.querySelector('[data-motion-part="magnifier"]');
   const lens=glass.querySelector('[data-motion-part="lens"]');
-  const bounds=glass.getBBox(),box=symbol.viewBox.baseVal;
-  const inset=Number(symbol.firstElementChild.getAttribute('stroke-width'))*1.5;
+  const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
+  iconInteractions.trackWithin(button,svg,glass,{x:lens.cx.baseVal.value,y:lens.cy.baseVal.value},symbol.viewBox.baseVal,stroke*1.5);
+ },
+ cursor(button,svg,symbol){
+  const cursor=symbol.querySelector('[data-motion-part="cursor"]');
+  const screen=symbol.querySelector('[data-motion-part="screen"]').getBBox();
+  const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
+  iconInteractions.trackWithin(button,svg,cursor,cursor.getPointAtLength(0),screen,stroke);
+ },
+ snake(button,svg,symbol){
+  const track=symbol.querySelector('[data-motion-part="track"]'),length=track.getTotalLength();
+  const boxes=[...symbol.querySelectorAll('[data-motion-part="box"]')];
+  const bodies=[...symbol.querySelectorAll('[data-motion-part="body"]')];
+  const heads=[...symbol.querySelectorAll('[data-motion-part="head"]')];
+  const rect=symbol.querySelector('#reproducible-box rect');
+  const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
+  const clearance=Math.hypot(rect.width.baseVal.value,rect.height.baseVal.value)/2+stroke;
+  const box=symbol.viewBox.baseVal,pivot={x:box.x+box.width/2,y:box.y+box.height/2,radius:stroke/2};
+  const pointAt=distance=>track.getPointAtLength((distance%length+length)%length);
+  const render=angle=>{
+   const distance=angle/360*length;
+   for(const node of boxes){
+    const point=pointAt(distance+Number(node.dataset.offset)*length);
+    node.setAttribute('transform',`translate(${point.x} ${point.y})`);
+   }
+   for(const [index,body] of bodies.entries()){
+    const start=distance+Number(body.dataset.offset)*length+clearance,end=start+length/boxes.length-2*clearance;
+    const samples=Math.ceil((end-start)*iconInteractions.settings.snakeSamplesPerUnit);
+    // The connecting stroke follows the same track as the boxes, so the body
+    // bends through each corner instead of carrying a rigid arrow around it.
+    const points=Array.from({length:samples+1},(_,i)=>pointAt(start+(end-start)*i/samples));
+    body.setAttribute('d',points.map((p,i)=>`${i?'L':'M'}${p.x} ${p.y}`).join(''));
+    const tip=points.at(-1),before=pointAt(end-stroke/2),after=pointAt(end+stroke/2);
+    const heading=Math.atan2(after.y-before.y,after.x-before.x)*180/Math.PI;
+    heads[index].setAttribute('transform',`translate(${tip.x} ${tip.y}) rotate(${heading})`);
+   }
+  };
+  render(0);
+  iconInteractions.followDial(button,svg,pivot,render);
+ },
+ bulb(button,svg,symbol){
+  const bulb=symbol.querySelector('[data-motion-part="bulb"]'),bounds=bulb.getBBox();
+  const centre={x:bounds.x+bounds.width/2,y:bounds.y+bounds.height/2},radius=Math.max(bounds.width,bounds.height)/2;
   iconInteractions.onMouseMove(button,svg,point=>{
-   const x=Math.max(box.x+inset-bounds.x,Math.min(box.x+box.width-inset-bounds.x-bounds.width,point.x-lens.cx.baseVal.value));
-   const y=Math.max(box.y+inset-bounds.y,Math.min(box.y+box.height-inset-bounds.y-bounds.height,point.y-lens.cy.baseVal.value));
-   glass.setAttribute('transform',`translate(${x} ${y})`);
+   const proximity=Math.max(0,1-Math.hypot(point.x-centre.x,point.y-centre.y)/radius);
+   const minimum=iconInteractions.settings.bulbMinimumBrightness;
+   bulb.setAttribute('opacity',minimum+(1-minimum)*proximity);
   });
  },
  layers(button,svg,symbol){

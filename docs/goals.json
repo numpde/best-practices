@@ -55,8 +55,9 @@
     "id": "interfaces",
     "name": "Usable interfaces",
     "color": "#A21942",
-    "icon": "<rect x=\"3\" y=\"4\" width=\"26\" height=\"20\" rx=\"2\"/><path d=\"M3 10h26M9 28h14M16 24v4m-4-14 8 4-4 2-2 4Z\"/>",
-    "explanation": "Use clear labels, consistent controls, and timely feedback so people know what to do next and what it will do."
+    "icon": "<rect data-motion-part=\"screen\" x=\"3\" y=\"4\" width=\"26\" height=\"20\" rx=\"2\"/><path d=\"M3 10h26M9 28h14M16 24v4\"/><path data-motion-part=\"cursor\" d=\"m12 13 6 3-3 1-1 3Z\"/>",
+    "explanation": "Use clear labels, consistent controls, and timely feedback so people know what to do next and what it will do.",
+    "motion": "cursor"
   },
   {
     "id": "failures",
@@ -109,15 +110,17 @@
     "id": "reproducibility",
     "name": "Reproducible results",
     "color": "#56C02B",
-    "icon": "<rect x=\"3\" y=\"3\" width=\"9\" height=\"9\" rx=\"1\"/><rect x=\"20\" y=\"20\" width=\"9\" height=\"9\" rx=\"1\"/><path d=\"M17 6h8v8m-4-4 4 4 4-4M15 26H7v-8m-4 4 4-4 4 4M6 6h3v3H6zm17 17h3v3h-3\"/>",
-    "explanation": "Record inputs, versions, settings, and methods; say whether reproduction is exact or approximate."
+    "icon": "<defs><path data-motion-part=\"track\" d=\"M8.232233 8.232233A2.5 2.5 0 0 1 10 7.5H22A2.5 2.5 0 0 1 24.5 10V22A2.5 2.5 0 0 1 22 24.5H10A2.5 2.5 0 0 1 7.5 22V10A2.5 2.5 0 0 1 8.232233 8.232233Z\"/><g id=\"reproducible-box\"><rect x=\"-4.5\" y=\"-4.5\" width=\"9\" height=\"9\" rx=\"1\"/><path d=\"M-1.5-1.5h3v3h-3Z\"/></g><path id=\"reproducible-head\" d=\"M-4-3 0 0-4 3\"/></defs><g data-motion-part=\"box\" data-offset=\"0\"><use href=\"#reproducible-box\"/></g><g data-motion-part=\"box\" data-offset=\".5\"><use href=\"#reproducible-box\"/></g><path data-motion-part=\"body\" data-offset=\"0\"/><use data-motion-part=\"head\" data-offset=\"0\" href=\"#reproducible-head\"/><path data-motion-part=\"body\" data-offset=\".5\"/><use data-motion-part=\"head\" data-offset=\".5\" href=\"#reproducible-head\"/>",
+    "explanation": "Record inputs, versions, settings, and methods; say whether reproduction is exact or approximate.",
+    "motion": "snake"
   },
   {
     "id": "improvement",
     "name": "Reasoned improvement",
     "color": "#00689D",
-    "icon": "<path d=\"M11 25h10m-9 4h8M11 21c0-4-5-4-5-9a10 9 0 0 1 20 0c0 5-5 5-5 9M12 12l3 3 5-6\"/>",
-    "explanation": "Work out what's wrong before changing it. Say why the fix should help, then compare its effect with what you expected."
+    "icon": "<path data-motion-part=\"base\" d=\"M11 25h10m-9 4h8\"/><g data-motion-part=\"bulb\"><path d=\"M11 21c0-4-5-4-5-9a10 9 0 0 1 20 0c0 5-5 5-5 9M12 12l3 3 5-6\"/></g>",
+    "explanation": "Work out what's wrong before changing it. Say why the fix should help, then compare its effect with what you expected.",
+    "motion": "bulb"
   },
   {
     "id": "completion",
