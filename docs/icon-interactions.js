@@ -1,5 +1,5 @@
 const iconInteractions={
- settings:{bookLiftRatio:.5,lockOpenAngle:45,snakeSamplesPerUnit:4,bulbMinimumBrightness:.45},
+ settings:{bookLiftRatio:.5,lockOpenAngle:45,pathSamplesPerUnit:4,bulbMinimumBrightness:.45},
  onMouseMove(button,svg,move){
   button.addEventListener('pointermove',event=>{
    if(event.pointerType!=='mouse'||event.buttons!==0||button.getAttribute('aria-expanded')==='true')return;
@@ -8,6 +8,7 @@ const iconInteractions={
  },
  resetPointerReference(button,reset){
   for(const type of ['pointerleave','pointerdown','pointercancel','click'])button.addEventListener(type,reset);
+  button.addEventListener('pointermove',event=>{if(event.buttons!==0)reset();});
  },
  onMouseDelta(button,svg,move){
   let previous=null;
@@ -18,6 +19,61 @@ const iconInteractions={
     previous=point;
     if(delta.x||delta.y)move(delta);
    }else previous=point;
+  });
+ },
+ revealStroke(part,length,progress){
+  part.setAttribute('stroke-dasharray',String(length));
+  part.setAttribute('stroke-dashoffset',String(length*(1-progress)));
+  part.setAttribute('visibility',progress===0?'hidden':'visible');
+ },
+ trace(button,svg,symbol){
+  const path=symbol.querySelector('[data-motion-part="trace"]'),ink=symbol.querySelector('[data-motion-part="ink"]');
+  const length=path.getTotalLength(),samples=Math.ceil(length*iconInteractions.settings.pathSamplesPerUnit);
+  iconInteractions.revealStroke(ink,length,1);
+  iconInteractions.onMouseMove(button,svg,point=>{
+   let nearest=0,distance=Infinity;
+   for(let i=0;i<=samples;i++){
+    const candidate=path.getPointAtLength(length*i/samples),d=Math.hypot(candidate.x-point.x,candidate.y-point.y);
+    if(d<distance){nearest=i/samples;distance=d;}
+   }
+   iconInteractions.revealStroke(ink,length,nearest);
+  });
+ },
+ paper(button,svg,symbol){
+  const sheet=symbol.querySelector('[data-motion-part="sheet"]').getBBox();
+  const content=symbol.querySelector('[data-motion-part="content"]').getBBox();
+  const paper=symbol.querySelector('[data-motion-part="paper"]'),fold=symbol.querySelector('[data-motion-part="fold"]');
+  const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
+  const maximum=content.y-sheet.y-stroke,right=sheet.x+sheet.width,bottom=sheet.y+sheet.height;
+  const render=(x,y)=>{
+   paper.setAttribute('d',`M${sheet.x} ${sheet.y}H${right-x}L${right} ${sheet.y+y}V${bottom}H${sheet.x}Z`);
+   fold.setAttribute('d',`M${right-x} ${sheet.y}V${sheet.y+y}H${right}Z`);
+   fold.setAttribute('visibility',x===0||y===0?'hidden':'visible');
+  };
+  render(0,0);
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const reach=stroke/2;
+   if(point.x<right-maximum-reach||point.x>right+reach||point.y<sheet.y-reach||point.y>sheet.y+maximum+reach)return;
+   // Keep interaction at the paper corner and the fold clear of the result.
+   render(Math.max(0,Math.min(maximum,right-point.x)),Math.max(0,Math.min(maximum,point.y-sheet.y)));
+  });
+ },
+ guidance(button,svg,symbol){
+  const frame=symbol.querySelector('[data-motion-part="frame"]'),shaft=symbol.querySelector('[data-motion-part="shaft"]');
+  const head=symbol.querySelector('[data-motion-part="head"]'),bounds=symbol.querySelector('#failure-head').getBBox();
+  const top=frame.points.getItem(0),bottom=frame.points.getItem(2);
+  const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
+  const tail={x:shaft.x1.baseVal.value,y:shaft.y1.baseVal.value};
+  const render=point=>{
+   shaft.setAttribute('x2',point.x);shaft.setAttribute('y2',point.y);
+   const angle=Math.atan2(point.y-tail.y,point.x-tail.x)*180/Math.PI;
+   head.setAttribute('transform',`translate(${point.x} ${point.y}) rotate(${angle})`);
+  };
+  render({x:shaft.x2.baseVal.value,y:shaft.y2.baseVal.value});
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const x=Math.max(tail.x+bounds.width+stroke,Math.min(bottom.x-stroke,point.x));
+   const y=Math.max(top.y+bounds.width+stroke,Math.min(bottom.y-bounds.width-stroke,point.y));
+   render({x,y});
   });
  },
  ownership(button,svg,symbol){
@@ -77,9 +133,7 @@ const iconInteractions={
   let progress=1;
   const render=()=>{
    const verified=Math.min(1,progress*2),raised=Math.max(0,progress*2-1);
-   check.setAttribute('stroke-dasharray',String(length));
-   check.setAttribute('stroke-dashoffset',String(length*(1-verified)));
-   check.setAttribute('visibility',verified===0?'hidden':'visible');
+   iconInteractions.revealStroke(check,length,verified);
    flag.setAttribute('transform',`translate(0 ${travel*(1-raised)})`);
   };
   render();
@@ -129,7 +183,7 @@ const iconInteractions={
    }
    for(const [index,body] of bodies.entries()){
     const start=distance+Number(body.dataset.offset)*length+clearance,end=start+length/boxes.length-2*clearance;
-    const samples=Math.ceil((end-start)*iconInteractions.settings.snakeSamplesPerUnit);
+    const samples=Math.ceil((end-start)*iconInteractions.settings.pathSamplesPerUnit);
     // The connecting stroke follows the same track as the boxes, so the body
     // bends through each corner instead of carrying a rigid arrow around it.
     const points=Array.from({length:samples+1},(_,i)=>pointAt(start+(end-start)*i/samples));

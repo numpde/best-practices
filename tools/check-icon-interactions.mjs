@@ -284,6 +284,42 @@ export async function checkIconInteractions({call,evaluate}){
  for(const [label,id] of [['Clear ownership','ownership'],['Coherent evolution','evolution'],['Verified completion','completion']]){
   assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="'+${JSON.stringify(label)}+'"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="'+${JSON.stringify(id)}+'"] use').getAttribute('href')})`),{tile:'#icon-'+id,wheel:'#icon-'+id});
  }
+
+ assert.equal(await evaluate('goals.filter(goal=>goal.motion).length'),17,'Every goal must select its semantic interaction from the JSON source.');
+ const taskState=()=>evaluate(`(()=>{
+  const s=document.querySelector('#icon-capabilities'),ink=s.querySelector('[data-motion-part="ink"]'),path=s.querySelector('[data-motion-part="trace"]');
+  return {progress:1-Number(ink.getAttribute('stroke-dashoffset'))/path.getTotalLength(),visible:ink.getAttribute('visibility'),window:s.querySelector('[data-motion-part="window"]').getAttribute('transform'),references:[...s.querySelectorAll('use')].map(use=>use.getAttribute('href'))};
+ })()`);
+ await moveOnIcon('Useful capabilities',11,19);let task=await taskState();assert.equal(task.progress,0);assert.equal(task.visible,'hidden');
+ await moveOnIcon('Useful capabilities',15,23);task=await taskState();assert.ok(Math.abs(task.progress-.3473)<.02,'The task check must trace its real bend under the mouse.');assert.equal(task.window,null);
+ await moveOnIcon('Useful capabilities',22,15);task=await taskState();assert.equal(task.progress,1,'Reaching the end of the useful path must complete the check.');assert.deepEqual(task.references,['#capability-check','#capability-check']);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});assert.deepEqual(await taskState(),task);
+
+ const paperState=()=>evaluate(`(()=>{
+  const s=document.querySelector('#icon-results'),fold=s.querySelector('[data-motion-part="fold"]'),b=fold.getBBox();
+  return {x:b.x,y:b.y,width:b.width,height:b.height,visible:fold.getAttribute('visibility'),content:s.querySelector('[data-motion-part="content"]').innerHTML,contentTransform:s.querySelector('[data-motion-part="content"]').getAttribute('transform'),outline:s.querySelector('[data-motion-part="paper"]').getAttribute('d')};
+ })()`);
+ const initialPaper=await paperState();
+ await moveOnIcon('Faithful results',16,16);assert.deepEqual(await paperState(),initialPaper,'Moving away from the paper corner must not affect it.');
+ await moveOnIcon('Faithful results',23,8);let paper=await paperState();assert.ok(Math.abs(paper.x-23)<.001&&Math.abs(paper.y+paper.height-8)<.001,'The folded tip must track the actual pointer at the paper corner.');
+ assert.ok(Math.abs(paper.width-3)<.001&&Math.abs(paper.height-3)<.001);assert.equal(paper.content,initialPaper.content);assert.equal(paper.contentTransform,null);
+ await moveOnIcon('Faithful results',16,20);assert.deepEqual(await paperState(),paper,'Motion elsewhere in the card must not fold the corner at a distance.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});assert.deepEqual(await paperState(),paper);
+ await moveOnIcon('Faithful results',22,9);paper=await paperState();assert.ok(Math.abs(paper.width-4)<.001&&Math.abs(paper.height-4)<.001,'The fold must stop in the blank margin before reaching content.');assert.equal(paper.content,initialPaper.content);
+ await moveOnIcon('Faithful results',26,5);paper=await paperState();assert.equal(paper.visible,'hidden');assert.equal(paper.width,0);assert.equal(paper.height,0);
+
+ const failureState=()=>evaluate(`(()=>{
+  const s=document.querySelector('#icon-failures'),shaft=s.querySelector('[data-motion-part="shaft"]'),m=s.querySelector('[data-motion-part="head"]').transform.baseVal.getItem(0).matrix;
+  return {x:shaft.x2.baseVal.value,y:shaft.y2.baseVal.value,headX:m.e,headY:m.f,tail:[shaft.x1.baseVal.value,shaft.y1.baseVal.value],error:s.querySelector('[data-motion-part="error"]').getAttribute('d'),errorTransform:s.querySelector('[data-motion-part="error"]').getAttribute('transform'),frame:s.querySelector('[data-motion-part="frame"]').getAttribute('transform')};
+ })()`);
+ await moveOnIcon('Actionable failures',25,11);let failure=await failureState();assert.ok(Math.abs(failure.x-25)<.001&&Math.abs(failure.y-11)<.001,'The next-step arrow must point at the actual mouse.');assert.deepEqual(failure.tail,[16,15]);assert.deepEqual([failure.headX,failure.headY],[failure.x,failure.y]);assert.equal(failure.errorTransform,null);assert.equal(failure.frame,null);
+ const error=failure.error;
+ await moveOnIcon('Actionable failures',0,0);failure=await failureState();assert.deepEqual([failure.x,failure.y],[21,9]);assert.equal(failure.error,error);
+ await moveOnIcon('Actionable failures',32,32);failure=await failureState();assert.deepEqual([failure.x,failure.y],[26,17]);assert.deepEqual([failure.headX,failure.headY],[failure.x,failure.y]);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});assert.deepEqual(await failureState(),failure);
+ for(const [label,id] of [['Useful capabilities','capabilities'],['Faithful results','results'],['Actionable failures','failures']]){
+  assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="'+${JSON.stringify(label)}+'"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="'+${JSON.stringify(id)}+'"] use').getAttribute('href')})`),{tile:'#icon-'+id,wheel:'#icon-'+id});
+ }
  console.log('Icons: shared semantic motion, pointer mapping, limits, stationary parts, and retained state passed.');
 
 }

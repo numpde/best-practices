@@ -3,8 +3,9 @@
     "id": "capabilities",
     "name": "Useful capabilities",
     "color": "#E5243B",
-    "icon": "<rect x=\"4\" y=\"6\" width=\"24\" height=\"21\" rx=\"2\"/><path d=\"M4 12h24m-17 7 4 4 7-8\"/>",
-    "explanation": "Start with a real task. Complete the useful flow and check that people can get the outcome they need."
+    "icon": "<defs><path id=\"capability-check\" data-motion-part=\"trace\" d=\"m11 19 4 4 7-8\"/></defs><rect data-motion-part=\"window\" x=\"4\" y=\"6\" width=\"24\" height=\"21\" rx=\"2\"/><path d=\"M4 12h24\"/><use href=\"#capability-check\" opacity=\".35\"/><use data-motion-part=\"ink\" href=\"#capability-check\"/>",
+    "explanation": "Start with a real task. Complete the useful flow and check that people can get the outcome they need.",
+    "motion": "trace"
   },
   {
     "id": "ownership",
@@ -34,8 +35,9 @@
     "id": "results",
     "name": "Faithful results",
     "color": "#FF3A21",
-    "icon": "<path d=\"M6 5h20v23H6zM11 11h10m-10 5h5m-4 6 3 3 7-8\"/>",
-    "explanation": "When transforming data, preserve its meaning, identity, units, order, and relationships."
+    "icon": "<defs><rect data-motion-part=\"sheet\" x=\"6\" y=\"5\" width=\"20\" height=\"23\"/></defs><path data-motion-part=\"paper\"/><g data-motion-part=\"content\"><path d=\"M11 11h10m-10 5h5m-4 6 3 3 7-8\"/></g><path data-motion-part=\"fold\" fill=\"var(--icon-paper)\"/>",
+    "explanation": "When transforming data, preserve its meaning, identity, units, order, and relationships.",
+    "motion": "paper"
   },
   {
     "id": "control",
@@ -65,8 +67,9 @@
     "id": "failures",
     "name": "Actionable failures",
     "color": "#FD6925",
-    "icon": "<path d=\"M4 4h24v18H13l-7 6v-6H4Z M11 8v6m0 3v.1m5-2h8m-3-3 3 3-3 3\"/>",
-    "explanation": "Explain what failed, why it failed, and what could help next; keep evidence, protect privacy."
+    "icon": "<defs><path id=\"failure-head\" d=\"M-3-3 0 0-3 3\"/></defs><polygon data-motion-part=\"frame\" points=\"4,4 28,4 28,22 13,22 6,28 6,22 4,22\"/><path data-motion-part=\"error\" d=\"M11 8v6m0 3v.1\"/><line data-motion-part=\"shaft\" x1=\"16\" y1=\"15\" x2=\"24\" y2=\"15\"/><use data-motion-part=\"head\" href=\"#failure-head\"/>",
+    "explanation": "Explain what failed, why it failed, and what could help next; keep evidence, protect privacy.",
+    "motion": "guidance"
   },
   {
     "id": "recovery",
