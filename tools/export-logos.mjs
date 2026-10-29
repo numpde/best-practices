@@ -9,7 +9,7 @@ const check=process.argv.includes('--check');
 assert.ok(process.argv.slice(2).every(arg=>arg==='--check'),'Usage: node tools/export-logos.mjs [--check]');
 const source=readFileSync(join(root,'docs/index.html'),'utf8').replace("fetch('goals.json')",
  `Promise.resolve({ok:true,json:()=>${readFileSync(join(root,'docs/goals.json'),'utf8').trim()}})`);
-const exportSource=source.replace('<script src="tile-interactions.js"></script>',`<script>${readFileSync(join(root,'docs/tile-interactions.js'),'utf8')}</script>`);
+const exportSource=source.replace('await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));','await Promise.resolve();').replace('<script src="tile-interactions.js"></script>',`<script>${readFileSync(join(root,'docs/tile-interactions.js'),'utf8')}</script>`);
 const fontLicense=source.match(/<!-- (Embedded Roboto Black,[\s\S]*?)-->/)?.[1];
 assert.ok(fontLicense,'The page must retain the embedded font license.');
 const temporary=mkdtempSync(join(root,'.logo-export-'));
@@ -31,6 +31,7 @@ const escapeXML=value=>value.replaceAll('&','&amp;').replaceAll('<','&lt;').repl
 function extractionScript(variant){
  return `(()=>{
  const variant=${JSON.stringify(variant)};
+ document.documentElement.style.scrollbarGutter='auto';
  const ns='http://www.w3.org/2000/svg';
  const ring=document.getElementById('colour-ring').cloneNode(true);
  const wordmark=document.querySelector('.wheel-title h1 > svg').cloneNode(true);
@@ -77,6 +78,7 @@ try{
   run(chromium,[...browserArgs,'--no-pdf-header-footer',`--print-to-pdf=${base}.pdf`,'--virtual-time-budget=1000',pathToFileURL(base+'.html').href]);
   run('pdftocairo',['-svg',base+'.pdf',base+'.svg']);
   let svg=readFileSync(base+'.svg','utf8');
+  assert.deepEqual(svg.match(/viewBox="([^"]+)"/)[1].split(' ').map(Number),[0,0,variant.width*.75,variant.height*.75],`${variant.name}: the print export must use the artwork canvas, not the loading page.`);
   assert.ok(!/<(?:text|image|script)\b|@font-face|font-family/.test(svg),`${variant.name}: the export must contain only vector artwork, with outlined lettering.`);
   // PDF stores normalised colour components. Restore exact 8-bit RGB values.
   svg=svg.replace(/rgb\(([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)%\)/g,(_,r,g,b)=>'#'+[r,g,b].map(n=>Math.round(Number(n)*255/100).toString(16).padStart(2,'0')).join(''));

@@ -8,13 +8,26 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
  await call('Emulation.setTouchEmulationEnabled',{enabled:false});
  await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+ let releaseGoals;
+ const goalsGate=new Promise(resolve=>{releaseGoals=resolve;});
  const server=createServer(async(req,res)=>{
+  if(req.url==='/goals.json')await goalsGate;
   try{res.setHeader('Content-Type',req.url==='/goals.json'?'application/json':req.url.endsWith('.js')?'text/javascript':'text/html');res.end(await readFile(new URL('../docs'+(req.url==='/'?'/index.html':req.url),import.meta.url)));}
   catch{res.statusCode=404;res.end();}
  });
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  try{
  await call('Page.navigate',{url:`http://127.0.0.1:${server.address().port}/`});
+ await waitFor(`document.body?.dataset.state==='loading'`);
+ const loading=await evaluate(`({hidden:getComputedStyle(document.querySelector('main')).visibility,opacity:getComputedStyle(document.querySelector('main')).opacity,inert:document.querySelector('main').inert,loader:getComputedStyle(document.querySelector('.page-loader')).display,width:document.querySelector('main').getBoundingClientRect().width,gutter:getComputedStyle(document.documentElement).scrollbarGutter})`);
+ assert.equal(loading.hidden,'hidden');assert.equal(loading.opacity,'0');assert.equal(loading.inert,true);
+ assert.notEqual(loading.loader,'none');assert.equal(loading.gutter,'stable');
+ releaseGoals();
+ await waitFor(`document.body.dataset.state==='ready'&&Number(getComputedStyle(document.querySelector('main')).opacity)>0&&Number(getComputedStyle(document.querySelector('main')).opacity)<1`);
+ const revealed=await evaluate(`({segments:segments.children.length,cards:document.querySelectorAll('.goal-card').length,font:document.fonts.check('900 40px WheelWordmark'),width:document.querySelector('main').getBoundingClientRect().width,inert:document.querySelector('main').inert,loader:getComputedStyle(document.querySelector('.page-loader')).display})`);
+ assert.equal(revealed.segments,17);assert.equal(revealed.cards,18);assert.equal(revealed.font,true);
+ assert.equal(revealed.width,loading.width);assert.equal(revealed.inert,false);assert.equal(revealed.loader,'none');
+ await waitFor(`getComputedStyle(document.querySelector('main')).opacity==='1'`);
  await waitFor(`document.querySelectorAll('.rotation-surface').length===3`);
  await evaluate('document.fonts.ready');
  const flipAnimation=await evaluate(`(async()=>{
@@ -128,6 +141,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   if(start===null){
    const current=(await state()).angle;
    start=-90+180/17+(selector===selectors[1]?-current:current);
+   if(await evaluate(`document.querySelector(${JSON.stringify(selector)}).closest('.goal-card')?.getAttribute('aria-expanded')==='true'`))start=180-start;
   }
   if(end===null)end=start+90;
   const position=angle=>({x:g.x+g.r*Math.cos(angle*Math.PI/180),y:g.y+g.r*Math.sin(angle*Math.PI/180)});
@@ -227,5 +241,5 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.ok((await state()).angle<reverseBefore-30,'Dragging the mirrored face must follow the pointer with reversed rotation.');
  assert.equal(await evaluate(`wheelTile.querySelector('button').getAttribute('aria-expanded')`),'true','Dragging the reverse must not flip it.');
  console.log('SSDG: wheels share pointer/touch rotation with a counter-rotating O; seam, inertia, stopping, cancellation, settling, reduced motion, and no keyboard rotation passed.');
- }finally{await new Promise(resolve=>server.close(resolve));}
+ }finally{releaseGoals();await new Promise(resolve=>server.close(resolve));}
 }

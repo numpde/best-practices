@@ -217,6 +217,16 @@
    https://www.un.org/sustainabledevelopment/wp-content/uploads/2023/09/E_SDG_Guidelines_Sep20238.pdf */
 :root{color-scheme:light;--paper:#ffffff;--ink:#000000;--blue:#009edb}
 *{box-sizing:border-box}
+html{scrollbar-gutter:stable}
+main{opacity:0;visibility:hidden;transition:opacity 400ms ease}
+body[data-state="ready"] main{opacity:1;visibility:visible}
+.page-loader{position:fixed;inset:0;display:grid;place-content:center;color:#777;font-size:.8rem}
+.page-loader::after{content:"";width:20px;height:20px;border:2px solid #00000008;border-top-color:#00000030;border-radius:50%;animation:loading-turn 1.2s linear infinite}
+body[data-state="ready"] .page-loader{display:none}
+body[data-state="error"] .page-loader::after{display:none}
+@keyframes loading-turn{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.page-loader::after{animation:none}}
+
 body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
 /* On desktop, match the wheel to the three tile rows: the grid has 40px
    horizontal padding and five 16px gaps. Account for the SVG ring inset too.
@@ -250,8 +260,9 @@ html{-webkit-user-select:none;user-select:none}
 @media print{.wheel-strip{--strip-height:360px}.goal-tiles{--columns:4;padding:20px 0}.goal-tile{break-inside:avoid}body{print-color-adjust:exact}}
 </style>
 </head>
-<body>
-<main>
+<body data-state="loading">
+<div class="page-loader" role="status" aria-label="Loading"></div>
+<main aria-busy="true" inert>
 <figure class="wheel-strip">
 <div class="wheel-wrap">
 <svg class="wheel" viewBox="0 0 720 720" role="img" aria-labelledby="wheel-label wheel-description">
@@ -276,8 +287,9 @@ html{-webkit-user-select:none;user-select:none}
 </div>
 </figure>
 <ol class="goal-tiles" id="goal-tiles" aria-label="Software development goals"></ol>
-<noscript><p>Enable JavaScript to display the goal wheel and its goal tiles.</p></noscript>
+
 </main>
+<noscript><style>.page-loader{display:none}</style><p>Enable JavaScript to display the goal wheel and its goal tiles.</p></noscript>
 <svg class="symbol-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs id="symbols"></defs></svg>
 <script src="tile-interactions.js"></script>
 <script>
@@ -287,7 +299,19 @@ let goals;
 const artworkReady=fetch('goals.json').then(response=>{
  if(!response.ok)throw new Error('Could not load goal data: '+response.status);
  return response.json();
-}).then(data=>{goals=data;initializeArtwork();});
+}).then(async data=>{
+ goals=data;initializeArtwork();
+ await document.fonts.load('900 40px WheelWordmark');
+ await document.fonts.ready;
+ await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+ const main=document.querySelector('main');
+ main.inert=false;main.setAttribute('aria-busy','false');
+ document.body.dataset.state='ready';
+}).catch(error=>{
+ document.body.dataset.state='error';
+ document.querySelector('.page-loader').textContent='Could not load the goals. Reload to try again.';
+ throw error;
+});
 const svgNS='http://www.w3.org/2000/svg';
 // Shared icon canvas: 2-unit strokes stay inside a 2-unit exterior safe zone.
 const iconViewBox='0 0 32 32';
