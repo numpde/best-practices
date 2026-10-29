@@ -231,7 +231,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helveti
 .goal-tile{flex:0 0 calc((100% - (var(--columns) - 1)*var(--gap))/var(--columns));min-width:0;container-type:inline-size;aspect-ratio:1;color:white;padding:0;position:relative;perspective:900px}
 .goal-tile h2{font-family:WheelWordmark,Arial,sans-serif;font-weight:900;font-size:clamp(.75rem,9cqw,1.25rem);line-height:1.08;text-transform:uppercase;margin:0;letter-spacing:-.02em}
 .goal-tile svg{display:block;width:54%;height:auto;aspect-ratio:1;margin:auto;flex-shrink:0}
-.wheel-tile{padding:18px;display:flex;background:#f1f1f1;align-items:center;justify-content:center}.wheel-tile svg{width:82%;margin:0}
+.wheel-tile{--goal-color:#f1f1f1}.wheel-tile .card-front,.wheel-tile .card-back{display:none}.wheel-tile .card-rotor{display:flex;padding:18px;align-items:center;justify-content:center;background:var(--goal-color)}.wheel-tile svg{width:82%;margin:0}
 
 html{-webkit-user-select:none;user-select:none}
 .goal-card{display:block;width:100%;height:100%;border:0;padding:0;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit;perspective:900px}
@@ -245,8 +245,8 @@ html{-webkit-user-select:none;user-select:none}
 .symbol-library{position:absolute;width:0;height:0;overflow:hidden}
 @media(min-width:1001px){.wheel-strip{--grid-width:min(100vw,1240px);--strip-height:calc(((var(--grid-width) - 120px)/2 + 32px)*720/676 + 32px)}}
 @media(max-width:1000px){.goal-tiles{--columns:3}}
-@media(max-width:760px){.goal-tiles{--columns:3;--gap:12px;padding:24px 16px 40px}.card-front,.card-back,.wheel-tile{padding:14px}}
-@media(max-width:520px){.goal-tiles{--columns:2}.card-front,.card-back,.wheel-tile{padding:12px}}
+@media(max-width:760px){.goal-tiles{--columns:3;--gap:12px;padding:24px 16px 40px}.card-front,.card-back,.wheel-tile .card-rotor{padding:14px}}
+@media(max-width:520px){.goal-tiles{--columns:2}.card-front,.card-back,.wheel-tile .card-rotor{padding:12px}}
 @media print{.wheel-strip{--strip-height:360px}.goal-tiles{--columns:4;padding:20px 0}.goal-tile{break-inside:avoid}body{print-color-adjust:exact}}
 </style>
 </head>
@@ -356,6 +356,13 @@ window.addEventListener('blur',stopRotation);
 window.addEventListener('resize',stopRotation);
 window.addEventListener('scroll',()=>{if(drag)stopRotation();},{capture:true,passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopRotation();});
+function createTileCard(label){
+ const button=document.createElement('button');
+ button.className='goal-card';button.type='button';
+ button.setAttribute('aria-expanded','false');button.setAttribute('aria-label',label);
+ button.innerHTML='<span class="card-rotor"><span class="card-front"></span><span class="card-back" aria-hidden="true"></span></span>';
+ return {button,front:button.querySelector('.card-front'),back:button.querySelector('.card-back')};
+}
 function initializeArtwork(){
 const step=2*Math.PI/goals.length;
 const gap=.035;
@@ -382,18 +389,22 @@ for(const [index,goal] of goals.entries()){
  const item=document.createElement('li');
  item.className='goal-tile';
  item.style.setProperty('--goal-color',goal.color);
- item.innerHTML=`<button class="goal-card" type="button" aria-expanded="false"><span class="card-rotor"><span class="card-front"><h2></h2>${iconMarkup(goal.id)}</span><span class="card-back" aria-hidden="true"><span class="explanation"></span></span></span></button>`;
- const button=item.querySelector('button'),front=item.querySelector('.card-front'),back=item.querySelector('.card-back');
- front.querySelector('h2').textContent=goal.name;
- back.querySelector('.explanation').textContent=goal.explanation;
- button.setAttribute('aria-label',goal.name);
- tileInteractions.flip(button,{front,back});
+ const card=createTileCard(goal.name);
+ card.front.innerHTML=`<h2></h2>${iconMarkup(goal.id)}`;
+ card.front.querySelector('h2').textContent=goal.name;
+ card.back.innerHTML='<span class="explanation"></span>';
+ card.back.firstElementChild.textContent=goal.explanation;
+ tileInteractions.flip(card.button,card);
+ item.append(card.button);
  tiles.append(item);
 }
 // The eighteenth tile completes the grid with the same unlabelled colour wheel.
 wheelTile=document.createElement('li');
 wheelTile.className='goal-tile wheel-tile';
-wheelTile.innerHTML='<svg viewBox="0 0 720 720" role="img" aria-label="Sustainable software development goals colour wheel"><g id="tile-wheel"><use href="#colour-ring"/></g></svg>';
+const wheelCard=createTileCard('Sustainable software development goals colour wheel');
+wheelCard.button.querySelector('.card-rotor').insertAdjacentHTML('beforeend','<svg viewBox="0 0 720 720" aria-hidden="true"><g id="tile-wheel"><use href="#colour-ring"/></g></svg>');
+wheelTile.append(wheelCard.button);
+tileInteractions.flip(wheelCard.button,{...wheelCard,gestureTarget:wheelTile,dragThreshold:wheelSettings.dragThresholdPx});
 tiles.append(wheelTile);
 
  wheelIcons=[...segments.querySelectorAll('use')].map(icon=>({icon,x:icon.x.baseVal.value+icon.width.baseVal.value/2,y:icon.y.baseVal.value+icon.height.baseVal.value/2}));
@@ -405,7 +416,7 @@ for(const surface of rotationSurfaces){
   if(event.button!==0||!event.isPrimary||drag)return;
   stopCoasting();
   const rect=surface.getBoundingClientRect();
-  drag={surface,capture,direction:surface===rotationSurfaces[1]?-1:1,id:event.pointerId,cx:rect.x+rect.width/2,cy:rect.y+rect.height/2,
+  drag={surface,capture,direction:surface===rotationSurfaces[1]?-1:surface.closest('.goal-card')?.getAttribute('aria-expanded')==='true'?-1:1,id:event.pointerId,cx:rect.x+rect.width/2,cy:rect.y+rect.height/2,
    deadRadius:Math.min(wheelSettings.centreDeadRadiusPx,rect.width*wheelSettings.centreDeadRadiusRatio),x:event.clientX,y:event.clientY,
    active:false,last:null,samples:[{time:performance.now(),angle:rotation}]};
   drag.last=pointerAngle(event,drag);

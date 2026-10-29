@@ -37,7 +37,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.ok(flipAnimation.running>0,'Flipping must animate, including when the system requests reduced motion.');
  assert.ok(flipAnimation.matrix.startsWith('matrix3d('),'The flip must visibly pass through a 3D intermediate orientation.');
  const cardCount=await evaluate(`document.querySelectorAll('.goal-card').length`);
- assert.equal(cardCount,17);
+ assert.equal(cardCount,18);
  for(const [side,angle] of [['left',-180],['left',-360],['right',-180],['right',0]]){
   const point=await evaluate(`(()=>{
    const card=document.querySelector('.goal-card');card.scrollIntoView({block:'center'});
@@ -59,7 +59,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
    const text=document.createRange();text.selectNodeContents(title);
    return {offset:icon.y-box.y,size:icon.width,titleFits:text.getBoundingClientRect().bottom<=icon.top};
   }))`);
-  const backs=await evaluate(`([...document.querySelectorAll('.card-back')].map(back=>({fits:back.scrollHeight<=back.clientHeight&&back.scrollWidth<=back.clientWidth,overflow:getComputedStyle(back).overflow,headers:back.querySelectorAll('strong,h2').length})))`);
+  const backs=await evaluate(`([...document.querySelectorAll('.goal-tile:not(.wheel-tile) .card-back')].map(back=>({fits:back.scrollHeight<=back.clientHeight&&back.scrollWidth<=back.clientWidth,overflow:getComputedStyle(back).overflow,headers:back.querySelectorAll('strong,h2').length})))`);
   for(const back of backs){
    assert.ok(back.fits,`${width}px: explanatory text must fit without scrolling.`);
    assert.equal(back.overflow,'hidden');
@@ -200,6 +200,18 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.equal((await state()).angle,cancelled.angle);
  assert.equal(cancelled.main,cancelled.tile);
  assert.equal(cancelled.small,`rotate(${-(((cancelled.angle%360)+360)%360)} 360 360)`);
+ assert.equal(await evaluate(`wheelTile.querySelector('button').getAttribute('aria-expanded')`),'false','Spinning must not flip the wheel card.');
+ await evaluate(`(async()=>{
+  const card=wheelTile.querySelector('button');card.click();
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  await Promise.all(card.getAnimations({subtree:true}).map(animation=>animation.finished));
+ })()`);
+ assert.equal(await evaluate(`wheelTile.querySelectorAll('svg').length`),1,'Both sides must share one SVG.');
+ assert.ok(await evaluate(`new DOMMatrix(getComputedStyle(wheelTile.querySelector('.card-rotor')).transform).m11<0`),'The reverse must show the same wheel mirrored.');
+ const reverseBefore=(await state()).angle;
+ await dragArc('.wheel-tile svg',{touch:true,hold:200});
+ assert.ok((await state()).angle<reverseBefore-30,'Dragging the mirrored face must follow the pointer with reversed rotation.');
+ assert.equal(await evaluate(`wheelTile.querySelector('button').getAttribute('aria-expanded')`),'true','Dragging the reverse must not flip it.');
  console.log('SSDG: wheels share pointer/touch rotation with a counter-rotating O; seam, inertia, stopping, cancellation, settling, reduced motion, and no keyboard rotation passed.');
  }finally{await new Promise(resolve=>server.close(resolve));}
 }
