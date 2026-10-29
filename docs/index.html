@@ -239,7 +239,7 @@ html{-webkit-user-select:none;user-select:none}
 .card-rotor{display:block;position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(var(--turn,0deg));transition:transform 450ms ease}
 .card-front,.card-back{position:absolute;inset:0;padding:18px;background:var(--goal-color);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .card-front{display:grid;grid-template-rows:clamp(1.215rem,14.58%,2.025rem) minmax(0,1fr)}
-.card-back{transform:rotateY(180deg);display:flex;flex-direction:column;gap:.7em;font-size:clamp(.65rem,6.5cqw,.9rem);line-height:1.35;overflow:hidden;cursor:pointer}
+.card-back{transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;gap:.7em;font-size:clamp(.65rem,6.5cqw,.9rem);line-height:1.35;overflow:hidden;cursor:pointer}
 
 .rotation-surface{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;pointer-events:none}.wheel-leaf{pointer-events:visiblePainted}.rotation-surface.dragging{cursor:grabbing}
 .symbol-library{position:absolute;width:0;height:0;overflow:hidden}
