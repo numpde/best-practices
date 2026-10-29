@@ -55,12 +55,32 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   const p=new DOMPoint(26,16).matrixTransform(svg.getScreenCTM());return {x:p.x,y:p.y};
  })()`);
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',...clockPoint});
- const handTransform=()=>evaluate(`document.querySelector('#icon-effects [data-motion-part="hand"]').getAttribute('transform')`);
+ const handTransform=()=>evaluate(`document.querySelector('#icon-effects [data-motion-part="minute"]').getAttribute('transform')`);
  const clockPosition=await handTransform();
  assert.ok(Math.abs(parseFloat(clockPosition.slice(7))-90)<.001,'The shared clock hand must point toward the mouse.');
  assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Honest state and effects"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="effects"] use').getAttribute('href')})`),{tile:'#icon-effects',wheel:'#icon-effects'});
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
  assert.equal(await handTransform(),clockPosition,'The clock hand must hold its position on mouse leave.');
+ const dial=await evaluate(`(()=>{
+  const svg=document.querySelector('[aria-label="Honest state and effects"] svg');svg.scrollIntoView({block:'center'});
+  const m=svg.getScreenCTM(),p=new DOMPoint(16,16).matrixTransform(m);
+  return {x:p.x,y:p.y,r:10*Math.hypot(m.a,m.b)};
+ })()`);
+ for(const angle of [170,250,330,410,450]){
+  const radians=(angle-90)*Math.PI/180;
+  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:dial.x+dial.r*Math.cos(radians),y:dial.y+dial.r*Math.sin(radians)});
+ }
+ const clockHands=()=>evaluate(`['minute','hour'].map(part=>parseFloat(document.querySelector('#icon-effects [data-motion-part="'+part+'"]').getAttribute('transform').slice(7)))`);
+ let hands=await clockHands();
+ assert.ok(Math.abs(hands[0]-450)<.001&&Math.abs(hands[1]-37.5)<.001,'A full minute-hand turn must advance the hour hand by 30 degrees without resetting at the seam.');
+ for(const angle of [370,290,210,130,50,-30,-110,-190,-270]){
+  const radians=(angle-90)*Math.PI/180;
+  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:dial.x+dial.r*Math.cos(radians),y:dial.y+dial.r*Math.sin(radians)});
+ }
+ hands=await clockHands();
+ assert.ok(Math.abs(hands[0]+270)<.001&&Math.abs(hands[1]+22.5)<.001,'Turning backwards must reverse both hands at the same 12:1 ratio.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ assert.deepEqual(await clockHands(),hands,'Both hands must freeze on mouse leave.');
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});

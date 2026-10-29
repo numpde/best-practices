@@ -46,7 +46,7 @@
     "id": "effects",
     "name": "Honest state and effects",
     "color": "#FCC30B",
-    "icon": "<circle cx=\"16\" cy=\"16\" r=\"12\"/><path data-motion-part=\"hand\" d=\"M16 8v8l5 3\"/><path d=\"M7 5l-3 3\"/><circle data-motion-part=\"pivot\" cx=\"16\" cy=\"16\" r=\"1\" fill=\"currentColor\"/>",
+    "icon": "<circle cx=\"16\" cy=\"16\" r=\"12\"/><path data-motion-part=\"minute\" d=\"M16 8v8\"/><path data-motion-part=\"hour\" d=\"M16 16l5 3\"/><path d=\"M7 5l-3 3\"/><circle data-motion-part=\"pivot\" cx=\"16\" cy=\"16\" r=\"1\" fill=\"currentColor\"/>",
     "explanation": "Say what happened as far as it is known, marking each outcome pending, completed, failed, or uncertain.",
     "motion": "clock"
   },
