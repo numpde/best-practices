@@ -19,19 +19,31 @@ const iconInteractions={
    bar.setAttribute('y2',Math.max(ceiling,Math.min(bar.y1.baseVal.value,point.y)));
   });
  },
+ followDial(button,svg,pivot,turn){
+  let rotation=0;
+  iconInteractions.onMouseMove(button,svg,point=>{
+   if(Math.hypot(point.x-pivot.x,point.y-pivot.y)<pivot.radius)return;
+   const angle=Math.atan2(point.y-pivot.y,point.x-pivot.x)*180/Math.PI+90;
+   rotation+=((angle-rotation%360+540)%360)-180;
+   turn(rotation);
+  });
+ },
+ recovery(button,svg,symbol){
+  const arrow=symbol.querySelector('[data-motion-part="arrow"]');
+  const box=symbol.viewBox.baseVal;
+  const pivot={x:box.x+box.width/2,y:box.y+box.height/2,radius:Number(symbol.firstElementChild.getAttribute('stroke-width'))/2};
+  iconInteractions.followDial(button,svg,pivot,angle=>{
+   arrow.setAttribute('transform',`rotate(${angle} ${pivot.x} ${pivot.y})`);
+  });
+ },
  clock(button,svg,symbol){
   const minute=symbol.querySelector('[data-motion-part="minute"]');
   const hour=symbol.querySelector('[data-motion-part="hour"]');
-  let minuteAngle=0;
-  const pivot=symbol.querySelector('[data-motion-part="pivot"]');
-  iconInteractions.onMouseMove(button,svg,point=>{
-   const x=pivot.cx.baseVal.value,y=pivot.cy.baseVal.value;
-   if(Math.hypot(point.x-x,point.y-y)<pivot.r.baseVal.value)return;
-   const angle=Math.atan2(point.y-y,point.x-x)*180/Math.PI+90;
-   // Accumulate turns across the dial seam so the hour hand keeps advancing.
-   minuteAngle+=((angle-minuteAngle%360+540)%360)-180;
-   minute.setAttribute('transform',`rotate(${minuteAngle} ${x} ${y})`);
-   hour.setAttribute('transform',`rotate(${minuteAngle/12} ${x} ${y})`);
+  const centre=symbol.querySelector('[data-motion-part="pivot"]');
+  const pivot={x:centre.cx.baseVal.value,y:centre.cy.baseVal.value,radius:centre.r.baseVal.value};
+  iconInteractions.followDial(button,svg,pivot,angle=>{
+   minute.setAttribute('transform',`rotate(${angle} ${pivot.x} ${pivot.y})`);
+   hour.setAttribute('transform',`rotate(${angle/12} ${pivot.x} ${pivot.y})`);
   });
  },
  sliders(button,svg,symbol){

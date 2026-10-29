@@ -68,8 +68,9 @@
     "id": "recovery",
     "name": "Dependable recovery",
     "color": "#DD1367",
-    "icon": "<path d=\"M27 12A12 12 0 1 0 27 21M27 4v8h-8m-9 5 4 4 7-8\"/>",
-    "explanation": "When work is interrupted, make retries safe: retain commitments and avoid repeating effects that may have taken place."
+    "icon": "<g data-motion-part=\"arrow\"><path d=\"M24.660254 21A10 10 0 1 1 23.071068 8.928932v-3.5\"/></g><path data-motion-part=\"check\" d=\"m10 17 4 4 7-8\"/>",
+    "explanation": "When work is interrupted, make retries safe: retain commitments and avoid repeating effects that may have taken place.",
+    "motion": "recovery"
   },
   {
     "id": "resources",

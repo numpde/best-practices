@@ -98,6 +98,37 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.deepEqual(await barPositions(),bars,'Resource bars must retain their values on mouse leave.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:barPoint.x,y:barPoint.bottom});
  assert.equal((await barPositions())[0],22,'A resource bar must not fall below its baseline.');
+ const recoveryDial=await evaluate(`(()=>{
+  const svg=document.querySelector('[aria-label="Dependable recovery"] svg');svg.scrollIntoView({block:'center'});
+  const m=svg.getScreenCTM(),p=new DOMPoint(16,16).matrixTransform(m);return {x:p.x,y:p.y,r:10*Math.hypot(m.a,m.b)};
+ })()`);
+ const recoveryState=()=>evaluate(`({arrow:document.querySelector('#icon-recovery [data-motion-part="arrow"]').getAttribute('transform'),check:document.querySelector('#icon-recovery [data-motion-part="check"]').getAttribute('transform')})`);
+ for(const angle of [0,90,180,270,360]){
+  const radians=(angle-90)*Math.PI/180;
+  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:recoveryDial.x+recoveryDial.r*Math.cos(radians),y:recoveryDial.y+recoveryDial.r*Math.sin(radians)});
+ }
+ const recovery=await recoveryState();
+ assert.ok(Math.abs(parseFloat(recovery.arrow.slice(7))-360)<.001,'The recovery arrow must advance through a complete turn.');
+ assert.equal(recovery.check,null,'The check must stay steady as the arrow turns.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ assert.deepEqual(await recoveryState(),recovery,'The recovery arrow must freeze on mouse leave.');
+ assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Dependable recovery"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="recovery"] use').getAttribute('href')})`),{tile:'#icon-recovery',wheel:'#icon-recovery'});
+ const recoveryMargin=await evaluate(`(async()=>{
+  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
+  svg.setAttribute('viewBox','0 0 32 32');svg.setAttribute('width','320');svg.setAttribute('height','320');
+  svg.append(document.querySelector('#icon-recovery').firstElementChild.cloneNode(true));
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=320;const ctx=canvas.getContext('2d');
+  let margin=320,painted=0;
+  for(let angle=0;angle<360;angle+=15){
+   svg.querySelector('[data-motion-part="arrow"]').setAttribute('transform','rotate('+angle+' 16 16)');
+   const image=new Image();image.src='data:image/svg+xml,'+encodeURIComponent(new XMLSerializer().serializeToString(svg));await image.decode();
+   ctx.clearRect(0,0,320,320);ctx.drawImage(image,0,0);
+   const pixels=ctx.getImageData(0,0,320,320).data;
+   for(let y=0;y<320;y++)for(let x=0;x<320;x++)if(pixels[(y*320+x)*4+3]){painted++;margin=Math.min(margin,x,y,319-x,319-y);}
+  }
+  return {margin,painted};
+ })()`);
+ assert.ok(recoveryMargin.painted>0&&recoveryMargin.margin>=20,'The rounded arrow must retain a two-unit painted margin through a full rotation.');
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});
