@@ -10,6 +10,17 @@ const iconInteractions={
   const distance=part=>{const b=part.getBBox();return Math.abs(x-b.x-b.width/2);};
   return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
  },
+ magnifier(button,svg,symbol){
+  const glass=symbol.querySelector('[data-motion-part="magnifier"]');
+  const lens=glass.querySelector('[data-motion-part="lens"]');
+  const bounds=glass.getBBox(),box=symbol.viewBox.baseVal;
+  const inset=Number(symbol.firstElementChild.getAttribute('stroke-width'))*1.5;
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const x=Math.max(box.x+inset-bounds.x,Math.min(box.x+box.width-inset-bounds.x-bounds.width,point.x-lens.cx.baseVal.value));
+   const y=Math.max(box.y+inset-bounds.y,Math.min(box.y+box.height-inset-bounds.y-bounds.height,point.y-lens.cy.baseVal.value));
+   glass.setAttribute('transform',`translate(${x} ${y})`);
+  });
+ },
  layers(button,svg,symbol){
   const layers=[...symbol.querySelectorAll('[data-motion-part="layer"]')];
   const bounds=layers.map(layer=>layer.getBBox()),last=bounds.at(-1);

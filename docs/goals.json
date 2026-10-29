@@ -85,8 +85,9 @@
     "id": "evidence",
     "name": "Trustworthy evidence",
     "color": "#BF8B2E",
-    "icon": "<circle cx=\"13\" cy=\"13\" r=\"9\"/><path d=\"m20 20 9 9M8 13l3 3 6-7\"/>",
-    "explanation": "Check whether observations could contradict a claim. Describe what the evidence establishes, and what remains unshown."
+    "icon": "<path data-motion-part=\"check\" d=\"m8 13 3 3 6-7\"/><g data-motion-part=\"magnifier\"><circle data-motion-part=\"lens\" cx=\"13\" cy=\"13\" r=\"8\"/><path d=\"m19 19 7 7\"/></g>",
+    "explanation": "Check whether observations could contradict a claim. Describe what the evidence establishes, and what remains unshown.",
+    "motion": "magnifier"
   },
   {
     "id": "knowledge",

@@ -188,6 +188,25 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
  assert.deepEqual(await layerState(),layers,'Layer positions must freeze on mouse leave.');
  assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Understandable design"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="design"] use').getAttribute('href')})`),{tile:'#icon-design',wheel:'#icon-design'});
+ const glassPoints=await evaluate(`(()=>{
+  const card=document.querySelector('[aria-label="Trustworthy evidence"]');card.scrollIntoView({block:'center'});
+  const svg=card.querySelector('svg'),b=card.getBoundingClientRect(),p=new DOMPoint(16,15).matrixTransform(svg.getScreenCTM());
+  return {inside:{x:p.x,y:p.y},near:{x:b.left+2,y:b.top+2},far:{x:b.right-2,y:b.bottom-2}};
+ })()`);
+ const glassState=()=>evaluate(`(()=>{
+  const s=document.querySelector('#icon-evidence'),m=s.querySelector('[data-motion-part="magnifier"]').transform.baseVal.getItem(0).matrix;
+  return {x:m.e,y:m.f,check:s.querySelector('[data-motion-part="check"]').getAttribute('transform')};
+ })()`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...glassPoints.inside});
+ let glass=await glassState();assert.ok(Math.abs(glass.x-3)<.001&&Math.abs(glass.y-2)<.001,'The lens must follow the pointer directly within its travel limits.');
+ assert.equal(glass.check,null,'The evidence check must stay fixed under the moving magnifier.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...glassPoints.far});
+ glass=await glassState();assert.deepEqual(glass,{x:3,y:3,check:null},'The lens and handle must stop within the lower-right safe boundary.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...glassPoints.near});
+ glass=await glassState();assert.deepEqual(glass,{x:-2,y:-2,check:null},'The magnifier must stay within the upper-left safe boundary.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ assert.deepEqual(await glassState(),glass,'The shared magnifier must retain its position on mouse leave.');
+ assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Trustworthy evidence"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="evidence"] use').getAttribute('href')})`),{tile:'#icon-evidence',wheel:'#icon-evidence'});
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});
