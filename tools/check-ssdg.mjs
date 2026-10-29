@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {readFile} from 'node:fs/promises';
 
 // Exercise actual pointer input and the shared SVG references, including the
 // wordmark's tiny O. A parallel timer per wheel would drift under these checks.
@@ -6,9 +8,31 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
  await call('Emulation.setTouchEmulationEnabled',{enabled:false});
  await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
- await call('Page.navigate',{url:new URL('../docs/index.html',import.meta.url).href});
+ const server=createServer(async(req,res)=>{
+  try{res.setHeader('Content-Type',req.url==='/goals.json'?'application/json':req.url.endsWith('.js')?'text/javascript':'text/html');res.end(await readFile(new URL('../docs'+(req.url==='/'?'/index.html':req.url),import.meta.url)));}
+  catch{res.statusCode=404;res.end();}
+ });
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ try{
+ await call('Page.navigate',{url:`http://127.0.0.1:${server.address().port}/`});
  await waitFor(`document.querySelectorAll('.rotation-surface').length===3`);
  await evaluate('document.fonts.ready');
+ const cardCount=await evaluate(`document.querySelectorAll('.goal-card').length`);
+ assert.equal(cardCount,17);
+ for(const [side,angle] of [['left',-180],['left',-360],['right',-180],['right',0]]){
+  const point=await evaluate(`(()=>{
+   const card=document.querySelector('.goal-card');card.scrollIntoView({block:'center'});
+   const b=card.getBoundingClientRect();return {x:b.x+b.width*${side==='left'?.25:.75},y:b.y+b.height/2};
+  })()`);
+  await call('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...point});
+  await call('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...point});
+  const card=await evaluate(`(()=>{const b=document.querySelector('.goal-card');return {turn:b.style.getPropertyValue('--turn'),expanded:b.getAttribute('aria-expanded'),backHidden:b.querySelector('.card-back').getAttribute('aria-hidden'),cursor:getComputedStyle(b).cursor,selection:getComputedStyle(document.body).userSelect}})()`);
+  assert.equal(card.turn,angle+'deg',`${side} pushes must turn in that direction on either face.`);
+  assert.equal(card.expanded,String(Math.abs(angle%360)===180));
+  assert.equal(card.backHidden,String(angle%360===0));
+  assert.equal(card.cursor,'pointer');
+  assert.equal(card.selection,'none');
+ }
  for(const width of [1440,768,390]){
   await call('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:false});
   const positions=await evaluate(`([...document.querySelectorAll('.goal-tile:not(.wheel-tile)')].map(tile=>{
@@ -143,6 +167,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await evaluate(`window.dispatchEvent(new Event('blur'))`);
  assert.equal((await state()).coasting,false,'Losing window focus must stop motion.');
  await dragArc('.wheel',{touch:true,cancel:true});
+ await waitFor('drag===null');
  const cancelled=await state();
  assert.equal(cancelled.dragging,false);
  assert.equal(cancelled.coasting,false,'Cancelled gestures must not fling.');
@@ -151,4 +176,5 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.equal(cancelled.main,cancelled.tile);
  assert.equal(cancelled.small,`rotate(${-(((cancelled.angle%360)+360)%360)} 360 360)`);
  console.log('SSDG: wheels share pointer/touch rotation with a counter-rotating O; seam, inertia, stopping, cancellation, settling, reduced motion, and no keyboard rotation passed.');
+ }finally{await new Promise(resolve=>server.close(resolve));}
 }

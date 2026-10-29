@@ -228,16 +228,27 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helveti
 .wheel-title h1{margin:0;width:31%;line-height:0}
 .goal-tiles{--columns:6;--gap:16px;max-width:1240px;margin:0 auto;padding:40px 20px 60px;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--gap)}
 /* Reserve 1.5 heading lines so icon centering sits between one- and two-line titles. */
-.goal-tile{flex:0 0 calc((100% - (var(--columns) - 1)*var(--gap))/var(--columns));min-width:0;container-type:inline-size;aspect-ratio:1;background:var(--goal-color);color:white;padding:18px;display:grid;grid-template-rows:clamp(1.215rem,14.58%,2.025rem) minmax(0,1fr)}
+.goal-tile{flex:0 0 calc((100% - (var(--columns) - 1)*var(--gap))/var(--columns));min-width:0;container-type:inline-size;aspect-ratio:1;background:var(--goal-color);color:white;padding:0;position:relative;perspective:900px}
 .goal-tile h2{font-family:WheelWordmark,Arial,sans-serif;font-weight:900;font-size:clamp(.75rem,9cqw,1.25rem);line-height:1.08;text-transform:uppercase;margin:0;letter-spacing:-.02em}
 .goal-tile svg{display:block;width:54%;height:auto;aspect-ratio:1;margin:auto;flex-shrink:0}
-.wheel-tile{display:flex;background:#f1f1f1;align-items:center;justify-content:center}.wheel-tile svg{width:82%;margin:0}
+.wheel-tile{padding:18px;display:flex;background:#f1f1f1;align-items:center;justify-content:center}.wheel-tile svg{width:82%;margin:0}
+
+html{-webkit-user-select:none;user-select:none}
+.goal-card{display:block;width:100%;height:100%;border:0;padding:0;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit;perspective:900px}
+.goal-card:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+.card-rotor{display:block;position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(var(--turn,0deg));transition:transform 450ms ease}
+.card-front,.card-back{position:absolute;inset:0;padding:18px;background:var(--goal-color);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.card-front{display:grid;grid-template-rows:clamp(1.215rem,14.58%,2.025rem) minmax(0,1fr)}
+.card-back{transform:rotateY(180deg);display:flex;flex-direction:column;gap:.7em;font-size:clamp(.65rem,6.5cqw,.9rem);line-height:1.35;overflow:auto;cursor:pointer}
+.card-back strong{font-weight:700}
+@media(prefers-reduced-motion:reduce){.card-rotor{transition:none}}
+
 .rotation-surface{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;pointer-events:none}.wheel-leaf{pointer-events:visiblePainted}.rotation-surface.dragging{cursor:grabbing}
 .symbol-library{position:absolute;width:0;height:0;overflow:hidden}
 @media(min-width:1001px){.wheel-strip{--grid-width:min(100vw,1240px);--strip-height:calc(((var(--grid-width) - 120px)/2 + 32px)*720/676 + 32px)}}
 @media(max-width:1000px){.goal-tiles{--columns:3}}
-@media(max-width:760px){.goal-tiles{--columns:3;--gap:12px;padding:24px 16px 40px}.goal-tile{padding:14px}}
-@media(max-width:520px){.goal-tiles{--columns:2}.goal-tile{padding:12px}}
+@media(max-width:760px){.goal-tiles{--columns:3;--gap:12px;padding:24px 16px 40px}.card-front,.card-back,.wheel-tile{padding:14px}}
+@media(max-width:520px){.goal-tiles{--columns:2}.card-front,.card-back,.wheel-tile{padding:12px}}
 @media print{.wheel-strip{--strip-height:360px}.goal-tiles{--columns:4;padding:20px 0}.goal-tile{break-inside:avoid}body{print-color-adjust:exact}}
 </style>
 </head>
@@ -270,28 +281,15 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helveti
 <noscript><p>Enable JavaScript to display the goal wheel and its goal tiles.</p></noscript>
 </main>
 <svg class="symbol-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs id="symbols"></defs></svg>
+<script src="tile-interactions.js"></script>
 <script>
 // One record supplies each segment and its goal tile. Icons use a shared
 // 32-unit drawing space; the wheel keeps them upright for easy recognition.
-const goals = [
- {id:'capabilities',name:'Useful capabilities',color:'#E5243B',summary:'Complete the task people actually need.',icon:'<rect x="4" y="6" width="24" height="21" rx="2"/><path d="M4 12h24m-17 7 4 4 7-8"/>'},
- {id:'ownership',name:'Clear ownership',color:'#DDA63A',summary:'One authority for each consequential fact.',icon:'<circle cx="16" cy="7" r="4"/><path d="M16 11v6M6 22v-5h20v5"/><rect x="3" y="22" width="6" height="7" rx="1"/><rect x="23" y="22" width="6" height="7" rx="1"/>'},
- {id:'design',name:'Understandable design',color:'#4C9F38',summary:'Structure with clear responsibilities and reasons.',icon:'<path d="m16 3 13 7-13 7L3 10Zm-13 14 13 7 13-7M3 22l13 7 13-7"/>'},
- {id:'evolution',name:'Coherent evolution',color:'#C5192D',summary:'Improve the whole. Retire what is replaced.',icon:'<path d="M7 25V8m0 0-4 4m4-4 4 4M7 22c15 0 17-5 17-18m0 0-4 4m4-4 4 4"/><circle cx="7" cy="27" r="2"/>'},
- {id:'results',name:'Faithful results',color:'#FF3A21',summary:'Preserve meaning, identity, and correspondence.',icon:'<path d="M6 5h20v23H6zM11 11h10m-10 5h5m-4 6 3 3 7-8"/>'},
- {id:'control',name:'Informed control',color:'#26BDE2',summary:'Visible choices. Explicit permission and limits.',icon:'<path d="M7 4v24M16 4v24M25 4v24"/><rect x="4" y="9" width="6" height="6" rx="1" fill="currentColor"/><rect x="13" y="20" width="6" height="6" rx="1" fill="currentColor"/><rect x="22" y="7" width="6" height="6" rx="1" fill="currentColor"/>'},
- {id:'effects',name:'Honest state and effects',color:'#FCC30B',summary:'Keep known outcomes and uncertainty distinct.',icon:'<circle cx="16" cy="16" r="12"/><path d="M16 8v8l5 3M7 5l-3 3"/><circle cx="16" cy="16" r="1" fill="currentColor"/>'},
- {id:'interfaces',name:'Usable interfaces',color:'#A21942',summary:'Help people discover, understand, and act.',icon:'<rect x="3" y="4" width="26" height="20" rx="2"/><path d="M3 10h26M9 28h14M16 24v4m-4-14 8 4-4 2-2 4Z"/>'},
- {id:'failures',name:'Actionable failures',color:'#FD6925',summary:'Explain what failed and the next useful step.',icon:'<path d="M4 4h24v18H13l-7 6v-6H4Z M11 8v6m0 3v.1m5-2h8m-3-3 3 3-3 3"/>'},
- {id:'recovery',name:'Dependable recovery',color:'#DD1367',summary:'Resume useful work while preserving obligations.',icon:'<path d="M27 12A12 12 0 1 0 27 21M27 4v8h-8m-9 5 4 4 7-8"/>'},
- {id:'resources',name:'Bounded resource use',color:'#FD9D24',summary:'Respect limits, including retries and failed work.',icon:'<path d="M4 27V5h24v22ZM10 22v-7m6 7V9m6 13v-10"/>'},
- {id:'evidence',name:'Trustworthy evidence',color:'#BF8B2E',summary:'Match every claim to relevant observations.',icon:'<circle cx="13" cy="13" r="9"/><path d="m20 20 9 9M8 13l3 3 6-7"/>'},
- {id:'knowledge',name:'Transferable knowledge',color:'#3F7E44',summary:'Leave others able to continue responsibly.',icon:'<path d="M16 8C12 4 7 4 3 5v21c5-2 9-1 13 2 4-3 8-4 13-2V5c-4-1-9-1-13 3Zm0 0v20M7 10l5 1M7 15l5 1m8-5 5-1m-5 6 5-1"/>'},
- {id:'information',name:'Protected information',color:'#0A97D9',summary:'Protect sensitive information while preserving useful diagnosis.',icon:'<path d="M16 3 27 7v8c0 7-5 11-11 14C10 26 5 22 5 15V7Z"/><rect x="11" y="14" width="10" height="8" rx="1"/><path d="M13 14v-3a3 3 0 0 1 6 0v3m-3 3v2"/>'},
- {id:'reproducibility',name:'Reproducible results',color:'#56C02B',summary:'Preserve exact inputs, methods, and execution conditions.',icon:'<rect x="3" y="3" width="9" height="9" rx="1"/><rect x="20" y="20" width="9" height="9" rx="1"/><path d="M17 6h8v8m-4-4 4 4 4-4M15 26H7v-8m-4 4 4-4 4 4M6 6h3v3H6zm17 17h3v3h-3"/>'},
- {id:'improvement',name:'Reasoned improvement',color:'#00689D',summary:'Diagnose the problem, justify the change, and test its effect.',icon:'<path d="M11 25h10m-9 4h8M11 21c0-4-5-4-5-9a10 9 0 0 1 20 0c0 5-5 5-5 9M12 12l3 3 5-6"/>'},
- {id:'completion',name:'Verified completion',color:'#19486A',summary:'Close consequential findings through correction and verification.',icon:'<path d="M6 29V4h21l-4 7 4 7H6m6-7 3 3 6-6"/>'}
-];
+let goals;
+const artworkReady=fetch('goals.json').then(response=>{
+ if(!response.ok)throw new Error('Could not load goal data: '+response.status);
+ return response.json();
+}).then(data=>{goals=data;initializeArtwork();});
 const svgNS='http://www.w3.org/2000/svg';
 // Shared icon canvas: 2-unit strokes stay inside a 2-unit exterior safe zone.
 const iconViewBox='0 0 32 32';
@@ -300,39 +298,6 @@ const symbols=document.getElementById('symbols');
 const segments=document.getElementById('segments');
 const tiles=document.getElementById('goal-tiles');
 const point=(radius,angle)=>[360+radius*Math.cos(angle),360+radius*Math.sin(angle)];
-const step=2*Math.PI/goals.length;
-const gap=.035;
-for(const [index,goal] of goals.entries()){
- const symbol=document.createElementNS(svgNS,'symbol');
- symbol.id=`icon-${goal.id}`;
- symbol.setAttribute('viewBox',iconViewBox);
- symbol.innerHTML=`<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${goal.icon}</g>`;
- symbols.append(symbol);
- const start=-Math.PI/2+index*step+gap/2;
- const end=-Math.PI/2+(index+1)*step-gap/2;
- const middle=(start+end)/2;
- const outerStart=point(338,start),outerEnd=point(338,end);
- const innerStart=point(188,start),innerEnd=point(188,end);
- const [x,y]=point(263,middle);
- const group=document.createElementNS(svgNS,'g');
- group.dataset.goal=goal.id;
- group.innerHTML=`<path class="wheel-leaf" id="sector-${goal.id}" fill="${goal.color}" d="M${outerStart} A338 338 0 0 1 ${outerEnd} L${innerEnd} A188 188 0 0 0 ${innerStart} Z"/><use href="#icon-${goal.id}" x="${x-26}" y="${y-26}" width="52" height="52" color="white" pointer-events="none"/>`;
- segments.append(group);
- // Reuse the actual wheel sectors for the O, without the full-size icons.
- const sector=document.createElementNS(svgNS,'use');
- sector.setAttribute('href',`#sector-${goal.id}`);
- document.getElementById('colour-ring').append(sector);
- const item=document.createElement('li');
- item.className='goal-tile';
- item.style.setProperty('--goal-color',goal.color);
- item.innerHTML=`<h2>${goal.name}</h2>${iconMarkup(goal.id)}`;
- tiles.append(item);
-}
-// The eighteenth tile completes the grid with the same unlabelled colour wheel.
-const wheelTile=document.createElement('li');
-wheelTile.className='goal-tile wheel-tile';
-wheelTile.innerHTML='<svg viewBox="0 0 720 720" role="img" aria-label="Sustainable software development goals colour wheel"><g id="tile-wheel"><use href="#colour-ring"/></g></svg>';
-tiles.append(wheelTile);
 // Radial drag and release inertia follow bolt-spec-v0's
 // useBoltFigureRotationInteractions (revision 7a2edc51d2744f54e9aedc8d700e1091a297587d).
 // This wheel follows the pointer 1:1, has no socket snapping, and shares one
@@ -349,10 +314,7 @@ const wheelSettings={
  sampleWindowMs:180,
  releaseWindowMs:160,
 };
-const wheelIcons=[...segments.querySelectorAll('use')].map(icon=>({
- icon,x:icon.x.baseVal.value+icon.width.baseVal.value/2,y:icon.y.baseVal.value+icon.height.baseVal.value/2,
-}));
-const rotationSurfaces=[document.querySelector('.wheel'),document.querySelector('.wheel-title svg svg'),wheelTile.querySelector('svg')];
+let rotationSurfaces,wheelIcons,wheelTile;
 let rotation=0,drag=null,coastFrame=null;
 function renderRotation(){
  const angle=((rotation%360)+360)%360;
@@ -392,6 +354,53 @@ function pointerAngle(event,gesture){
  // Ignore the centre, where small pointer movements cause large angle jumps.
  return Math.hypot(x,y)<gesture.deadRadius?null:Math.atan2(y,x)*180/Math.PI;
 }
+window.addEventListener('blur',stopRotation);
+window.addEventListener('resize',stopRotation);
+window.addEventListener('scroll',()=>{if(drag)stopRotation();},{capture:true,passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopRotation();});
+function initializeArtwork(){
+const step=2*Math.PI/goals.length;
+const gap=.035;
+for(const [index,goal] of goals.entries()){
+ const symbol=document.createElementNS(svgNS,'symbol');
+ symbol.id=`icon-${goal.id}`;
+ symbol.setAttribute('viewBox',iconViewBox);
+ symbol.innerHTML=`<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${goal.icon}</g>`;
+ symbols.append(symbol);
+ const start=-Math.PI/2+index*step+gap/2;
+ const end=-Math.PI/2+(index+1)*step-gap/2;
+ const middle=(start+end)/2;
+ const outerStart=point(338,start),outerEnd=point(338,end);
+ const innerStart=point(188,start),innerEnd=point(188,end);
+ const [x,y]=point(263,middle);
+ const group=document.createElementNS(svgNS,'g');
+ group.dataset.goal=goal.id;
+ group.innerHTML=`<path class="wheel-leaf" id="sector-${goal.id}" fill="${goal.color}" d="M${outerStart} A338 338 0 0 1 ${outerEnd} L${innerEnd} A188 188 0 0 0 ${innerStart} Z"/><use href="#icon-${goal.id}" x="${x-26}" y="${y-26}" width="52" height="52" color="white" pointer-events="none"/>`;
+ segments.append(group);
+ // Reuse the actual wheel sectors for the O, without the full-size icons.
+ const sector=document.createElementNS(svgNS,'use');
+ sector.setAttribute('href',`#sector-${goal.id}`);
+ document.getElementById('colour-ring').append(sector);
+ const item=document.createElement('li');
+ item.className='goal-tile';
+ item.style.setProperty('--goal-color',goal.color);
+ item.innerHTML=`<button class="goal-card" type="button" aria-expanded="false"><span class="card-rotor"><span class="card-front"><h2></h2>${iconMarkup(goal.id)}</span><span class="card-back" aria-hidden="true"><strong></strong><span class="explanation"></span></span></span></button>`;
+ const button=item.querySelector('button'),front=item.querySelector('.card-front'),back=item.querySelector('.card-back');
+ front.querySelector('h2').textContent=goal.name;
+ back.querySelector('strong').textContent=goal.summary;
+ back.querySelector('.explanation').textContent=goal.explanation;
+ button.setAttribute('aria-label',goal.name);
+ tileInteractions.flip(button,{front,back});
+ tiles.append(item);
+}
+// The eighteenth tile completes the grid with the same unlabelled colour wheel.
+wheelTile=document.createElement('li');
+wheelTile.className='goal-tile wheel-tile';
+wheelTile.innerHTML='<svg viewBox="0 0 720 720" role="img" aria-label="Sustainable software development goals colour wheel"><g id="tile-wheel"><use href="#colour-ring"/></g></svg>';
+tiles.append(wheelTile);
+
+ wheelIcons=[...segments.querySelectorAll('use')].map(icon=>({icon,x:icon.x.baseVal.value+icon.width.baseVal.value/2,y:icon.y.baseVal.value+icon.height.baseVal.value/2}));
+ rotationSurfaces=[document.querySelector('.wheel'),document.querySelector('.wheel-title svg svg'),wheelTile.querySelector('svg')];
 for(const surface of rotationSurfaces){
  surface.classList.add('rotation-surface');
  const capture=surface.closest('.wheel-wrap,.wheel-tile');
@@ -446,11 +455,8 @@ for(const surface of rotationSurfaces){
   if(drag?.id===event.pointerId&&drag.surface===surface)stopRotation();
  });
 }
-window.addEventListener('blur',stopRotation);
-window.addEventListener('resize',stopRotation);
-window.addEventListener('scroll',()=>{if(drag)stopRotation();},{capture:true,passive:true});
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stopRotation();});
-renderRotation();
+ renderRotation();
+}
 
 </script>
 </body>

@@ -7,7 +7,9 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 const root=dirname(dirname(fileURLToPath(import.meta.url)));
 const check=process.argv.includes('--check');
 assert.ok(process.argv.slice(2).every(arg=>arg==='--check'),'Usage: node tools/export-logos.mjs [--check]');
-const source=readFileSync(join(root,'docs/index.html'),'utf8');
+const source=readFileSync(join(root,'docs/index.html'),'utf8').replace("fetch('goals.json')",
+ `Promise.resolve({ok:true,json:()=>${readFileSync(join(root,'docs/goals.json'),'utf8').trim()}})`);
+const exportSource=source.replace('<script src="tile-interactions.js"></script>',`<script>${readFileSync(join(root,'docs/tile-interactions.js'),'utf8')}</script>`);
 const fontLicense=source.match(/<!-- (Embedded Roboto Black,[\s\S]*?)-->/)?.[1];
 assert.ok(fontLicense,'The page must retain the embedded font license.');
 const temporary=mkdtempSync(join(root,'.logo-export-'));
@@ -71,7 +73,7 @@ function extractionScript(variant){
 try{
  for(const variant of variants){
   const base=join(temporary,variant.name);
-  writeFileSync(base+'.html',source.replace('</body>',`<script>${extractionScript(variant)}</script></body>`));
+  writeFileSync(base+'.html',exportSource.replace('</body>',`<script>artworkReady.then(()=>{${extractionScript(variant)}});</script></body>`));
   run(chromium,[...browserArgs,'--no-pdf-header-footer',`--print-to-pdf=${base}.pdf`,'--virtual-time-budget=1000',pathToFileURL(base+'.html').href]);
   run('pdftocairo',['-svg',base+'.pdf',base+'.svg']);
   let svg=readFileSync(base+'.svg','utf8');
