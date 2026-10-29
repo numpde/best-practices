@@ -17,6 +17,25 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await call('Page.navigate',{url:`http://127.0.0.1:${server.address().port}/`});
  await waitFor(`document.querySelectorAll('.rotation-surface').length===3`);
  await evaluate('document.fonts.ready');
+ const flipAnimation=await evaluate(`(async()=>{
+  const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
+  card.scrollIntoView({block:'center'});
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  const b=card.getBoundingClientRect();
+  const push=x=>card.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:x}));
+  push(b.x+b.width*.25);
+  await new Promise(resolve=>setTimeout(resolve,100));
+  const running=rotor.getAnimations(),matrix=getComputedStyle(rotor).transform;
+  const result={running:running.length,matrix,background:getComputedStyle(card.closest('.goal-tile')).backgroundColor};
+  await Promise.all(running.map(animation=>animation.finished));
+  push(b.x+b.width*.75);
+  await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  await Promise.all(rotor.getAnimations().map(animation=>animation.finished));
+  return result;
+ })()`);
+ assert.equal(flipAnimation.background,'rgba(0, 0, 0, 0)','The tile container must stay transparent behind the rotating faces.');
+ assert.ok(flipAnimation.running>0,'Flipping must animate, including when the system requests reduced motion.');
+ assert.ok(flipAnimation.matrix.startsWith('matrix3d('),'The flip must visibly pass through a 3D intermediate orientation.');
  const cardCount=await evaluate(`document.querySelectorAll('.goal-card').length`);
  assert.equal(cardCount,17);
  for(const [side,angle] of [['left',-180],['left',-360],['right',-180],['right',0]]){
@@ -33,13 +52,19 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   assert.equal(card.cursor,'pointer');
   assert.equal(card.selection,'none');
  }
- for(const width of [1440,768,390]){
+ for(const width of [1440,1000,768,521,390,320]){
   await call('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:false});
   const positions=await evaluate(`([...document.querySelectorAll('.goal-tile:not(.wheel-tile)')].map(tile=>{
    const box=tile.getBoundingClientRect(),icon=tile.querySelector('svg').getBoundingClientRect(),title=tile.querySelector('h2');
    const text=document.createRange();text.selectNodeContents(title);
    return {offset:icon.y-box.y,size:icon.width,titleFits:text.getBoundingClientRect().bottom<=icon.top};
   }))`);
+  const backs=await evaluate(`([...document.querySelectorAll('.card-back')].map(back=>({fits:back.scrollHeight<=back.clientHeight&&back.scrollWidth<=back.clientWidth,overflow:getComputedStyle(back).overflow,headers:back.querySelectorAll('strong,h2').length})))`);
+  for(const back of backs){
+   assert.ok(back.fits,`${width}px: explanatory text must fit without scrolling.`);
+   assert.equal(back.overflow,'hidden');
+   assert.equal(back.headers,0);
+  }
   const first=positions[0];
   for(const p of positions){
    assert.ok(Math.abs(p.offset-first.offset)<1&&Math.abs(p.size-first.size)<1,`${width}px: tile icons must share size and vertical position regardless of title wrapping.`);

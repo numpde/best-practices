@@ -228,7 +228,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helveti
 .wheel-title h1{margin:0;width:31%;line-height:0}
 .goal-tiles{--columns:6;--gap:16px;max-width:1240px;margin:0 auto;padding:40px 20px 60px;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--gap)}
 /* Reserve 1.5 heading lines so icon centering sits between one- and two-line titles. */
-.goal-tile{flex:0 0 calc((100% - (var(--columns) - 1)*var(--gap))/var(--columns));min-width:0;container-type:inline-size;aspect-ratio:1;background:var(--goal-color);color:white;padding:0;position:relative;perspective:900px}
+.goal-tile{flex:0 0 calc((100% - (var(--columns) - 1)*var(--gap))/var(--columns));min-width:0;container-type:inline-size;aspect-ratio:1;color:white;padding:0;position:relative;perspective:900px}
 .goal-tile h2{font-family:WheelWordmark,Arial,sans-serif;font-weight:900;font-size:clamp(.75rem,9cqw,1.25rem);line-height:1.08;text-transform:uppercase;margin:0;letter-spacing:-.02em}
 .goal-tile svg{display:block;width:54%;height:auto;aspect-ratio:1;margin:auto;flex-shrink:0}
 .wheel-tile{padding:18px;display:flex;background:#f1f1f1;align-items:center;justify-content:center}.wheel-tile svg{width:82%;margin:0}
@@ -239,9 +239,7 @@ html{-webkit-user-select:none;user-select:none}
 .card-rotor{display:block;position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(var(--turn,0deg));transition:transform 450ms ease}
 .card-front,.card-back{position:absolute;inset:0;padding:18px;background:var(--goal-color);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .card-front{display:grid;grid-template-rows:clamp(1.215rem,14.58%,2.025rem) minmax(0,1fr)}
-.card-back{transform:rotateY(180deg);display:flex;flex-direction:column;gap:.7em;font-size:clamp(.65rem,6.5cqw,.9rem);line-height:1.35;overflow:auto;cursor:pointer}
-.card-back strong{font-weight:700}
-@media(prefers-reduced-motion:reduce){.card-rotor{transition:none}}
+.card-back{transform:rotateY(180deg);display:flex;flex-direction:column;gap:.7em;font-size:clamp(.65rem,6.5cqw,.9rem);line-height:1.35;overflow:hidden;cursor:pointer}
 
 .rotation-surface{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;pointer-events:none}.wheel-leaf{pointer-events:visiblePainted}.rotation-surface.dragging{cursor:grabbing}
 .symbol-library{position:absolute;width:0;height:0;overflow:hidden}
@@ -384,10 +382,9 @@ for(const [index,goal] of goals.entries()){
  const item=document.createElement('li');
  item.className='goal-tile';
  item.style.setProperty('--goal-color',goal.color);
- item.innerHTML=`<button class="goal-card" type="button" aria-expanded="false"><span class="card-rotor"><span class="card-front"><h2></h2>${iconMarkup(goal.id)}</span><span class="card-back" aria-hidden="true"><strong></strong><span class="explanation"></span></span></span></button>`;
+ item.innerHTML=`<button class="goal-card" type="button" aria-expanded="false"><span class="card-rotor"><span class="card-front"><h2></h2>${iconMarkup(goal.id)}</span><span class="card-back" aria-hidden="true"><span class="explanation"></span></span></span></button>`;
  const button=item.querySelector('button'),front=item.querySelector('.card-front'),back=item.querySelector('.card-back');
  front.querySelector('h2').textContent=goal.name;
- back.querySelector('strong').textContent=goal.summary;
  back.querySelector('.explanation').textContent=goal.explanation;
  button.setAttribute('aria-label',goal.name);
  tileInteractions.flip(button,{front,back});
