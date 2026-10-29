@@ -45,7 +45,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
    const wheelCentre=new DOMPoint(360,360).matrixTransform(document.querySelector('.wheel').getCTM());
    return {angle:Math.atan2(m.b,m.a)*180/Math.PI,radius:Math.hypot(centre.x-wheelCentre.x,centre.y-wheelCentre.y)/Math.hypot(m.a,m.b)};
   });
-  rotation=0;renderRotation();return {upright:keepWheelIconsUpright,icons:result};
+  rotation=0;renderRotation();return {upright:wheelSettings.keepIconsUpright,icons:result};
  })()`);
  assert.equal(iconRotation.icons.length,17);
  for(const icon of iconRotation.icons){

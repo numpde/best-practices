@@ -337,8 +337,18 @@ tiles.append(wheelTile);
 // useBoltFigureRotationInteractions (revision 7a2edc51d2744f54e9aedc8d700e1091a297587d).
 // This wheel follows the pointer 1:1, has no socket snapping, and shares one
 // angle across all wheels; the wordmark rotates in the opposite direction.
-// Set false to let icons turn with their wheel segments.
-const keepWheelIconsUpright=true;
+const wheelSettings={
+ keepIconsUpright:true,
+ inertiaRetentionPerMs:.9945,
+ minimumCoastSpeed:.015, // Degrees per millisecond.
+ maximumFrameMs:64,
+ dragThresholdPx:8,
+ centreDeadRadiusPx:18,
+ centreDeadRadiusRatio:.12,
+ minimumAngleDelta:.001,
+ sampleWindowMs:180,
+ releaseWindowMs:160,
+};
 const wheelIcons=[...segments.querySelectorAll('use')].map(icon=>({
  icon,x:icon.x.baseVal.value+icon.width.baseVal.value/2,y:icon.y.baseVal.value+icon.height.baseVal.value/2,
 }));
@@ -347,7 +357,7 @@ let rotation=0,drag=null,coastFrame=null;
 function renderRotation(){
  const angle=((rotation%360)+360)%360;
  segments.setAttribute('transform',`rotate(${angle} 360 360)`);
- for(const {icon,x,y} of wheelIcons)icon.setAttribute('transform',`rotate(${keepWheelIconsUpright?-angle:0} ${x} ${y})`);
+ for(const {icon,x,y} of wheelIcons)icon.setAttribute('transform',`rotate(${wheelSettings.keepIconsUpright?-angle:0} ${x} ${y})`);
  document.getElementById('wordmark-wheel').setAttribute('transform',`rotate(${-angle} 360 360)`);
  document.getElementById('tile-wheel').setAttribute('transform',`rotate(${angle} 360 360)`);
 }
@@ -364,16 +374,16 @@ function releaseDrag(){
 }
 function stopRotation(){stopCoasting();releaseDrag();}
 function coast(velocity){
- if(Math.abs(velocity)<.015)return;
+ if(Math.abs(velocity)<wheelSettings.minimumCoastSpeed)return;
  let previous=performance.now();
  const tick=now=>{
-  const elapsed=Math.min(now-previous,64);
+  const elapsed=Math.min(now-previous,wheelSettings.maximumFrameMs);
   previous=now;
-  const decay=Math.pow(.994,elapsed);
-  rotation+=velocity*(1-decay)/-Math.log(.994);
+  const decay=Math.pow(wheelSettings.inertiaRetentionPerMs,elapsed);
+  rotation+=velocity*(1-decay)/-Math.log(wheelSettings.inertiaRetentionPerMs);
   velocity*=decay;
   renderRotation();
-  coastFrame=Math.abs(velocity)<.015?null:requestAnimationFrame(tick);
+  coastFrame=Math.abs(velocity)<wheelSettings.minimumCoastSpeed?null:requestAnimationFrame(tick);
  };
  coastFrame=requestAnimationFrame(tick);
 }
@@ -390,7 +400,7 @@ for(const surface of rotationSurfaces){
   stopCoasting();
   const rect=surface.getBoundingClientRect();
   drag={surface,capture,direction:surface===rotationSurfaces[1]?-1:1,id:event.pointerId,cx:rect.x+rect.width/2,cy:rect.y+rect.height/2,
-   deadRadius:Math.min(18,rect.width*.12),x:event.clientX,y:event.clientY,
+   deadRadius:Math.min(wheelSettings.centreDeadRadiusPx,rect.width*wheelSettings.centreDeadRadiusRatio),x:event.clientX,y:event.clientY,
    active:false,last:null,samples:[{time:performance.now(),angle:rotation}]};
   drag.last=pointerAngle(event,drag);
   capture.setPointerCapture(event.pointerId);
@@ -399,7 +409,7 @@ for(const surface of rotationSurfaces){
  const movePointer=event=>{
   if(!drag||drag.id!==event.pointerId||drag.surface!==surface)return;
   if(!drag.active){
-   if(Math.hypot(event.clientX-drag.x,event.clientY-drag.y)<8)return;
+   if(Math.hypot(event.clientX-drag.x,event.clientY-drag.y)<wheelSettings.dragThresholdPx)return;
    drag.active=true;
    surface.classList.add('dragging');
   }
@@ -410,11 +420,11 @@ for(const surface of rotationSurfaces){
    return;
   }
   const delta=((next-drag.last+540)%360)-180;
-  if(Math.abs(delta)<.001)return;
+  if(Math.abs(delta)<wheelSettings.minimumAngleDelta)return;
   rotation+=delta*drag.direction;
   drag.last=next;
   const now=performance.now();
-  drag.samples=drag.samples.filter(sample=>now-sample.time<=180);
+  drag.samples=drag.samples.filter(sample=>now-sample.time<=wheelSettings.sampleWindowMs);
   drag.samples.push({time:now,angle:rotation});
   renderRotation();
  };
@@ -424,7 +434,7 @@ for(const surface of rotationSurfaces){
   // Browsers may coalesce the last move; consume the final release position.
   movePointer(event);
   const now=performance.now();
-  const samples=drag.samples.filter(sample=>now-sample.time<=160);
+  const samples=drag.samples.filter(sample=>now-sample.time<=wheelSettings.releaseWindowMs);
   // Match Bolt: estimate speed between recent movement samples. The release
   // window discards stale movement; pointer-up latency does not dilute speed.
   const first=samples[0],last=samples.at(-1);
