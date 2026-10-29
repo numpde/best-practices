@@ -91,7 +91,7 @@
     "id": "knowledge",
     "name": "Transferable knowledge",
     "color": "#3F7E44",
-    "icon": "<g data-motion-part=\"page\"><path d=\"M16 8C12 4 7 4 3 5v21c5-2 9-1 13 2M7 10l5 1M7 15l5 1\"/></g><g data-motion-part=\"page\"><path d=\"M16 8c4-4 9-4 13-3v21c-5-2-9-1-13 2M20 11l5-1M20 16l5-1\"/></g><path data-motion-part=\"spine\" d=\"M16 8v20\"/>",
+    "icon": "<defs><g id=\"knowledge-sheet\"><path fill=\"var(--icon-paper)\" d=\"M16 8c4-4 9-4 13-3v21c-5-2-9-1-13 2Z\"/><path d=\"M20 11l5-1M20 16l5-1\"/></g></defs><g data-motion-part=\"cover\"><use href=\"#knowledge-sheet\" transform=\"translate(32 0) scale(-1 1)\"/><use href=\"#knowledge-sheet\"/></g><g data-motion-part=\"page\"><use href=\"#knowledge-sheet\"/></g><path data-motion-part=\"spine\" d=\"M16 8v20\"/>",
     "explanation": "Leave clear reasoning and steps for the next person, and update docs as behavior changes.",
     "motion": "book"
   },

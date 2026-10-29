@@ -394,6 +394,7 @@ const gap=.035;
 for(const [index,goal] of goals.entries()){
  const symbol=document.createElementNS(svgNS,'symbol');
  symbol.id=`icon-${goal.id}`;
+ symbol.style.setProperty('--icon-paper',goal.color);
  symbol.setAttribute('viewBox',iconViewBox);
  symbol.innerHTML=`<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${goal.icon}</g>`;
  symbols.append(symbol);

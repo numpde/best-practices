@@ -132,19 +132,25 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  const bookPoint=await evaluate(`(()=>{
   const card=document.querySelector('[aria-label="Transferable knowledge"]');card.scrollIntoView({block:'center'});
   const b=card.getBoundingClientRect(),p=new DOMPoint(16,16).matrixTransform(card.querySelector('svg').getScreenCTM());
-  return {x:p.x,y:p.y,edge:b.left+2};
+  return {x:p.x,y:p.y,left:b.left+2,right:b.right-2};
  })()`);
- const bookState=()=>evaluate(`({pages:[...document.querySelectorAll('#icon-knowledge [data-motion-part="page"]')].map(page=>{const m=page.transform.baseVal.consolidate().matrix;return {scale:m.a,hinge:m.a*16+m.e};}),spine:document.querySelector('#icon-knowledge [data-motion-part="spine"]').getAttribute('transform')})`);
+ const bookState=()=>evaluate(`(()=>{
+  const symbol=document.querySelector('#icon-knowledge'),page=symbol.querySelector('[data-motion-part="page"]'),m=page.transform.baseVal.getItem(0).matrix;
+  return {count:symbol.querySelectorAll('[data-motion-part="page"]').length,scale:m.a,tilt:m.b,hingeX:m.a*16+m.e,hingeY:m.b*16+8+m.f,cover:symbol.querySelector('[data-motion-part="cover"]').getAttribute('transform'),spine:symbol.querySelector('[data-motion-part="spine"]').getAttribute('transform')};
+ })()`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:bookPoint.right,y:bookPoint.y});
+ let book=await bookState();assert.equal(book.count,1,'Only one sheet should turn.');assert.equal(book.scale,1,'The page must lie on the right at one end.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:bookPoint.x,y:bookPoint.y});
- let book=await bookState();
- for(const page of book.pages){assert.ok(Math.abs(page.scale-.55)<.001);assert.ok(Math.abs(page.hinge-16)<.001,'Page movement must stay hinged to the spine.');}
- assert.equal(book.spine,null,'The spine must stay steady.');
- await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:bookPoint.edge,y:bookPoint.y});
- book=await bookState();
- for(const page of book.pages)assert.equal(page.scale,1,'The book must stop at its original fully open width.');
+ book=await bookState();assert.ok(Math.abs(book.scale)<.001&&book.tilt<0,'The sheet must turn edge-on and lift across the spine.');
+ assert.ok(Math.abs(book.hingeX-16)<.001&&Math.abs(book.hingeY-8)<.001,'The page must remain attached to the spine.');
+ assert.equal(book.cover,null);assert.equal(book.spine,null);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:bookPoint.left,y:bookPoint.y});
+ book=await bookState();assert.equal(book.scale,-1,'The same page must land on the left.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:bookPoint.right,y:bookPoint.y});
+ book=await bookState();assert.equal(book.scale,1,'Moving back must turn the page back to the right.');
  assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Transferable knowledge"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="knowledge"] use').getAttribute('href')})`),{tile:'#icon-knowledge',wheel:'#icon-knowledge'});
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
- assert.deepEqual(await bookState(),book,'The shared book must retain its opening on mouse leave.');
+ assert.deepEqual(await bookState(),book,'The shared page must stay where it was left.');
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});

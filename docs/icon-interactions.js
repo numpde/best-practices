@@ -1,5 +1,5 @@
 const iconInteractions={
- settings:{bookMinimumOpen:.55},
+ settings:{bookLiftRatio:.5},
  onMouseMove(button,svg,move){
   button.addEventListener('pointermove',event=>{
    if(event.pointerType!=='mouse'||event.buttons!==0||button.getAttribute('aria-expanded')==='true')return;
@@ -11,14 +11,16 @@ const iconInteractions={
   return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
  },
  book(button,svg,symbol){
-  const pages=[...symbol.querySelectorAll('[data-motion-part="page"]')];
+  const page=symbol.querySelector('[data-motion-part="page"]');
   const spine=symbol.querySelector('[data-motion-part="spine"]').getBBox();
-  const box=symbol.viewBox.baseVal;
+  const cover=symbol.querySelector('[data-motion-part="cover"]').getBBox();
+  const sheet=page.getBBox();
   iconInteractions.onMouseMove(button,svg,point=>{
-   const openness=Math.min(1,Math.abs(point.x-spine.x)/(box.width/2));
-   const minimum=iconInteractions.settings.bookMinimumOpen;
-   const scale=minimum+(1-minimum)*openness;
-   for(const page of pages)page.setAttribute('transform',`translate(${spine.x} 0) scale(${scale} 1) translate(${-spine.x} 0)`);
+   const progress=Math.max(0,Math.min(1,(cover.x+cover.width-point.x)/cover.width));
+   const angle=progress*Math.PI,scale=Math.cos(angle);
+   const lift=Math.sin(angle)*(spine.y-sheet.y)*iconInteractions.settings.bookLiftRatio/sheet.width;
+   // Project one sheet across the fixed spine, lifting its outer edge as it turns.
+   page.setAttribute('transform',`matrix(${scale} ${-lift} 0 1 ${spine.x*(1-scale)} ${spine.x*lift})`);
   });
  },
  bars(button,svg,symbol){
