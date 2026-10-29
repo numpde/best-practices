@@ -4,118 +4,118 @@
     "name": "Useful capabilities",
     "color": "#E5243B",
     "icon": "<rect x=\"4\" y=\"6\" width=\"24\" height=\"21\" rx=\"2\"/><path d=\"M4 12h24m-17 7 4 4 7-8\"/>",
-    "explanation": "Build around a real task. Complete the useful path and check that people can reach the outcome they need."
+    "explanation": "Start with a real task. Complete the useful flow and check that people can get the outcome they need."
   },
   {
     "id": "ownership",
     "name": "Clear ownership",
     "color": "#DDA63A",
     "icon": "<circle cx=\"16\" cy=\"7\" r=\"4\"/><path d=\"M16 11v6M6 22v-5h20v5\"/><rect x=\"3\" y=\"22\" width=\"6\" height=\"7\" rx=\"1\"/><rect x=\"23\" y=\"22\" width=\"6\" height=\"7\" rx=\"1\"/>",
-    "explanation": "Give each important fact one owner. Route changes through it so different parts of the system cannot disagree."
+    "explanation": "Keep one owner for every important fact; route changes through that owner to avoid mismatches."
   },
   {
     "id": "design",
     "name": "Understandable design",
     "color": "#4C9F38",
     "icon": "<path d=\"m16 3 13 7-13 7L3 10Zm-13 14 13 7 13-7M3 22l13 7 13-7\"/>",
-    "explanation": "Make responsibilities and dependencies easy to follow. Explain decisions that the code cannot make obvious."
+    "explanation": "Show how responsibilities and dependencies fit together. Explain decisions that are not obvious in code."
   },
   {
     "id": "evolution",
     "name": "Coherent evolution",
     "color": "#C5192D",
     "icon": "<path d=\"M7 25V8m0 0-4 4m4-4 4 4M7 22c15 0 17-5 17-18m0 0-4 4m4-4 4 4\"/><circle cx=\"7\" cy=\"27\" r=\"2\"/>",
-    "explanation": "Change connected parts together. Remove replaced behavior and obsolete paths to leave a coherent system."
+    "explanation": "Change connected parts together, removing replaced behavior and obsolete paths so the system stays coherent."
   },
   {
     "id": "results",
     "name": "Faithful results",
     "color": "#FF3A21",
     "icon": "<path d=\"M6 5h20v23H6zM11 11h10m-10 5h5m-4 6 3 3 7-8\"/>",
-    "explanation": "Preserve meaning when transforming data. Keep identity, units, ordering, and relationships intact."
+    "explanation": "When transforming data, preserve its meaning, identity, units, order, and relationships."
   },
   {
     "id": "control",
     "name": "Informed control",
     "color": "#26BDE2",
     "icon": "<path d=\"M7 4v24M16 4v24M25 4v24\"/><rect x=\"4\" y=\"9\" width=\"6\" height=\"6\" rx=\"1\" fill=\"currentColor\"/><rect x=\"13\" y=\"20\" width=\"6\" height=\"6\" rx=\"1\" fill=\"currentColor\"/><rect x=\"22\" y=\"7\" width=\"6\" height=\"6\" rx=\"1\" fill=\"currentColor\"/>",
-    "explanation": "Make choices and consequences visible. Ask permission where it matters, respect limits, and let people stop."
+    "explanation": "Make choices and consequences easy to see, ask permission when it matters, honor boundaries, and allow people to stop."
   },
   {
     "id": "effects",
     "name": "Honest state and effects",
     "color": "#FCC30B",
     "icon": "<circle cx=\"16\" cy=\"16\" r=\"12\"/><path d=\"M16 8v8l5 3M7 5l-3 3\"/><circle cx=\"16\" cy=\"16\" r=\"1\" fill=\"currentColor\"/>",
-    "explanation": "Report what is known to have happened. Distinguish pending, completed, failed, and uncertain outcomes."
+    "explanation": "Say what happened as far as it is known, marking each outcome pending, completed, failed, or uncertain."
   },
   {
     "id": "interfaces",
     "name": "Usable interfaces",
     "color": "#A21942",
     "icon": "<rect x=\"3\" y=\"4\" width=\"26\" height=\"20\" rx=\"2\"/><path d=\"M3 10h26M9 28h14M16 24v4m-4-14 8 4-4 2-2 4Z\"/>",
-    "explanation": "Help people find the next action and understand its result. Use clear labels, consistent controls, and timely feedback."
+    "explanation": "Use clear labels, consistent controls, and timely feedback so people know what to do next and what it will do."
   },
   {
     "id": "failures",
     "name": "Actionable failures",
     "color": "#FD6925",
     "icon": "<path d=\"M4 4h24v18H13l-7 6v-6H4Z M11 8v6m0 3v.1m5-2h8m-3-3 3 3-3 3\"/>",
-    "explanation": "Say what failed, why, and what can help next. Preserve diagnostic evidence without exposing private information."
+    "explanation": "Explain what failed, why it failed, and what could help next; keep evidence, protect privacy."
   },
   {
     "id": "recovery",
     "name": "Dependable recovery",
     "color": "#DD1367",
     "icon": "<path d=\"M27 12A12 12 0 1 0 27 21M27 4v8h-8m-9 5 4 4 7-8\"/>",
-    "explanation": "Plan for interruption and retry. Resume work without losing commitments or repeating effects that may have happened."
+    "explanation": "When work is interrupted, make retries safe: retain commitments and avoid repeating effects that may have taken place."
   },
   {
     "id": "resources",
     "name": "Bounded resource use",
     "color": "#FD9D24",
     "icon": "<path d=\"M4 27V5h24v22ZM10 22v-7m6 7V9m6 13v-10\"/>",
-    "explanation": "Bound time, memory, storage, and repeated work. Count retries and failures, and stop when further work cannot help."
+    "explanation": "Set limits for time, memory, storage, and repeated work. Count retries and failures, and stop when more won't help."
   },
   {
     "id": "evidence",
     "name": "Trustworthy evidence",
     "color": "#BF8B2E",
     "icon": "<circle cx=\"13\" cy=\"13\" r=\"9\"/><path d=\"m20 20 9 9M8 13l3 3 6-7\"/>",
-    "explanation": "Check claims against observations that could reveal a mistake. State what the evidence does and does not establish."
+    "explanation": "Check whether observations could contradict a claim. Describe what the evidence establishes, and what remains unshown."
   },
   {
     "id": "knowledge",
     "name": "Transferable knowledge",
     "color": "#3F7E44",
     "icon": "<path d=\"M16 8C12 4 7 4 3 5v21c5-2 9-1 13 2 4-3 8-4 13-2V5c-4-1-9-1-13 3Zm0 0v20M7 10l5 1M7 15l5 1m8-5 5-1m-5 6 5-1\"/>",
-    "explanation": "Leave the reasoning and instructions needed to continue. Update documentation when behavior changes."
+    "explanation": "Leave clear reasoning and steps for the next person, and update docs as behavior changes."
   },
   {
     "id": "information",
     "name": "Protected information",
     "color": "#0A97D9",
     "icon": "<path d=\"M16 3 27 7v8c0 7-5 11-11 14C10 26 5 22 5 15V7Z\"/><rect x=\"11\" y=\"14\" width=\"10\" height=\"8\" rx=\"1\"/><path d=\"M13 14v-3a3 3 0 0 1 6 0v3m-3 3v2\"/>",
-    "explanation": "Collect and expose only what is needed. Protect private data in storage, interfaces, logs, and diagnostics."
+    "explanation": "Collect and share only what you need. Keep private data safe in storage, interfaces, logs, and diagnostics."
   },
   {
     "id": "reproducibility",
     "name": "Reproducible results",
     "color": "#56C02B",
     "icon": "<rect x=\"3\" y=\"3\" width=\"9\" height=\"9\" rx=\"1\"/><rect x=\"20\" y=\"20\" width=\"9\" height=\"9\" rx=\"1\"/><path d=\"M17 6h8v8m-4-4 4 4 4-4M15 26H7v-8m-4 4 4-4 4 4M6 6h3v3H6zm17 17h3v3h-3\"/>",
-    "explanation": "Record inputs, versions, configuration, and methods. Distinguish exact reproduction from approximation."
+    "explanation": "Record inputs, versions, settings, and methods; say whether reproduction is exact or approximate."
   },
   {
     "id": "improvement",
     "name": "Reasoned improvement",
     "color": "#00689D",
     "icon": "<path d=\"M11 25h10m-9 4h8M11 21c0-4-5-4-5-9a10 9 0 0 1 20 0c0 5-5 5-5 9M12 12l3 3 5-6\"/>",
-    "explanation": "Diagnose before changing. Explain why a change should help, then compare its observed effect with that expectation."
+    "explanation": "Work out what's wrong before changing it. Say why the fix should help, then compare its effect with what you expected."
   },
   {
     "id": "completion",
     "name": "Verified completion",
     "color": "#19486A",
     "icon": "<path d=\"M6 29V4h21l-4 7 4 7H6m6-7 3 3 6-6\"/>",
-    "explanation": "Finish the promised outcome and verify it where it matters. Resolve relevant findings and report remaining limits."
+    "explanation": "Finish what was promised, check the outcome where it matters, handle relevant findings, and report limitations."
   }
 ]
