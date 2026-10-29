@@ -1,5 +1,7 @@
 # Development
 
+The wheel page is docs/index.html; the practices graph is docs/best-practices.html.
+
   make serve    Preview at http://127.0.0.1:8000/
   make check    Check graph data, local links, and privacy patterns.
   make check-browser    Check graph interactions in Chromium.

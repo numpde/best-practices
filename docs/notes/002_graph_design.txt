@@ -2,7 +2,7 @@ Graph design and implementation
 ===============================
 26 October 2026
 
-The application is a standalone HTML page served directly from docs/index.html.
+The application is a standalone HTML page served directly from docs/best-practices.html.
 Its nodes and edges arrays own graph data. A change to the page is immediately
 a change to the site; no separate build or duplicated versioned entrypoint exists.
 

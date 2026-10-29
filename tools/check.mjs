@@ -28,7 +28,7 @@ function filesAt(directory){
   return stat.isDirectory()?filesAt(file):[file];
  });
 }
-const html=readFileSync(resolve(site,'index.html'),'utf8');
+const html=readFileSync(resolve(site,'best-practices.html'),'utf8');
 const modelStart=html.indexOf('const groups = [');
 const modelEnd=html.indexOf('const criteriaSource=');
 assert.ok(modelStart>=0&&modelEnd>modelStart,'Cannot locate the embedded graph source.');

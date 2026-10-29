@@ -163,7 +163,7 @@ try{
    });
   }).observe(graph,{attributes:true});
  });`});
- const pageURL=new URL('../docs/index.html',import.meta.url).href;
+ const pageURL=new URL('../docs/best-practices.html',import.meta.url).href;
  await call('Page.navigate',{url:pageURL});
  await waitReady();
  const initial=await snapshot();

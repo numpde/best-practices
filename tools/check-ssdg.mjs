@@ -6,7 +6,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
  await call('Emulation.setTouchEmulationEnabled',{enabled:false});
  await call('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
- await call('Page.navigate',{url:new URL('../docs/ssdg.html',import.meta.url).href});
+ await call('Page.navigate',{url:new URL('../docs/index.html',import.meta.url).href});
  await waitFor(`document.querySelectorAll('.rotation-surface').length===3`);
  await evaluate('document.fonts.ready');
  const selectors=['.wheel','.wheel-title svg svg','.wheel-tile svg'];
