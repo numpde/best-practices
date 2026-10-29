@@ -50,6 +50,17 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.deepEqual(await sliderState(),movedSliders,'Sliders must freeze on mouse leave.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:sliderPoint.x,y:sliderPoint.top});
  assert.equal((await sliderState()).positions[0],4,'The slider must stop at the top of its track.');
+ const clockPoint=await evaluate(`(()=>{
+  const svg=document.querySelector('[aria-label="Honest state and effects"] svg');svg.scrollIntoView({block:'center'});
+  const p=new DOMPoint(26,16).matrixTransform(svg.getScreenCTM());return {x:p.x,y:p.y};
+ })()`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...clockPoint});
+ const handTransform=()=>evaluate(`document.querySelector('#icon-effects [data-motion-part="hand"]').getAttribute('transform')`);
+ const clockPosition=await handTransform();
+ assert.ok(Math.abs(parseFloat(clockPosition.slice(7))-90)<.001,'The shared clock hand must point toward the mouse.');
+ assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Honest state and effects"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="effects"] use').getAttribute('href')})`),{tile:'#icon-effects',wheel:'#icon-effects'});
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ assert.equal(await handTransform(),clockPosition,'The clock hand must hold its position on mouse leave.');
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});
