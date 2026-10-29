@@ -17,8 +17,9 @@
     "id": "design",
     "name": "Understandable design",
     "color": "#4C9F38",
-    "icon": "<path d=\"m16 3 13 7-13 7L3 10Zm-13 14 13 7 13-7M3 22l13 7 13-7\"/>",
-    "explanation": "Show how responsibilities and dependencies fit together. Explain decisions that are not obvious in code."
+    "icon": "<path data-motion-part=\"layer\" d=\"m16 3 13 7-13 7L3 10Z\"/><path data-motion-part=\"layer\" d=\"m3 17 13 7 13-7\"/><path data-motion-part=\"layer\" d=\"m3 22 13 7 13-7\"/>",
+    "explanation": "Show how responsibilities and dependencies fit together. Explain decisions that are not obvious in code.",
+    "motion": "layers"
   },
   {
     "id": "evolution",

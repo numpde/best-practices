@@ -10,6 +10,19 @@ const iconInteractions={
   const distance=part=>{const b=part.getBBox();return Math.abs(x-b.x-b.width/2);};
   return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
  },
+ layers(button,svg,symbol){
+  const layers=[...symbol.querySelectorAll('[data-motion-part="layer"]')];
+  const bounds=layers.map(layer=>layer.getBBox()),last=bounds.at(-1);
+  const top=bounds[0].y,bottom=last.y+last.height;
+  const travel=last.y-bounds.at(-2).y;
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const compression=Math.max(0,Math.min(1,(point.y-top)/(bottom-top)));
+   layers.forEach((layer,index)=>{
+    const offset=travel*compression*(layers.length-1-index)/(layers.length-1);
+    layer.setAttribute('transform',`translate(0 ${offset})`);
+   });
+  });
+ },
  lock(button,svg,symbol){
   const shackle=symbol.querySelector('[data-motion-part="shackle"]');
   const outline=shackle.querySelector('path');

@@ -173,6 +173,21 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',...lockPoints.below});
  assert.equal((await lockState()).angle,0,'The shackle must not swing through the lock body.');
  assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Protected information"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="information"] use').getAttribute('href')})`),{tile:'#icon-information',wheel:'#icon-information'});
+ const layerPoints=await evaluate(`(()=>{
+  const card=document.querySelector('[aria-label="Understandable design"]');card.scrollIntoView({block:'center'});
+  const b=card.getBoundingClientRect(),svg=card.querySelector('svg'),p=new DOMPoint(16,16).matrixTransform(svg.getScreenCTM());
+  return {x:p.x,top:b.top+2,bottom:b.bottom-2,middle:p.y};
+ })()`);
+ const layerState=()=>evaluate(`([...document.querySelectorAll('#icon-design [data-motion-part="layer"]')].map(layer=>layer.transform.baseVal.getItem(0).matrix.f))`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:layerPoints.x,y:layerPoints.bottom});
+ assert.deepEqual(await layerState(),[5,2.5,0],'Moving down must compress the layers around a fixed base.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:layerPoints.x,y:layerPoints.middle});
+ assert.ok((await layerState()).every((offset,index)=>Math.abs(offset-[2.5,1.25,0][index])<.001),'The layer spacing must follow the actual vertical pointer position.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:layerPoints.x,y:layerPoints.top});
+ const layers=await layerState();assert.deepEqual(layers,[0,0,0],'Moving up must restore the separated layers within their safe bounds.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ assert.deepEqual(await layerState(),layers,'Layer positions must freeze on mouse leave.');
+ assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Understandable design"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="design"] use').getAttribute('href')})`),{tile:'#icon-design',wheel:'#icon-design'});
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});
