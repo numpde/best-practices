@@ -151,22 +151,27 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Transferable knowledge"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="knowledge"] use').getAttribute('href')})`),{tile:'#icon-knowledge',wheel:'#icon-knowledge'});
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
  assert.deepEqual(await bookState(),book,'The shared page must stay where it was left.');
- const lockPoint=await evaluate(`(()=>{
-  const card=document.querySelector('[aria-label="Protected information"]');card.scrollIntoView({block:'center'});
-  const b=card.getBoundingClientRect();return {left:b.left+2,right:b.right-2,y:b.y+b.height/2};
+ const lockPoints=await evaluate(`(()=>{
+  const svg=document.querySelector('[aria-label="Protected information"] svg');svg.scrollIntoView({block:'center'});
+  const m=svg.getScreenCTM(),point=angle=>{const r=angle*Math.PI/180,p=new DOMPoint(19-6*Math.cos(r),14-6*Math.sin(r)).matrixTransform(m);return {x:p.x,y:p.y};};
+  return {closed:point(0),partial:point(30),beyond:point(60),below:point(-30)};
  })()`);
  const lockState=()=>evaluate(`(()=>{
   const s=document.querySelector('#icon-information'),shackle=s.querySelector('[data-motion-part="shackle"]'),m=shackle.transform.baseVal.getItem(0).matrix;
   return {angle:shackle.transform.baseVal.getItem(0).angle,hingeX:m.a*19+m.c*14+m.e,hingeY:m.b*19+m.d*14+m.f,steady:['shield','body','keyhole'].map(part=>s.querySelector('[data-motion-part="'+part+'"]').getAttribute('transform'))};
  })()`);
- await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:lockPoint.left,y:lockPoint.y});
- let lock=await lockState();assert.equal(lock.angle,45,'The shackle must open within its configured limit.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...lockPoints.partial});
+ let lock=await lockState();assert.ok(Math.abs(lock.angle-30)<.001,'The shackle must follow the actual mouse angle around its hinge.');
  assert.ok(Math.abs(lock.hingeX-19)<.001&&Math.abs(lock.hingeY-14)<.001,'The shackle must stay attached to the lock body.');
  assert.deepEqual(lock.steady,[null,null,null],'The shield, body, and keyhole must remain steady.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...lockPoints.beyond});
+ lock=await lockState();assert.equal(lock.angle,45,'The shackle must respect its opening limit.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
  assert.deepEqual(await lockState(),lock,'The shared lock must hold its opening on mouse leave.');
- await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:lockPoint.right,y:lockPoint.y});
- lock=await lockState();assert.equal(lock.angle,0,'Moving right must close the lock again.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...lockPoints.closed});
+ lock=await lockState();assert.ok(Math.abs(lock.angle)<.001,'Moving toward the resting free end must close the lock.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...lockPoints.below});
+ assert.equal((await lockState()).angle,0,'The shackle must not swing through the lock body.');
  assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Protected information"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="information"] use').getAttribute('href')})`),{tile:'#icon-information',wheel:'#icon-information'});
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');

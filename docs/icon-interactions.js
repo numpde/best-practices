@@ -12,11 +12,16 @@ const iconInteractions={
  },
  lock(button,svg,symbol){
   const shackle=symbol.querySelector('[data-motion-part="shackle"]');
-  const bounds=shackle.getBBox(),body=symbol.querySelector('[data-motion-part="body"]');
-  const pivot={x:bounds.x+bounds.width,y:body.y.baseVal.value},box=symbol.viewBox.baseVal;
+  const outline=shackle.querySelector('path');
+  const freeEnd=outline.getPointAtLength(0),hinge=outline.getPointAtLength(outline.getTotalLength());
+  const restingAngle=Math.atan2(freeEnd.y-hinge.y,freeEnd.x-hinge.x)*180/Math.PI;
+  const deadRadius=Number(symbol.firstElementChild.getAttribute('stroke-width'))/2;
   iconInteractions.onMouseMove(button,svg,point=>{
-   const openness=Math.max(0,Math.min(1,(box.x+box.width-point.x)/box.width));
-   shackle.setAttribute('transform',`rotate(${openness*iconInteractions.settings.lockOpenAngle} ${pivot.x} ${pivot.y})`);
+   if(Math.hypot(point.x-hinge.x,point.y-hinge.y)<deadRadius)return;
+   const pointerAngle=Math.atan2(point.y-hinge.y,point.x-hinge.x)*180/Math.PI;
+   const delta=((pointerAngle-restingAngle+540)%360)-180;
+   const angle=Math.max(0,Math.min(iconInteractions.settings.lockOpenAngle,delta));
+   shackle.setAttribute('transform',`rotate(${angle} ${hinge.x} ${hinge.y})`);
   });
  },
  book(button,svg,symbol){
