@@ -1,5 +1,5 @@
 const iconInteractions={
- settings:{bookLiftRatio:.5},
+ settings:{bookLiftRatio:.5,lockOpenAngle:45},
  onMouseMove(button,svg,move){
   button.addEventListener('pointermove',event=>{
    if(event.pointerType!=='mouse'||event.buttons!==0||button.getAttribute('aria-expanded')==='true')return;
@@ -9,6 +9,15 @@ const iconInteractions={
  nearestColumn(parts,x){
   const distance=part=>{const b=part.getBBox();return Math.abs(x-b.x-b.width/2);};
   return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
+ },
+ lock(button,svg,symbol){
+  const shackle=symbol.querySelector('[data-motion-part="shackle"]');
+  const bounds=shackle.getBBox(),body=symbol.querySelector('[data-motion-part="body"]');
+  const pivot={x:bounds.x+bounds.width,y:body.y.baseVal.value},box=symbol.viewBox.baseVal;
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const openness=Math.max(0,Math.min(1,(box.x+box.width-point.x)/box.width));
+   shackle.setAttribute('transform',`rotate(${openness*iconInteractions.settings.lockOpenAngle} ${pivot.x} ${pivot.y})`);
+  });
  },
  book(button,svg,symbol){
   const page=symbol.querySelector('[data-motion-part="page"]');

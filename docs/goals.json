@@ -99,8 +99,9 @@
     "id": "information",
     "name": "Protected information",
     "color": "#0A97D9",
-    "icon": "<path d=\"M16 3 27 7v8c0 7-5 11-11 14C10 26 5 22 5 15V7Z\"/><rect x=\"11\" y=\"14\" width=\"10\" height=\"8\" rx=\"1\"/><path d=\"M13 14v-3a3 3 0 0 1 6 0v3m-3 3v2\"/>",
-    "explanation": "Collect and share only what you need. Keep private data safe in storage, interfaces, logs, and diagnostics."
+    "icon": "<path data-motion-part=\"shield\" d=\"M16 3 27 7v8c0 7-5 11-11 14C10 26 5 22 5 15V7Z\"/><rect data-motion-part=\"body\" x=\"11\" y=\"14\" width=\"10\" height=\"8\" rx=\"1\"/><g data-motion-part=\"shackle\"><path d=\"M13 14v-3a3 3 0 0 1 6 0v3\"/></g><path data-motion-part=\"keyhole\" d=\"M16 17v2\"/>",
+    "explanation": "Collect and share only what you need. Keep private data safe in storage, interfaces, logs, and diagnostics.",
+    "motion": "lock"
   },
   {
     "id": "reproducibility",
