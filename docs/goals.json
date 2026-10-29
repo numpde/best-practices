@@ -10,8 +10,9 @@
     "id": "ownership",
     "name": "Clear ownership",
     "color": "#DDA63A",
-    "icon": "<circle cx=\"16\" cy=\"7\" r=\"4\"/><path d=\"M16 11v6M6 22v-5h20v5\"/><rect x=\"3\" y=\"22\" width=\"6\" height=\"7\" rx=\"1\"/><rect x=\"23\" y=\"22\" width=\"6\" height=\"7\" rx=\"1\"/>",
-    "explanation": "Keep one owner for every important fact; route changes through that owner to avoid mismatches."
+    "icon": "<circle data-motion-part=\"owner\" cx=\"16\" cy=\"7\" r=\"4\"/><path d=\"M16 11v6\"/><path data-motion-part=\"branches\" d=\"M6 22v-5h20v5\"/><rect data-motion-part=\"record\" x=\"3\" y=\"22\" width=\"6\" height=\"7\" rx=\"1\"/><rect data-motion-part=\"record\" x=\"23\" y=\"22\" width=\"6\" height=\"7\" rx=\"1\"/><circle data-motion-part=\"signal\" r=\"1.75\" fill=\"currentColor\" stroke=\"none\"/>",
+    "explanation": "Keep one owner for every important fact; route changes through that owner to avoid mismatches.",
+    "motion": "ownership"
   },
   {
     "id": "design",
@@ -25,8 +26,9 @@
     "id": "evolution",
     "name": "Coherent evolution",
     "color": "#C5192D",
-    "icon": "<path d=\"M7 25V8m0 0-4 4m4-4 4 4M7 22c15 0 17-5 17-18m0 0-4 4m4-4 4 4\"/><circle cx=\"7\" cy=\"27\" r=\"2\"/>",
-    "explanation": "Change connected parts together, removing replaced behavior and obsolete paths so the system stays coherent."
+    "icon": "<defs><path id=\"evolution-head\" d=\"M-4 4 0 0 4 4\"/><polyline data-motion-part=\"control\" points=\"7,22 22,22 24,17 24,4\"/></defs><path data-motion-part=\"trunk\" d=\"M7 25V8\"/><use data-motion-part=\"trunk-head\" href=\"#evolution-head\"/><path data-motion-part=\"branch\"/><use data-motion-part=\"branch-head\" href=\"#evolution-head\"/><circle cx=\"7\" cy=\"27\" r=\"2\"/>",
+    "explanation": "Change connected parts together, removing replaced behavior and obsolete paths so the system stays coherent.",
+    "motion": "evolution"
   },
   {
     "id": "results",
@@ -126,7 +128,8 @@
     "id": "completion",
     "name": "Verified completion",
     "color": "#19486A",
-    "icon": "<path d=\"M6 29V4h21l-4 7 4 7H6m6-7 3 3 6-6\"/>",
-    "explanation": "Finish what was promised, check the outcome where it matters, handle relevant findings, and report limitations."
+    "icon": "<path data-motion-part=\"pole\" d=\"M6 29V4\"/><g data-motion-part=\"flag\"><path d=\"M6 4h21l-4 7 4 7H6Z\"/><path data-motion-part=\"check\" d=\"m12 11 3 3 6-6\"/></g>",
+    "explanation": "Finish what was promised, check the outcome where it matters, handle relevant findings, and report limitations.",
+    "motion": "completion"
   }
 ]

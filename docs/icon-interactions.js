@@ -6,6 +6,87 @@ const iconInteractions={
    move(new DOMPoint(event.clientX,event.clientY).matrixTransform(svg.getScreenCTM().inverse()));
   });
  },
+ resetPointerReference(button,reset){
+  for(const type of ['pointerleave','pointerdown','pointercancel','click'])button.addEventListener(type,reset);
+ },
+ onMouseDelta(button,svg,move){
+  let previous=null;
+  iconInteractions.resetPointerReference(button,()=>{previous=null;});
+  iconInteractions.onMouseMove(button,svg,point=>{
+   if(previous){
+    const delta={x:point.x-previous.x,y:point.y-previous.y};
+    previous=point;
+    if(delta.x||delta.y)move(delta);
+   }else previous=point;
+  });
+ },
+ ownership(button,svg,symbol){
+  const owner=symbol.querySelector('[data-motion-part="owner"]'),branches=symbol.querySelector('[data-motion-part="branches"]').getBBox();
+  const records=[...symbol.querySelectorAll('[data-motion-part="record"]')];
+  const hub={x:owner.cx.baseVal.value,y:owner.cy.baseVal.value};
+  const points=[hub];
+  for(const record of records){
+   const child={x:record.x.baseVal.value+record.width.baseVal.value/2,y:record.y.baseVal.value+record.height.baseVal.value/2};
+   points.push({x:hub.x,y:branches.y},{x:child.x,y:branches.y},child,{x:child.x,y:branches.y},{x:hub.x,y:branches.y},hub);
+  }
+  const segments=points.slice(1).map((b,i)=>({a:points[i],b,length:Math.hypot(b.x-points[i].x,b.y-points[i].y)}));
+  const total=segments.reduce((sum,segment)=>sum+segment.length,0),signal=symbol.querySelector('[data-motion-part="signal"]');
+  let distance=0;
+  const render=()=>{
+   let remaining=(distance%total+total)%total;
+   for(const segment of segments){
+    if(remaining<=segment.length){
+     const t=remaining/segment.length;
+     signal.setAttribute('cx',segment.a.x+(segment.b.x-segment.a.x)*t);
+     signal.setAttribute('cy',segment.a.y+(segment.b.y-segment.a.y)*t);
+     return;
+    }
+    remaining-=segment.length;
+   }
+  };
+  render();
+  iconInteractions.onMouseDelta(button,svg,delta=>{
+   distance+=delta.x/symbol.viewBox.baseVal.width*total;render();
+  });
+ },
+ evolution(button,svg,symbol){
+  const controls=[...symbol.querySelector('[data-motion-part="control"]').points];
+  const start=controls[0],end=controls.at(-1),branch=symbol.querySelector('[data-motion-part="branch"]');
+  const trunk=symbol.querySelector('[data-motion-part="trunk"]'),anchor=trunk.getPointAtLength(trunk.getTotalLength());
+  const head=symbol.querySelector('#evolution-head').getBBox(),box=symbol.viewBox.baseVal;
+  const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
+  symbol.querySelector('[data-motion-part="trunk-head"]').setAttribute('transform',`translate(${anchor.x} ${anchor.y})`);
+  const render=tip=>{
+   const scale={x:(tip.x-start.x)/(end.x-start.x),y:(tip.y-start.y)/(end.y-start.y)};
+   const points=controls.map(p=>({x:start.x+(p.x-start.x)*scale.x,y:start.y+(p.y-start.y)*scale.y}));
+   branch.setAttribute('d',`M${start.x} ${start.y}C${points.slice(1).map(p=>`${p.x} ${p.y}`).join(' ')}`);
+   symbol.querySelector('[data-motion-part="branch-head"]').setAttribute('transform',`translate(${tip.x} ${tip.y})`);
+  };
+  render(end);
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const x=Math.max(anchor.x+head.width+stroke*1.5,Math.min(box.x+box.width-stroke*1.5-head.x-head.width,point.x));
+   const y=Math.max(box.y+stroke*1.5-head.y,Math.min(start.y-head.height-stroke*1.5,point.y));
+   render({x,y});
+  });
+ },
+ completion(button,svg,symbol){
+  const pole=symbol.querySelector('[data-motion-part="pole"]').getBBox(),flag=symbol.querySelector('[data-motion-part="flag"]');
+  const bounds=flag.getBBox(),check=symbol.querySelector('[data-motion-part="check"]'),length=check.getTotalLength();
+  const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
+  const travel=pole.y+pole.height-bounds.y-bounds.height-stroke;
+  let progress=1;
+  const render=()=>{
+   const verified=Math.min(1,progress*2),raised=Math.max(0,progress*2-1);
+   check.setAttribute('stroke-dasharray',String(length));
+   check.setAttribute('stroke-dashoffset',String(length*(1-verified)));
+   check.setAttribute('visibility',verified===0?'hidden':'visible');
+   flag.setAttribute('transform',`translate(0 ${travel*(1-raised)})`);
+  };
+  render();
+  iconInteractions.onMouseDelta(button,svg,delta=>{
+   progress=Math.max(0,Math.min(1,progress-delta.y/symbol.viewBox.baseVal.height));render();
+  });
+ },
  nearestColumn(parts,x){
   const distance=part=>{const b=part.getBBox();return Math.abs(x-b.x-b.width/2);};
   return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
@@ -123,8 +204,7 @@ const iconInteractions={
  followDial(button,svg,pivot,turn,{relative=false}={}){
   let rotation=0,previous=null;
   if(relative){
-   const rebase=()=>{previous=null;};
-   for(const type of ['pointerleave','pointerdown','pointercancel','click'])button.addEventListener(type,rebase);
+   iconInteractions.resetPointerReference(button,()=>{previous=null;});
   }
   iconInteractions.onMouseMove(button,svg,point=>{
    if(Math.hypot(point.x-pivot.x,point.y-pivot.y)<pivot.radius){previous=null;return;}

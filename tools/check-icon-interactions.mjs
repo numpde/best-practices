@@ -244,6 +244,46 @@ export async function checkIconInteractions({call,evaluate}){
  for(const [label,id] of [['Usable interfaces','interfaces'],['Reproducible results','reproducibility'],['Reasoned improvement','improvement']]){
   assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="'+${JSON.stringify(label)}+'"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="'+${JSON.stringify(id)}+'"] use').getAttribute('href')})`),{tile:'#icon-'+id,wheel:'#icon-'+id});
  }
+
+ const ownershipState=()=>evaluate(`(()=>{
+  const s=document.querySelector('#icon-ownership'),signal=s.querySelector('[data-motion-part="signal"]');
+  return {x:signal.cx.baseVal.value,y:signal.cy.baseVal.value,owner:s.querySelector('[data-motion-part="owner"]').getAttribute('transform'),records:[...s.querySelectorAll('[data-motion-part="record"]')].map(record=>record.getAttribute('transform'))};
+ })()`);
+ const ownerInitial=await ownershipState();
+ await moveOnIcon('Clear ownership',16,16);assert.deepEqual(await ownershipState(),ownerInitial,'Entering must preserve the ownership signal.');
+ await moveOnIcon('Clear ownership',24,16);let owner=await ownershipState();assert.ok(Math.abs(owner.x-6)<.001&&Math.abs(owner.y-25.5)<.001,'The signal must reach the left record along its branch.');
+ await moveOnIcon('Clear ownership',32,16);owner=await ownershipState();assert.ok(Math.abs(owner.x-16)<.001&&Math.abs(owner.y-7)<.001,'Transfers between records must pass through the central owner.');
+ await moveOnIcon('Clear ownership',40,16);owner=await ownershipState();assert.ok(Math.abs(owner.x-26)<.001&&Math.abs(owner.y-25.5)<.001,'The owner must route the signal to the other record.');
+ assert.equal(owner.owner,null);assert.deepEqual(owner.records,[null,null]);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});await moveOnIcon('Clear ownership',8,16);assert.deepEqual(await ownershipState(),owner);
+ await moveOnIcon('Clear ownership',0,16);owner=await ownershipState();assert.ok(Math.abs(owner.x-16)<.001&&Math.abs(owner.y-7)<.001,'Reverse transfers must also return through the owner.');
+
+ const evolutionState=()=>evaluate(`(()=>{
+  const s=document.querySelector('#icon-evolution'),branch=s.querySelector('[data-motion-part="branch"]'),start=branch.getPointAtLength(0),tip=branch.getPointAtLength(branch.getTotalLength()),head=s.querySelector('[data-motion-part="branch-head"]').transform.baseVal.getItem(0).matrix;
+  return {start:[start.x,start.y],tip:[tip.x,tip.y],head:[head.e,head.f],trunk:s.querySelector('[data-motion-part="trunk"]').getAttribute('d')};
+ })()`);
+ await moveOnIcon('Coherent evolution',20,10);let evolution=await evolutionState();
+ assert.ok(evolution.tip.every((v,i)=>Math.abs(v-[20,10][i])<.001),'The branch tip must track the actual pointer, not a distant offset.');
+ assert.deepEqual(evolution.start,[7,22]);assert.deepEqual(evolution.head,evolution.tip);assert.equal(evolution.trunk,'M7 25V8');
+ await moveOnIcon('Coherent evolution',0,0);evolution=await evolutionState();assert.deepEqual(evolution.tip,[18,3]);assert.deepEqual(evolution.head,evolution.tip);
+ await moveOnIcon('Coherent evolution',32,32);evolution=await evolutionState();assert.deepEqual(evolution.tip,[25,15]);assert.deepEqual(evolution.head,evolution.tip);assert.deepEqual(evolution.start,[7,22]);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});assert.deepEqual(await evolutionState(),evolution);
+
+ const completionState=()=>evaluate(`(()=>{
+  const s=document.querySelector('#icon-completion'),check=s.querySelector('[data-motion-part="check"]');
+  return {height:s.querySelector('[data-motion-part="flag"]').transform.baseVal.getItem(0).matrix.f,unchecked:Number(check.getAttribute('stroke-dashoffset'))/check.getTotalLength(),visible:check.getAttribute('visibility'),pole:s.querySelector('[data-motion-part="pole"]').getAttribute('transform')};
+ })()`);
+ await moveOnIcon('Verified completion',16,16);let completion=await completionState();assert.equal(completion.height,0);assert.equal(completion.unchecked,0);
+ await moveOnIcon('Verified completion',16,32);completion=await completionState();assert.ok(Math.abs(completion.height-9)<.001&&completion.unchecked<.001,'The flag must lower while retaining verification.');
+ await moveOnIcon('Verified completion',16,40);completion=await completionState();assert.ok(Math.abs(completion.height-9)<.001&&Math.abs(completion.unchecked-.5)<.001,'The check must draw while the flag remains lowered.');
+ await moveOnIcon('Verified completion',16,32);completion=await completionState();assert.ok(Math.abs(completion.height-9)<.001&&completion.unchecked<.001,'Verification must finish before raising begins.');
+ await moveOnIcon('Verified completion',16,24);completion=await completionState();assert.ok(Math.abs(completion.height-4.5)<.001&&completion.unchecked<.001,'Only a verified flag may rise.');
+ await moveOnIcon('Verified completion',16,16);completion=await completionState();assert.ok(Math.abs(completion.height)<.001&&completion.unchecked<.001);assert.equal(completion.pole,null);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});await moveOnIcon('Verified completion',16,8);assert.deepEqual(await completionState(),completion,'Re-entry must retain the completion state.');
+ await moveOnIcon('Verified completion',16,40);completion=await completionState();assert.ok(Math.abs(completion.height-9)<.001&&completion.unchecked>.999);assert.equal(completion.visible,'hidden');
+ for(const [label,id] of [['Clear ownership','ownership'],['Coherent evolution','evolution'],['Verified completion','completion']]){
+  assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="'+${JSON.stringify(label)}+'"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="'+${JSON.stringify(id)}+'"] use').getAttribute('href')})`),{tile:'#icon-'+id,wheel:'#icon-'+id});
+ }
  console.log('Icons: shared semantic motion, pointer mapping, limits, stationary parts, and retained state passed.');
 
 }
