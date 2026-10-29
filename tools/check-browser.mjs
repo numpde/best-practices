@@ -1,3 +1,4 @@
+import {checkSSDG} from './check-ssdg.mjs';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
@@ -432,6 +433,7 @@ try{
  assert.equal((await snapshot()).nodes,initial.nodes);
  assert.deepEqual(await snapshot(),overview);
  console.log('Malformed links open the full graph; encoded selections work and malformed fragment changes recover.');
+ await checkSSDG({call,evaluate,waitFor,delay,nextFrames});
  assert.deepEqual(errors,[]);
  console.log('Narrow deep links restore selection and remain still with reduced motion; no browser runtime errors.');
 }catch(error){

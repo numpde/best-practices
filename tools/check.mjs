@@ -100,7 +100,7 @@ for(const file of filesAt(site)){
  }
 }
 for(const directory of ['tools','.github'])for(const file of filesAt(resolve(root,directory)))checkPrivacy(readFileSync(file,'utf8'),relative(root,file));
-for(const file of ['README.txt','Makefile'])checkPrivacy(readFileSync(resolve(root,file),'utf8'),file);
+for(const file of ['README.md','DEVELOPMENT.md','Makefile'])checkPrivacy(readFileSync(resolve(root,file),'utf8'),file);
 if(process.argv.includes('--history')){
  const objects=execFileSync('git',['rev-list','--objects','--all'],{cwd:root,encoding:'utf8'}).trim().split('\n');
  for(const entry of objects){
