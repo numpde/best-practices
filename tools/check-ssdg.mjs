@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {checkCardGrab} from './check-card-grab.mjs';
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 
@@ -89,29 +90,34 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   const push=x=>card.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:x}));
   push(b.x+b.width*.25);
   await new Promise(resolve=>setTimeout(resolve,100));
-  const running=rotor.getAnimations(),matrix=getComputedStyle(rotor).transform;
-  const result={running:running.length,matrix,background:getComputedStyle(card.closest('.goal-tile')).backgroundColor};
-  await Promise.all(running.map(animation=>animation.finished));
+  const current=parseFloat(card.style.getPropertyValue('--turn')),matrix=getComputedStyle(rotor).transform;
+  const result={running:current<0&&current>-180,matrix,background:getComputedStyle(card.closest('.goal-tile')).backgroundColor};
+  await new Promise(resolve=>{const check=()=>parseFloat(card.style.getPropertyValue('--turn'))===-180?resolve():requestAnimationFrame(check);check();});
   push(b.x+b.width*.75);
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-  await Promise.all(rotor.getAnimations().map(animation=>animation.finished));
+  await new Promise(resolve=>{const check=()=>parseFloat(card.style.getPropertyValue('--turn'))===0?resolve():requestAnimationFrame(check);check();});
   return result;
  })()`);
  assert.equal(flipAnimation.background,'rgba(0, 0, 0, 0)','The tile container must stay transparent behind the rotating faces.');
- assert.ok(flipAnimation.running>0,'Flipping must animate, including when the system requests reduced motion.');
+ assert.ok(flipAnimation.running,'Flipping must animate, including when the system requests reduced motion.');
  assert.ok(flipAnimation.matrix.startsWith('matrix3d('),'The flip must visibly pass through a 3D intermediate orientation.');
  const cadence=await evaluate(`(async()=>{
   const card=document.querySelectorAll('.goal-card')[1],settings=tileInteractions.settings;
-  const push=()=>{card.click();return parseFloat(card.style.getPropertyValue('--flip-duration'));};
-  const durations=Array.from({length:16},push);
+  let target=0;
+  const push=()=>{target-=settings.snapDegrees;card.click();};
+  const measure=async(count)=>{
+   const start=performance.now();for(let i=0;i<count;i++)push();
+   await new Promise(resolve=>{const check=()=>parseFloat(card.style.getPropertyValue('--turn'))===target?resolve():requestAnimationFrame(check);check();});
+   return performance.now()-start;
+  };
+  const first=await measure(1),burst=await measure(16);
   await new Promise(resolve=>setTimeout(resolve,settings.repeatWindowMs+30));
-  const reset=push();push();
-  return {durations,reset,initial:settings.initialFlipMs,minimum:settings.minimumFlipMs};
+  const reset=await measure(1);
+  return {first,burst,reset,initial:settings.initialFlipMs,minimum:settings.minimumFlipMs};
  })()`);
- assert.equal(cadence.durations[0],cadence.initial);
- assert.ok(cadence.durations[1]<cadence.durations[0],'Sustained clicking must speed up the flips.');
- assert.equal(cadence.durations.at(-1),cadence.minimum,'Repeated clicking must respect the speed limit.');
- assert.equal(cadence.reset,cadence.initial,'A pause must restore the slower first flip.');
+ assert.ok(Math.abs(cadence.first-cadence.initial)<120,'The first flip must use the slower configured duration.');
+ assert.ok(cadence.burst<cadence.first*.6&&Math.abs(cadence.burst-cadence.minimum)<120,'Sustained clicking must accelerate to the configured speed limit.');
+ assert.ok(Math.abs(cadence.reset-cadence.initial)<120,'A pause must restore the slower first flip.');
  const cardCount=await evaluate(`document.querySelectorAll('.goal-card').length`);
  assert.equal(cardCount,18);
  for(const [side,angle] of [['left',-180],['left',-360],['right',-180],['right',0]]){
@@ -121,11 +127,12 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   })()`);
   await call('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...point});
   await call('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...point});
+  await waitFor(`parseFloat(document.querySelector('.goal-card').style.getPropertyValue('--turn'))===${angle}`);
   const card=await evaluate(`(()=>{const b=document.querySelector('.goal-card');return {turn:b.style.getPropertyValue('--turn'),expanded:b.getAttribute('aria-expanded'),backHidden:b.querySelector('.card-back').getAttribute('aria-hidden'),cursor:getComputedStyle(b).cursor,selection:getComputedStyle(document.body).userSelect}})()`);
   assert.equal(card.turn,angle+'deg',`${side} pushes must turn in that direction on either face.`);
   assert.equal(card.expanded,String(Math.abs(angle%360)===180));
   assert.equal(card.backHidden,String(angle%360===0));
-  assert.equal(card.cursor,'pointer');
+  assert.equal(card.cursor,'grab');
   assert.equal(card.selection,'none');
  }
  await nextFrames();
@@ -219,7 +226,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
     outside:hit(710,360),
     leaf:hit(360+274*Math.cos(mid),360+274*Math.sin(mid))};
   })()`);
-  assert.deepEqual(hits,{centre:false,gap:false,outside:false,leaf:true},`${selector}: only leaves may intercept input.`);
+  assert.deepEqual(hits,{centre:false,gap:false,outside:false,leaf:true},`${selector}: only leaves may intercept wheel input.`);
  }
  for(const selector of selectors){
   const before=await state();
@@ -283,7 +290,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await evaluate(`(async()=>{
   const card=wheelTile.querySelector('button');card.click();
   await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-  await Promise.all(card.getAnimations({subtree:true}).map(animation=>animation.finished));
+  await new Promise(resolve=>{const check=()=>Math.abs(parseFloat(card.style.getPropertyValue('--turn'))%360)===180?resolve():requestAnimationFrame(check);check();});
  })()`);
  assert.equal(await evaluate(`wheelTile.querySelectorAll('svg').length`),1,'Both sides must share one SVG.');
  assert.ok(await evaluate(`new DOMMatrix(getComputedStyle(wheelTile.querySelector('.card-rotor')).transform).m11<0`),'The reverse must show the same wheel mirrored.');
@@ -291,6 +298,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await dragArc('.wheel-tile svg',{touch:true,hold:200});
  assert.ok((await state()).angle<reverseBefore-30,'Dragging the mirrored face must follow the pointer with reversed rotation.');
  assert.equal(await evaluate(`wheelTile.querySelector('button').getAttribute('aria-expanded')`),'true','Dragging the reverse must not flip it.');
+ await checkCardGrab({call,evaluate,waitFor,delay,nextFrames});
  console.log('SSDG: wheels share pointer/touch rotation with a counter-rotating O; seam, inertia, stopping, cancellation, settling, reduced motion, and no keyboard rotation passed.');
  }finally{releaseGoals();await new Promise(resolve=>server.close(resolve));}
 }

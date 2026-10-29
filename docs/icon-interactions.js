@@ -1,7 +1,7 @@
 const iconInteractions={
  onMouseMove(button,svg,move){
   button.addEventListener('pointermove',event=>{
-   if(event.pointerType!=='mouse'||button.getAttribute('aria-expanded')==='true')return;
+   if(event.pointerType!=='mouse'||event.buttons!==0||button.getAttribute('aria-expanded')==='true')return;
    move(new DOMPoint(event.clientX,event.clientY).matrixTransform(svg.getScreenCTM().inverse()));
   });
  },

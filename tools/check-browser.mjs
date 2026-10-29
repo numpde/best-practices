@@ -109,7 +109,7 @@ async function pressKey(key,code,windowsVirtualKeyCode){
  await call('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode});
  await call('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});
 }
-const deadline=setTimeout(()=>{if(browser)browser.kill();else socket?.close();},30000);
+const deadline=setTimeout(()=>{if(browser)browser.kill();else socket?.close();},90000);
 try{
  if(attach){
   const port=Number(debugPort);
