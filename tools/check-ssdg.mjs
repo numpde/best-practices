@@ -9,6 +9,19 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  await call('Page.navigate',{url:new URL('../docs/index.html',import.meta.url).href});
  await waitFor(`document.querySelectorAll('.rotation-surface').length===3`);
  await evaluate('document.fonts.ready');
+ const iconBounds=await evaluate(`(()=>{
+  const probe=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  document.body.append(probe);
+  const bounds=[...document.querySelectorAll('#symbols symbol')].map(symbol=>{
+   const drawing=symbol.firstElementChild.cloneNode(true);
+   probe.replaceChildren(drawing);
+   const b=drawing.getBBox(),halfStroke=Number(drawing.getAttribute('stroke-width'))/2;
+   return {id:symbol.id,left:b.x-halfStroke,top:b.y-halfStroke,right:b.x+b.width+halfStroke,bottom:b.y+b.height+halfStroke};
+  });
+  probe.remove();return bounds;
+ })()`);
+ assert.equal(iconBounds.length,17);
+ for(const b of iconBounds)assert.ok(b.left>=2&&b.top>=2&&b.right<=30&&b.bottom<=30,`${b.id}: painted strokes must retain the two-unit safe margin: ${JSON.stringify(b)}`);
  const selectors=['.wheel','.wheel-title svg svg','.wheel-tile svg'];
  const state=()=>evaluate(`({angle:rotation,coasting:coastFrame!==null,dragging:drag!==null,
   main:segments.getAttribute('transform'),small:document.getElementById('wordmark-wheel').getAttribute('transform'),
