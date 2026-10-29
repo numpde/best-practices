@@ -78,7 +78,10 @@ try{
   run(chromium,[...browserArgs,'--no-pdf-header-footer',`--print-to-pdf=${base}.pdf`,'--virtual-time-budget=1000',pathToFileURL(base+'.html').href]);
   run('pdftocairo',['-svg',base+'.pdf',base+'.svg']);
   let svg=readFileSync(base+'.svg','utf8');
-  assert.deepEqual(svg.match(/viewBox="([^"]+)"/)[1].split(' ').map(Number),[0,0,variant.width*.75,variant.height*.75],`${variant.name}: the print export must use the artwork canvas, not the loading page.`);
+  const printedCanvas=svg.match(/viewBox="([^"]+)"/)[1].split(' ').map(Number);
+  const expectedCanvas=[0,0,variant.width*.75,variant.height*.75];
+  // Chromium rounds printed page sizes to fractions of a point.
+  assert.ok(printedCanvas.every((value,index)=>Math.abs(value-expectedCanvas[index])<=.25),`${variant.name}: the print export must use the artwork canvas, not the loading page.`);
   assert.ok(!/<(?:text|image|script)\b|@font-face|font-family/.test(svg),`${variant.name}: the export must contain only vector artwork, with outlined lettering.`);
   // PDF stores normalised colour components. Restore exact 8-bit RGB values.
   svg=svg.replace(/rgb\(([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)%\)/g,(_,r,g,b)=>'#'+[r,g,b].map(n=>Math.round(Number(n)*255/100).toString(16).padStart(2,'0')).join(''));
