@@ -336,11 +336,17 @@ tiles.append(wheelTile);
 // useBoltFigureRotationInteractions (revision 7a2edc51d2744f54e9aedc8d700e1091a297587d).
 // This wheel follows the pointer 1:1, has no socket snapping, and shares one
 // angle across all wheels; the wordmark rotates in the opposite direction.
+// Set false to let icons turn with their wheel segments.
+const keepWheelIconsUpright=true;
+const wheelIcons=[...segments.querySelectorAll('use')].map(icon=>({
+ icon,x:icon.x.baseVal.value+icon.width.baseVal.value/2,y:icon.y.baseVal.value+icon.height.baseVal.value/2,
+}));
 const rotationSurfaces=[document.querySelector('.wheel'),document.querySelector('.wheel-title svg svg'),wheelTile.querySelector('svg')];
 let rotation=0,drag=null,coastFrame=null;
 function renderRotation(){
  const angle=((rotation%360)+360)%360;
  segments.setAttribute('transform',`rotate(${angle} 360 360)`);
+ for(const {icon,x,y} of wheelIcons)icon.setAttribute('transform',`rotate(${keepWheelIconsUpright?-angle:0} ${x} ${y})`);
  document.getElementById('wordmark-wheel').setAttribute('transform',`rotate(${-angle} 360 360)`);
  document.getElementById('tile-wheel').setAttribute('transform',`rotate(${angle} 360 360)`);
 }

@@ -36,6 +36,21 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.equal(iconBounds.length,17);
  for(const b of iconBounds)assert.ok(b.left>=2&&b.top>=2&&b.right<=30&&b.bottom<=30,`${b.id}: painted strokes must retain the two-unit safe margin: ${JSON.stringify(b)}`);
  const selectors=['.wheel','.wheel-title svg svg','.wheel-tile svg'];
+ const iconRotation=await evaluate(`(()=>{
+  rotation=73;renderRotation();
+  const result=[...segments.querySelectorAll('use')].map(icon=>{
+   const m=icon.getCTM();
+   const centre=new DOMPoint(icon.x.baseVal.value+icon.width.baseVal.value/2,icon.y.baseVal.value+icon.height.baseVal.value/2).matrixTransform(m);
+   const wheelCentre=new DOMPoint(360,360).matrixTransform(document.querySelector('.wheel').getCTM());
+   return {angle:Math.atan2(m.b,m.a)*180/Math.PI,radius:Math.hypot(centre.x-wheelCentre.x,centre.y-wheelCentre.y)/Math.hypot(m.a,m.b)};
+  });
+  rotation=0;renderRotation();return {upright:keepWheelIconsUpright,icons:result};
+ })()`);
+ assert.equal(iconRotation.icons.length,17);
+ for(const icon of iconRotation.icons){
+  assert.ok(Math.abs(icon.angle-(iconRotation.upright?0:73))<.001,'Icon orientation must follow the shared switch.');
+  assert.ok(Math.abs(icon.radius-263)<.001,'Icons must orbit with their segments.');
+ }
  const state=()=>evaluate(`({angle:rotation,coasting:coastFrame!==null,dragging:drag!==null,
   main:segments.getAttribute('transform'),small:document.getElementById('wordmark-wheel').getAttribute('transform'),
   tile:document.getElementById('tile-wheel').getAttribute('transform')})`);
