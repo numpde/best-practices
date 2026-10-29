@@ -59,7 +59,7 @@ const iconInteractions={
    }
   };
   render(0);
-  iconInteractions.followDial(button,svg,pivot,render);
+  iconInteractions.followDial(button,svg,pivot,render,{relative:true});
  },
  bulb(button,svg,symbol){
   const bulb=symbol.querySelector('[data-motion-part="bulb"]'),bounds=bulb.getBBox();
@@ -120,12 +120,18 @@ const iconInteractions={
    bar.setAttribute('y2',Math.max(ceiling,Math.min(bar.y1.baseVal.value,point.y)));
   });
  },
- followDial(button,svg,pivot,turn){
-  let rotation=0;
+ followDial(button,svg,pivot,turn,{relative=false}={}){
+  let rotation=0,previous=null;
+  if(relative){
+   const rebase=()=>{previous=null;};
+   for(const type of ['pointerleave','pointerdown','pointercancel','click'])button.addEventListener(type,rebase);
+  }
   iconInteractions.onMouseMove(button,svg,point=>{
-   if(Math.hypot(point.x-pivot.x,point.y-pivot.y)<pivot.radius)return;
+   if(Math.hypot(point.x-pivot.x,point.y-pivot.y)<pivot.radius){previous=null;return;}
    const angle=Math.atan2(point.y-pivot.y,point.x-pivot.x)*180/Math.PI+90;
-   rotation+=((angle-rotation%360+540)%360)-180;
+   if(relative&&previous===null){previous=angle;return;}
+   rotation+=((angle-(relative?previous:rotation%360)+540)%360)-180;
+   previous=angle;
    turn(rotation);
   });
  },

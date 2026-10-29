@@ -222,6 +222,16 @@ export async function checkIconInteractions({call,evaluate}){
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',...snakePoints.quarter});
  snake=await snakeState();assertSnakePositions(snake.boxes,[[23.767767,8.232233],[8.232233,23.767767]],'A quarter turn must advance the whole chain to the next corners.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});assert.deepEqual(await snakeState(),snake,'The chain must keep its shared position on mouse leave.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...snakePoints.start});
+ assert.deepEqual(await snakeState(),snake,'Entering at another point must not jump the chain.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...snakePoints.between});
+ snake=await snakeState();assertSnakePositions(snake.boxes,[[24.5,16],[7.5,16]],'Movement after re-entry must continue from the retained state.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...snakePoints.quarter});
+ assert.deepEqual(await snakeState(),snake,'Repeated re-entry must preserve the current state.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',...snakePoints.between});
+ snake=await snakeState();assertSnakePositions(snake.boxes,[[23.767767,8.232233],[8.232233,23.767767]],'Moving backwards after re-entry must reverse from the retained position.');
+
 
  const bulbState=()=>evaluate(`({brightness:Number(document.querySelector('#icon-improvement [data-motion-part="bulb"]').getAttribute('opacity')),base:document.querySelector('#icon-improvement [data-motion-part="base"]').getAttribute('opacity')})`);
  await moveOnIcon('Reasoned improvement',16,12);
