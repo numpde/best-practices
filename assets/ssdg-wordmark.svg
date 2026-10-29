@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1440" height="1092" viewBox="0 0 1080 818.88">
+<title>Sustainable Software Development Goals — wordmark</title>
+<metadata>Generated from docs/index.html by tools/export-logos.mjs. Do not edit.
+Embedded Roboto Black, Copyright 2015 Google Inc.
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+</metadata>
+<defs>
+<g>
+<g id="glyph-0-0">
+<path d="M 68.671875 -34 C 68.671875 -38.050781 67.40625 -41.394531 64.875 -44.03125 C 62.351562 -46.664062 56.8125 -49.546875 48.25 -52.671875 C 39.6875 -55.804688 32.492188 -59.234375 26.671875 -62.953125 C 20.847656 -66.679688 16.378906 -71.003906 13.265625 -75.921875 C 10.160156 -80.847656 8.609375 -86.796875 8.609375 -93.765625 C 8.609375 -104.722656 12.832031 -113.453125 21.28125 -119.953125 C 29.738281 -126.453125 40.398438 -129.703125 53.265625 -129.703125 C 65.972656 -129.703125 76.378906 -126.097656 84.484375 -118.890625 C 92.597656 -111.691406 96.65625 -102.054688 96.65625 -89.984375 L 68.828125 -89.984375 C 68.828125 -94.785156 67.484375 -98.722656 64.796875 -101.796875 C 62.109375 -104.878906 58.054688 -106.421875 52.640625 -106.421875 C 47.316406 -106.421875 43.300781 -105.144531 40.59375 -102.59375 C 37.882812 -100.039062 36.53125 -97.007812 36.53125 -93.5 C 36.53125 -89.6875 38.414062 -86.476562 42.1875 -83.875 C 45.957031 -81.269531 51.164062 -78.796875 57.8125 -76.453125 C 70.15625 -72.117188 79.710938 -66.6875 86.484375 -60.15625 C 93.265625 -53.625 96.65625 -44.96875 96.65625 -34.1875 C 96.65625 -22.644531 92.742188 -13.769531 84.921875 -7.5625 C 77.109375 -1.351562 66.71875 1.75 53.75 1.75 C 45.769531 1.75 38.054688 0.257812 30.609375 -2.71875 C 23.171875 -5.707031 17.0625 -10.394531 12.28125 -16.78125 C 7.5 -23.164062 5.109375 -31.398438 5.109375 -41.484375 L 33.171875 -41.484375 C 33.171875 -33.984375 34.953125 -28.765625 38.515625 -25.828125 C 42.078125 -22.898438 47.15625 -21.4375 53.75 -21.4375 C 59.0625 -21.4375 62.875 -22.664062 65.1875 -25.125 C 67.507812 -27.59375 68.671875 -30.550781 68.671875 -34 Z M 68.671875 -34 "/>
+</g>
+<g id="glyph-0-1">
+<path d="M 71.859375 -127.953125 L 99.84375 -127.953125 L 99.84375 -44.375 C 99.84375 -29.375 95.695312 -17.9375 87.40625 -10.0625 C 79.113281 -2.1875 68.082031 1.75 54.3125 1.75 C 40.644531 1.75 29.582031 -2.1875 21.125 -10.0625 C 12.675781 -17.9375 8.453125 -29.375 8.453125 -44.375 L 8.453125 -127.953125 L 36.53125 -127.953125 L 36.53125 -42.96875 C 36.84375 -28.96875 42.769531 -21.96875 54.3125 -21.96875 C 60.050781 -21.96875 64.410156 -23.722656 67.390625 -27.234375 C 70.367188 -30.753906 71.859375 -36.46875 71.859375 -44.375 Z M 71.859375 -127.953125 "/>
+</g>
+<g id="glyph-0-2">
+<path d="M 2.953125 -104.125 L 2.953125 -127.953125 L 100 -127.953125 L 100 -104.125 L 65.078125 -104.125 L 65.078125 0 L 37.078125 0 L 37.078125 -104.125 Z M 2.953125 -104.125 "/>
+</g>
+<g id="glyph-0-3">
+<path d="M -0.3125 0 L 42.34375 -127.953125 L 68.75 -127.953125 L 111.65625 0 L 81.5 0 L 74.8125 -23.90625 L 36.453125 -23.90625 L 29.75 0 Z M 43.140625 -47.71875 L 68.109375 -47.71875 L 55.578125 -92.265625 Z M 43.140625 -47.71875 "/>
+</g>
+<g id="glyph-0-4">
+<path d="M 38.59375 -127.953125 L 38.59375 0 L 10.6875 0 L 10.6875 -127.953125 Z M 38.59375 -127.953125 "/>
+</g>
+<g id="glyph-0-5">
+<path d="M 105.828125 -127.953125 L 105.828125 0 L 77.921875 0 L 36.84375 -79.609375 L 36.84375 0 L 8.859375 0 L 8.859375 -127.953125 L 36.84375 -127.953125 L 77.921875 -48.328125 L 77.921875 -127.953125 Z M 105.828125 -127.953125 "/>
+</g>
+<g id="glyph-0-6">
+<path d="M 98.734375 -37.875 C 98.734375 -25.332031 95.15625 -15.910156 88 -9.609375 C 80.851562 -3.316406 70.15625 -0.113281 55.90625 0 L 8.859375 0 L 8.859375 -127.953125 L 50.5625 -127.953125 C 64.863281 -127.953125 76.066406 -125.050781 84.171875 -119.25 C 92.285156 -113.445312 96.34375 -104.570312 96.34375 -92.625 C 96.34375 -86.820312 95.117188 -81.441406 92.671875 -76.484375 C 90.222656 -71.535156 85.992188 -67.804688 79.984375 -65.296875 C 86.847656 -63.359375 91.6875 -59.765625 94.5 -54.515625 C 97.320312 -49.273438 98.734375 -43.726562 98.734375 -37.875 Z M 36.84375 -104.125 L 36.84375 -74.609375 L 50.40625 -74.609375 C 56.882812 -74.609375 61.492188 -75.804688 64.234375 -78.203125 C 66.972656 -80.609375 68.34375 -84.1875 68.34375 -88.9375 C 68.34375 -98.832031 62.679688 -103.894531 51.359375 -104.125 Z M 70.890625 -38.3125 C 70.890625 -48.738281 66.320312 -54.097656 57.1875 -54.390625 L 36.84375 -54.390625 L 36.84375 -23.71875 L 55.109375 -23.71875 C 60.796875 -23.71875 64.847656 -25.140625 67.265625 -27.984375 C 69.679688 -30.828125 70.890625 -34.269531 70.890625 -38.3125 Z M 70.890625 -38.3125 "/>
+</g>
+<g id="glyph-0-7">
+<path d="M 85.578125 -23.71875 L 85.578125 0 L 8.859375 0 L 8.859375 -127.953125 L 36.84375 -127.953125 L 36.84375 -23.71875 Z M 85.578125 -23.71875 "/>
+</g>
+<g id="glyph-0-8">
+<path d="M 8.859375 0 L 8.859375 -127.953125 L 89 -127.953125 L 89 -104.125 L 36.84375 -104.125 L 36.84375 -77.15625 L 80.78125 -77.15625 L 80.78125 -54.21875 L 36.84375 -54.21875 L 36.84375 -23.71875 L 88.765625 -23.71875 L 88.765625 0 Z M 8.859375 0 "/>
+</g>
+<g id="glyph-1-0">
+<path d="M 86.4375 -51.015625 C 86.4375 -57.078125 84.84375 -62.082031 81.65625 -66.03125 C 78.476562 -69.988281 71.503906 -74.316406 60.734375 -79.015625 C 49.960938 -83.722656 40.910156 -88.863281 33.578125 -94.4375 C 26.253906 -100.019531 20.632812 -106.5 16.71875 -113.875 C 12.800781 -121.257812 10.84375 -130.179688 10.84375 -140.640625 C 10.84375 -157.078125 16.160156 -170.171875 26.796875 -179.921875 C 37.441406 -189.679688 50.863281 -194.5625 67.0625 -194.5625 C 83.050781 -194.5625 96.148438 -189.15625 106.359375 -178.34375 C 116.566406 -167.53125 121.671875 -153.078125 121.671875 -134.984375 L 86.640625 -134.984375 C 86.640625 -142.179688 84.945312 -148.085938 81.5625 -152.703125 C 78.1875 -157.316406 73.082031 -159.625 66.25 -159.625 C 59.5625 -159.625 54.507812 -157.710938 51.09375 -153.890625 C 47.6875 -150.066406 45.984375 -145.519531 45.984375 -140.25 C 45.984375 -134.539062 48.359375 -129.726562 53.109375 -125.8125 C 57.859375 -121.90625 64.414062 -118.191406 72.78125 -114.671875 C 88.3125 -108.171875 100.34375 -100.019531 108.875 -90.21875 C 117.40625 -80.425781 121.671875 -67.445312 121.671875 -51.28125 C 121.671875 -33.96875 116.75 -20.648438 106.90625 -11.328125 C 97.070312 -2.015625 83.988281 2.640625 67.65625 2.640625 C 57.625 2.640625 47.921875 0.398438 38.546875 -4.078125 C 29.179688 -8.566406 21.484375 -15.597656 15.453125 -25.171875 C 9.429688 -34.753906 6.421875 -47.101562 6.421875 -62.21875 L 41.765625 -62.21875 C 41.765625 -50.96875 44.003906 -43.144531 48.484375 -38.75 C 52.972656 -34.351562 59.363281 -32.15625 67.65625 -32.15625 C 74.351562 -32.15625 79.15625 -34 82.0625 -37.6875 C 84.976562 -41.382812 86.4375 -45.828125 86.4375 -51.015625 Z M 86.4375 -51.015625 "/>
+</g>
+<g id="glyph-1-1">
+<path d="M 134.828125 -92 C 134.828125 -62.65625 128.867188 -39.546875 116.953125 -22.671875 C 105.035156 -5.796875 89.742188 2.640625 71.078125 2.640625 C 52.265625 2.640625 36.882812 -5.796875 24.9375 -22.671875 C 13 -39.546875 7.03125 -62.65625 7.03125 -92 L 7.03125 -99.78125 C 7.03125 -129.132812 12.96875 -152.269531 24.84375 -169.1875 C 36.726562 -186.101562 52.070312 -194.5625 70.875 -194.5625 C 89.539062 -194.5625 104.863281 -186.101562 116.84375 -169.1875 C 128.832031 -152.269531 134.828125 -129.132812 134.828125 -99.78125 Z M 99.078125 -100.046875 C 99.078125 -119.378906 96.734375 -133.921875 92.046875 -143.671875 C 87.367188 -153.429688 80.3125 -158.3125 70.875 -158.3125 C 53.34375 -158.3125 44.039062 -141.175781 42.96875 -106.90625 L 42.859375 -92 C 42.859375 -73.195312 45.21875 -58.742188 49.9375 -48.640625 C 54.65625 -38.535156 61.703125 -33.484375 71.078125 -33.484375 C 79.972656 -33.484375 86.847656 -38.46875 91.703125 -48.4375 C 96.554688 -58.414062 99.015625 -72.675781 99.078125 -91.21875 Z M 99.078125 -100.046875 "/>
+</g>
+<g id="glyph-1-2">
+<path d="M 11.140625 0 L 11.140625 -191.921875 L 108.921875 -191.921875 L 108.921875 -156.203125 L 46.375 -156.203125 L 46.375 -112.046875 L 103.203125 -112.046875 L 103.203125 -76.453125 L 46.375 -76.453125 L 46.375 0 Z M 11.140625 0 "/>
+</g>
+<g id="glyph-1-3">
+<path d="M 3.71875 -156.203125 L 3.71875 -191.921875 L 125.890625 -191.921875 L 125.890625 -156.203125 L 81.921875 -156.203125 L 81.921875 0 L 46.6875 0 L 46.6875 -156.203125 Z M 3.71875 -156.203125 "/>
+</g>
+<g id="glyph-1-4">
+<path d="M 175.984375 -191.921875 L 144.953125 0 L 108.515625 0 L 88.9375 -109.40625 L 69.765625 0 L 33.234375 0 L 2.203125 -191.921875 L 37.140625 -191.921875 L 53.90625 -71.84375 L 73.984375 -191.921875 L 103.90625 -191.921875 L 124.375 -71.4375 L 141.140625 -191.921875 Z M 175.984375 -191.921875 "/>
+</g>
+<g id="glyph-1-5">
+<path d="M -0.40625 0 L 53.3125 -191.921875 L 86.53125 -191.921875 L 140.546875 0 L 102.59375 0 L 94.15625 -35.859375 L 45.875 -35.859375 L 37.4375 0 Z M 54.3125 -71.578125 L 85.734375 -71.578125 L 69.96875 -138.40625 Z M 54.3125 -71.578125 "/>
+</g>
+<g id="glyph-1-6">
+<path d="M 91.15625 0 L 65.359375 -67.75 L 46.375 -67.75 L 46.375 0 L 11.140625 0 L 11.140625 -191.921875 L 68.671875 -191.921875 C 85.535156 -191.921875 98.96875 -186.976562 108.96875 -177.09375 C 118.976562 -167.207031 123.984375 -152.816406 123.984375 -133.921875 C 123.984375 -119.160156 121.65625 -107.5625 117 -99.125 C 112.351562 -90.6875 106.179688 -84.09375 98.484375 -79.34375 L 128.890625 -1.984375 L 128.890625 0 Z M 46.375 -156.203125 L 46.375 -103.46875 L 68.671875 -103.46875 C 82.054688 -103.46875 88.75 -112.210938 88.75 -129.703125 C 88.75 -147.097656 82.253906 -155.929688 69.265625 -156.203125 Z M 46.375 -156.203125 "/>
+</g>
+<g id="glyph-1-7">
+<path d="M 11.140625 0 L 11.140625 -191.921875 L 112.03125 -191.921875 L 112.03125 -156.203125 L 46.375 -156.203125 L 46.375 -115.734375 L 101.6875 -115.734375 L 101.6875 -81.328125 L 46.375 -81.328125 L 46.375 -35.59375 L 111.734375 -35.59375 L 111.734375 0 Z M 11.140625 0 "/>
+</g>
+<g id="glyph-2-0">
+<path d="M 8.3125 0 L 8.3125 -127.953125 L 43.390625 -127.953125 C 53.234375 -127.953125 61.960938 -125.359375 69.578125 -120.171875 C 77.203125 -114.984375 83.175781 -107.773438 87.5 -98.546875 C 91.820312 -89.328125 93.984375 -78.679688 93.984375 -66.609375 L 93.984375 -61.25 C 93.984375 -43.257812 89.296875 -28.566406 79.921875 -17.171875 C 70.554688 -5.785156 58.554688 -0.0625 43.921875 0 Z M 34.625 -104.125 L 34.625 -23.71875 L 43.765625 -23.71875 C 58.460938 -23.71875 66.234375 -34.820312 67.078125 -57.03125 L 67.15625 -66.78125 C 67.15625 -91.15625 59.5625 -103.601562 44.375 -104.125 Z M 34.625 -104.125 "/>
+</g>
+<g id="glyph-2-1">
+<path d="M 8.3125 0 L 8.3125 -127.953125 L 83.640625 -127.953125 L 83.640625 -104.125 L 34.625 -104.125 L 34.625 -77.15625 L 75.921875 -77.15625 L 75.921875 -54.21875 L 34.625 -54.21875 L 34.625 -23.71875 L 83.421875 -23.71875 L 83.421875 0 Z M 8.3125 0 "/>
+</g>
+<g id="glyph-2-2">
+<path d="M 101.78125 -127.953125 L 64.984375 0 L 36.28125 0 L -0.296875 -127.953125 L 29 -127.953125 L 50.671875 -34.625 L 72.328125 -127.953125 Z M 101.78125 -127.953125 "/>
+</g>
+<g id="glyph-2-3">
+<path d="M 80.421875 -23.71875 L 80.421875 0 L 8.3125 0 L 8.3125 -127.953125 L 34.625 -127.953125 L 34.625 -23.71875 Z M 80.421875 -23.71875 "/>
+</g>
+<g id="glyph-2-4">
+<path d="M 100.65625 -61.34375 C 100.65625 -41.769531 96.207031 -26.359375 87.3125 -15.109375 C 78.425781 -3.867188 67.007812 1.75 53.0625 1.75 C 39.019531 1.75 27.539062 -3.867188 18.625 -15.109375 C 9.707031 -26.359375 5.25 -41.769531 5.25 -61.34375 L 5.25 -66.515625 C 5.25 -86.085938 9.679688 -101.507812 18.546875 -112.78125 C 27.421875 -124.0625 38.878906 -129.703125 52.921875 -129.703125 C 66.859375 -129.703125 78.296875 -124.0625 87.234375 -112.78125 C 96.179688 -101.507812 100.65625 -86.085938 100.65625 -66.515625 Z M 73.984375 -66.703125 C 73.984375 -79.585938 72.234375 -89.28125 68.734375 -95.78125 C 65.234375 -102.28125 59.960938 -105.53125 52.921875 -105.53125 C 39.828125 -105.53125 32.878906 -94.109375 32.078125 -71.265625 L 32 -61.34375 C 32 -48.800781 33.757812 -39.160156 37.28125 -32.421875 C 40.8125 -25.691406 46.070312 -22.328125 53.0625 -22.328125 C 59.707031 -22.328125 64.84375 -25.648438 68.46875 -32.296875 C 72.09375 -38.941406 73.929688 -48.445312 73.984375 -60.8125 Z M 73.984375 -66.703125 "/>
+</g>
+<g id="glyph-2-5">
+<path d="M 34.625 -43.40625 L 34.625 0 L 8.3125 0 L 8.3125 -127.953125 L 51.859375 -127.953125 C 64.953125 -127.953125 75.269531 -123.847656 82.8125 -115.640625 C 90.363281 -107.441406 94.140625 -97.070312 94.140625 -84.53125 C 94.140625 -72.113281 90.363281 -62.15625 82.8125 -54.65625 C 75.269531 -47.15625 64.953125 -43.40625 51.859375 -43.40625 Z M 34.625 -104.125 L 34.625 -67.21875 L 51.859375 -67.21875 C 57.359375 -67.21875 61.34375 -68.828125 63.8125 -72.046875 C 66.289062 -75.273438 67.53125 -79.378906 67.53125 -84.359375 C 67.53125 -89.578125 66.289062 -94.175781 63.8125 -98.15625 C 61.34375 -102.132812 57.359375 -104.125 51.859375 -104.125 Z M 34.625 -104.125 "/>
+</g>
+<g id="glyph-2-6">
+<path d="M 67.15625 -38.921875 L 91.515625 -127.953125 L 126.0625 -127.953125 L 126.0625 0 L 99.6875 0 L 99.6875 -29.875 L 102.234375 -91.03125 L 75.84375 0 L 58.46875 0 L 32.078125 -91.03125 L 34.625 -29.875 L 34.625 0 L 8.3125 0 L 8.3125 -127.953125 L 42.796875 -127.953125 Z M 67.15625 -38.921875 "/>
+</g>
+<g id="glyph-2-7">
+<path d="M 99.453125 -127.953125 L 99.453125 0 L 73.234375 0 L 34.625 -79.609375 L 34.625 0 L 8.3125 0 L 8.3125 -127.953125 L 34.625 -127.953125 L 73.234375 -48.328125 L 73.234375 -127.953125 Z M 99.453125 -127.953125 "/>
+</g>
+<g id="glyph-2-8">
+<path d="M 2.765625 -104.125 L 2.765625 -127.953125 L 93.984375 -127.953125 L 93.984375 -104.125 L 61.15625 -104.125 L 61.15625 0 L 34.859375 0 L 34.859375 -104.125 Z M 2.765625 -104.125 "/>
+</g>
+<g id="glyph-3-0">
+<path d="M 205.609375 -155.53125 L 205.609375 -35.984375 C 199.710938 -27.722656 189.179688 -18.992188 174.015625 -9.796875 C 158.859375 -0.597656 138.910156 4 114.171875 4 C 83.640625 4 59.132812 -8.226562 40.65625 -32.6875 C 22.1875 -57.144531 12.953125 -92.03125 12.953125 -137.34375 L 12.953125 -153.546875 C 12.953125 -198.859375 22.160156 -233.804688 40.578125 -258.390625 C 59.003906 -282.984375 82.535156 -295.28125 111.171875 -295.28125 C 142.859375 -295.28125 165.914062 -286.015625 180.34375 -267.484375 C 194.769531 -248.960938 203.140625 -225.175781 205.453125 -196.125 L 152.234375 -196.125 C 150.546875 -210.519531 146.804688 -221.644531 141.015625 -229.5 C 135.234375 -237.363281 125.921875 -241.296875 113.078125 -241.296875 C 99.804688 -241.296875 89.222656 -234.164062 81.328125 -219.90625 C 73.429688 -205.644531 69.429688 -184.054688 69.328125 -155.140625 L 69.328125 -137.34375 C 69.328125 -108.15625 73.40625 -86.296875 81.5625 -71.765625 C 89.726562 -57.242188 101.914062 -49.984375 118.125 -49.984375 C 132.445312 -49.984375 143.132812 -54.046875 150.1875 -62.171875 L 150.1875 -107.359375 L 111.65625 -107.359375 L 111.65625 -155.53125 Z M 205.609375 -155.53125 "/>
+</g>
+<g id="glyph-4-0">
+<path d="M -0.5625 0 L 74.4375 -291.078125 L 120.84375 -291.078125 L 196.28125 0 L 143.28125 0 L 131.5 -54.375 L 64.078125 -54.375 L 52.296875 0 Z M 75.84375 -108.5625 L 119.734375 -108.5625 L 97.71875 -209.921875 Z M 75.84375 -108.5625 "/>
+</g>
+<g id="glyph-4-1">
+<path d="M 150.4375 -53.984375 L 150.4375 0 L 15.5625 0 L 15.5625 -291.078125 L 64.765625 -291.078125 L 64.765625 -53.984375 Z M 150.4375 -53.984375 "/>
+</g>
+<g id="glyph-4-2">
+<path d="M 120.703125 -77.375 C 120.703125 -86.5625 118.484375 -94.15625 114.046875 -100.15625 C 109.609375 -106.15625 99.863281 -112.71875 84.8125 -119.84375 C 69.769531 -126.976562 57.128906 -134.773438 46.890625 -143.234375 C 36.660156 -151.703125 28.8125 -161.535156 23.34375 -172.734375 C 17.875 -183.929688 15.140625 -197.457031 15.140625 -213.3125 C 15.140625 -238.238281 22.566406 -258.097656 37.421875 -272.890625 C 52.285156 -287.679688 71.03125 -295.078125 93.65625 -295.078125 C 115.988281 -295.078125 134.28125 -286.878906 148.53125 -270.484375 C 162.789062 -254.097656 169.921875 -232.175781 169.921875 -204.71875 L 120.984375 -204.71875 C 120.984375 -215.644531 118.625 -224.609375 113.90625 -231.609375 C 109.1875 -238.609375 102.0625 -242.109375 92.53125 -242.109375 C 83.1875 -242.109375 76.128906 -239.207031 71.359375 -233.40625 C 66.585938 -227.601562 64.203125 -220.707031 64.203125 -212.71875 C 64.203125 -204.050781 67.519531 -196.75 74.15625 -190.8125 C 80.800781 -184.882812 89.960938 -179.257812 101.640625 -173.9375 C 123.328125 -164.070312 140.128906 -151.707031 152.046875 -136.84375 C 163.960938 -121.976562 169.921875 -102.285156 169.921875 -77.765625 C 169.921875 -51.515625 163.050781 -31.320312 149.3125 -17.1875 C 135.570312 -3.0625 117.300781 4 94.5 4 C 80.476562 4 66.921875 0.601562 53.828125 -6.1875 C 40.742188 -12.988281 29.992188 -23.648438 21.578125 -38.171875 C 13.171875 -52.703125 8.96875 -71.429688 8.96875 -94.359375 L 58.328125 -94.359375 C 58.328125 -77.296875 61.457031 -65.429688 67.71875 -58.765625 C 73.976562 -52.109375 82.90625 -48.78125 94.5 -48.78125 C 103.84375 -48.78125 110.546875 -51.578125 114.609375 -57.171875 C 118.671875 -62.773438 120.703125 -69.507812 120.703125 -77.375 Z M 120.703125 -77.375 "/>
+</g>
+</g>
+</defs>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-0-0" x="0.0791209" y="130.480874"/>
+<use xlink:href="#glyph-0-1" x="102.321155" y="130.480874"/>
+<use xlink:href="#glyph-0-0" x="210.863595" y="130.480874"/>
+<use xlink:href="#glyph-0-2" x="313.105629" y="130.480874"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-0-3" x="406.574949" y="130.480874"/>
+<use xlink:href="#glyph-0-4" x="517.828956" y="130.480874"/>
+<use xlink:href="#glyph-0-5" x="567.195429" y="130.480874"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-0-3" x="683.314312" y="130.480874"/>
+<use xlink:href="#glyph-0-6" x="794.568319" y="130.480874"/>
+<use xlink:href="#glyph-0-7" x="900.000432" y="130.480874"/>
+<use xlink:href="#glyph-0-8" x="988.525127" y="130.480874"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-1-0" x="0.0791209" y="337.450535"/>
+<use xlink:href="#glyph-1-1" x="128.771918" y="337.450535"/>
+<use xlink:href="#glyph-1-2" x="270.715456" y="337.450535"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-1-3" x="385.153671" y="337.450535"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-1-4" x="516.356076" y="337.450535"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-1-5" x="690.723774" y="337.450535"/>
+<use xlink:href="#glyph-1-6" x="830.760007" y="337.450535"/>
+<use xlink:href="#glyph-1-7" x="964.873562" y="337.450535"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-2-0" x="0.0791209" y="481.42943"/>
+<use xlink:href="#glyph-2-1" x="99.390814" y="481.42943"/>
+<use xlink:href="#glyph-2-2" x="185.286059" y="481.42943"/>
+<use xlink:href="#glyph-2-1" x="286.771366" y="481.42943"/>
+<use xlink:href="#glyph-2-3" x="372.666611" y="481.42943"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-2-4" x="451.066637" y="481.42943"/>
+<use xlink:href="#glyph-2-5" x="557.049078" y="481.42943"/>
+<use xlink:href="#glyph-2-6" x="657.035341" y="481.42943"/>
+<use xlink:href="#glyph-2-1" x="791.574577" y="481.42943"/>
+<use xlink:href="#glyph-2-7" x="877.469822" y="481.42943"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-2-8" x="983.077505" y="481.42943"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-3-0" x="0.0791209" y="809.881285"/>
+</g>
+<g fill="#009edb" fill-opacity="1">
+<use xlink:href="#glyph-4-0" x="548.998636" y="809.881285"/>
+<use xlink:href="#glyph-4-1" x="744.571081" y="809.881285"/>
+<use xlink:href="#glyph-4-2" x="900.187867" y="809.881285"/>
+</g>
+<path fill-rule="nonzero" fill="#e5243b" fill-opacity="1" d="M 385.035156 522.296875 C 401.203125 522.578125 416.878906 525.507812 432.054688 531.085938 L 410.074219 590.914062 C 401.632812 587.8125 392.914062 586.183594 383.921875 586.027344 Z M 385.035156 522.296875 "/>
+<path fill-rule="nonzero" fill="#dda63a" fill-opacity="1" d="M 436.742188 532.902344 C 451.71875 539.003906 465.273438 547.398438 477.414062 558.082031 L 435.300781 605.929688 C 428.550781 599.988281 421.011719 595.320312 412.679688 591.925781 Z M 436.742188 532.902344 "/>
+<path fill-rule="nonzero" fill="#4c9f38" fill-opacity="1" d="M 481.128906 561.46875 C 492.886719 572.570312 502.496094 585.292969 509.953125 599.640625 L 453.402344 629.046875 C 449.253906 621.066406 443.90625 613.988281 437.367188 607.816406 Z M 481.128906 561.46875 "/>
+<path fill-rule="nonzero" fill="#c5192d" fill-opacity="1" d="M 512.195312 604.140625 C 519.148438 618.742188 523.511719 634.078125 525.285156 650.148438 L 461.929688 657.140625 C 460.941406 648.199219 458.515625 639.671875 454.648438 631.550781 Z M 512.195312 604.140625 "/>
+<path fill-rule="nonzero" fill="#ff3a21" fill-opacity="1" d="M 525.75 655.15625 C 526.960938 671.28125 525.488281 687.15625 521.335938 702.785156 L 459.734375 686.417969 C 462.042969 677.722656 462.859375 668.894531 462.1875 659.925781 Z M 525.75 655.15625 "/>
+<path fill-rule="nonzero" fill="#26bde2" fill-opacity="1" d="M 519.960938 707.621094 C 515.261719 723.09375 508.15625 737.367188 498.636719 750.4375 L 447.109375 712.921875 C 452.402344 705.652344 456.355469 697.710938 458.96875 689.105469 Z M 519.960938 707.621094 "/>
+<path fill-rule="nonzero" fill="#fcc30b" fill-opacity="1" d="M 495.609375 754.449219 C 485.640625 767.183594 473.855469 777.925781 460.257812 786.675781 L 425.761719 733.078125 C 433.324219 728.210938 439.878906 722.234375 445.421875 715.152344 Z M 495.609375 754.449219 "/>
+<path fill-rule="nonzero" fill="#a21942" fill-opacity="1" d="M 455.984375 789.324219 C 442.089844 797.59375 427.222656 803.351562 411.382812 806.601562 L 398.574219 744.160156 C 407.386719 742.355469 415.65625 739.152344 423.382812 734.550781 Z M 455.984375 789.324219 "/>
+<path fill-rule="nonzero" fill="#fd6925" fill-opacity="1" d="M 406.441406 807.527344 C 390.496094 810.21875 374.550781 810.21875 358.605469 807.527344 L 369.21875 744.675781 C 378.089844 746.171875 386.957031 746.171875 395.824219 744.675781 Z M 406.441406 807.527344 "/>
+<path fill-rule="nonzero" fill="#dd1367" fill-opacity="1" d="M 353.664062 806.601562 C 337.824219 803.351562 322.957031 797.59375 309.0625 789.324219 L 341.664062 734.550781 C 349.390625 739.152344 357.660156 742.355469 366.472656 744.160156 Z M 353.664062 806.601562 "/>
+<path fill-rule="nonzero" fill="#fd9d24" fill-opacity="1" d="M 304.785156 786.675781 C 291.1875 777.925781 279.40625 767.183594 269.4375 754.449219 L 319.625 715.152344 C 325.167969 722.234375 331.722656 728.210938 339.285156 733.078125 Z M 304.785156 786.675781 "/>
+<path fill-rule="nonzero" fill="#bf8b2e" fill-opacity="1" d="M 266.40625 750.4375 C 256.890625 737.367188 249.78125 723.09375 245.085938 707.621094 L 306.078125 689.105469 C 308.691406 697.710938 312.644531 705.652344 317.9375 712.921875 Z M 266.40625 750.4375 "/>
+<path fill-rule="nonzero" fill="#3f7e44" fill-opacity="1" d="M 243.710938 702.785156 C 239.558594 687.15625 238.085938 671.28125 239.296875 655.15625 L 302.859375 659.925781 C 302.1875 668.894531 303.003906 677.722656 305.3125 686.417969 Z M 243.710938 702.785156 "/>
+<path fill-rule="nonzero" fill="#0a97d9" fill-opacity="1" d="M 239.761719 650.148438 C 241.535156 634.078125 245.898438 618.742188 252.851562 604.140625 L 310.398438 631.550781 C 306.53125 639.671875 304.101562 648.199219 303.117188 657.140625 Z M 239.761719 650.148438 "/>
+<path fill-rule="nonzero" fill="#56c02b" fill-opacity="1" d="M 255.089844 599.640625 C 262.550781 585.292969 272.160156 572.570312 283.917969 561.46875 L 327.679688 607.816406 C 321.136719 613.988281 315.792969 621.066406 311.644531 629.046875 Z M 255.089844 599.640625 "/>
+<path fill-rule="nonzero" fill="#00689d" fill-opacity="1" d="M 287.632812 558.082031 C 299.773438 547.398438 313.328125 539.003906 328.300781 532.902344 L 352.363281 591.925781 C 344.035156 595.320312 336.496094 599.988281 329.742188 605.929688 Z M 287.632812 558.082031 "/>
+<path fill-rule="nonzero" fill="#19486a" fill-opacity="1" d="M 332.988281 531.085938 C 348.167969 525.507812 363.839844 522.578125 380.007812 522.296875 L 381.125 586.027344 C 372.132812 586.183594 363.414062 587.8125 354.972656 590.914062 Z M 332.988281 531.085938 "/>
+</svg>
