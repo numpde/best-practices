@@ -129,6 +129,22 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   return {margin,painted};
  })()`);
  assert.ok(recoveryMargin.painted>0&&recoveryMargin.margin>=20,'The rounded arrow must retain a two-unit painted margin through a full rotation.');
+ const bookPoint=await evaluate(`(()=>{
+  const card=document.querySelector('[aria-label="Transferable knowledge"]');card.scrollIntoView({block:'center'});
+  const b=card.getBoundingClientRect(),p=new DOMPoint(16,16).matrixTransform(card.querySelector('svg').getScreenCTM());
+  return {x:p.x,y:p.y,edge:b.left+2};
+ })()`);
+ const bookState=()=>evaluate(`({pages:[...document.querySelectorAll('#icon-knowledge [data-motion-part="page"]')].map(page=>{const m=page.transform.baseVal.consolidate().matrix;return {scale:m.a,hinge:m.a*16+m.e};}),spine:document.querySelector('#icon-knowledge [data-motion-part="spine"]').getAttribute('transform')})`);
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:bookPoint.x,y:bookPoint.y});
+ let book=await bookState();
+ for(const page of book.pages){assert.ok(Math.abs(page.scale-.55)<.001);assert.ok(Math.abs(page.hinge-16)<.001,'Page movement must stay hinged to the spine.');}
+ assert.equal(book.spine,null,'The spine must stay steady.');
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:bookPoint.edge,y:bookPoint.y});
+ book=await bookState();
+ for(const page of book.pages)assert.equal(page.scale,1,'The book must stop at its original fully open width.');
+ assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="Transferable knowledge"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="knowledge"] use').getAttribute('href')})`),{tile:'#icon-knowledge',wheel:'#icon-knowledge'});
+ await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});
+ assert.deepEqual(await bookState(),book,'The shared book must retain its opening on mouse leave.');
  const flipAnimation=await evaluate(`(async()=>{
   const card=document.querySelector('.goal-card'),rotor=card.querySelector('.card-rotor');
   card.scrollIntoView({block:'center'});

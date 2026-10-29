@@ -1,4 +1,5 @@
 const iconInteractions={
+ settings:{bookMinimumOpen:.55},
  onMouseMove(button,svg,move){
   button.addEventListener('pointermove',event=>{
    if(event.pointerType!=='mouse'||event.buttons!==0||button.getAttribute('aria-expanded')==='true')return;
@@ -8,6 +9,17 @@ const iconInteractions={
  nearestColumn(parts,x){
   const distance=part=>{const b=part.getBBox();return Math.abs(x-b.x-b.width/2);};
   return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
+ },
+ book(button,svg,symbol){
+  const pages=[...symbol.querySelectorAll('[data-motion-part="page"]')];
+  const spine=symbol.querySelector('[data-motion-part="spine"]').getBBox();
+  const box=symbol.viewBox.baseVal;
+  iconInteractions.onMouseMove(button,svg,point=>{
+   const openness=Math.min(1,Math.abs(point.x-spine.x)/(box.width/2));
+   const minimum=iconInteractions.settings.bookMinimumOpen;
+   const scale=minimum+(1-minimum)*openness;
+   for(const page of pages)page.setAttribute('transform',`translate(${spine.x} 0) scale(${scale} 1) translate(${-spine.x} 0)`);
+  });
  },
  bars(button,svg,symbol){
   const frame=symbol.querySelector('[data-motion-part="frame"]');
