@@ -1,4 +1,12 @@
 const iconInteractions={
+ bounds(part){
+  // Firefox cannot measure source shapes inside symbols or defs. Measure the
+  // same node in the renderable library, then restore its place before painting.
+  const parent=part.parentNode,next=part.nextSibling;
+  part.ownerSVGElement.closest('.symbol-library').append(part);
+  try{return part.getBBox();}
+  finally{parent.insertBefore(part,next);}
+ },
  settings:{bookLiftRatio:.5,lockOpenAngle:45,pathSamplesPerUnit:4,bulbMinimumBrightness:.45},
  onMouseMove(button,svg,move){
   button.addEventListener('pointermove',event=>{
@@ -40,8 +48,8 @@ const iconInteractions={
   });
  },
  paper(button,svg,symbol){
-  const sheet=symbol.querySelector('[data-motion-part="sheet"]').getBBox();
-  const content=symbol.querySelector('[data-motion-part="content"]').getBBox();
+  const sheet=iconInteractions.bounds(symbol.querySelector('[data-motion-part="sheet"]'));
+  const content=iconInteractions.bounds(symbol.querySelector('[data-motion-part="content"]'));
   const paper=symbol.querySelector('[data-motion-part="paper"]'),fold=symbol.querySelector('[data-motion-part="fold"]');
   const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
   const maximum=content.y-sheet.y-stroke,right=sheet.x+sheet.width,bottom=sheet.y+sheet.height;
@@ -60,7 +68,7 @@ const iconInteractions={
  },
  guidance(button,svg,symbol){
   const frame=symbol.querySelector('[data-motion-part="frame"]'),shaft=symbol.querySelector('[data-motion-part="shaft"]');
-  const head=symbol.querySelector('[data-motion-part="head"]'),bounds=symbol.querySelector('#failure-head').getBBox();
+  const head=symbol.querySelector('[data-motion-part="head"]'),bounds=iconInteractions.bounds(symbol.querySelector('#failure-head'));
   const top=frame.points.getItem(0),bottom=frame.points.getItem(2);
   const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
   const tail={x:shaft.x1.baseVal.value,y:shaft.y1.baseVal.value};
@@ -77,7 +85,7 @@ const iconInteractions={
   });
  },
  ownership(button,svg,symbol){
-  const owner=symbol.querySelector('[data-motion-part="owner"]'),branches=symbol.querySelector('[data-motion-part="branches"]').getBBox();
+  const owner=symbol.querySelector('[data-motion-part="owner"]'),branches=iconInteractions.bounds(symbol.querySelector('[data-motion-part="branches"]'));
   const records=[...symbol.querySelectorAll('[data-motion-part="record"]')];
   const hub={x:owner.cx.baseVal.value,y:owner.cy.baseVal.value};
   const points=[hub];
@@ -109,7 +117,7 @@ const iconInteractions={
   const controls=[...symbol.querySelector('[data-motion-part="control"]').points];
   const start=controls[0],end=controls.at(-1),branch=symbol.querySelector('[data-motion-part="branch"]');
   const trunk=symbol.querySelector('[data-motion-part="trunk"]'),anchor=trunk.getPointAtLength(trunk.getTotalLength());
-  const head=symbol.querySelector('#evolution-head').getBBox(),box=symbol.viewBox.baseVal;
+  const head=iconInteractions.bounds(symbol.querySelector('#evolution-head')),box=symbol.viewBox.baseVal;
   const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
   symbol.querySelector('[data-motion-part="trunk-head"]').setAttribute('transform',`translate(${anchor.x} ${anchor.y})`);
   const render=tip=>{
@@ -126,8 +134,8 @@ const iconInteractions={
   });
  },
  completion(button,svg,symbol){
-  const pole=symbol.querySelector('[data-motion-part="pole"]').getBBox(),flag=symbol.querySelector('[data-motion-part="flag"]');
-  const bounds=flag.getBBox(),check=symbol.querySelector('[data-motion-part="check"]'),length=check.getTotalLength();
+  const pole=iconInteractions.bounds(symbol.querySelector('[data-motion-part="pole"]')),flag=symbol.querySelector('[data-motion-part="flag"]');
+  const bounds=iconInteractions.bounds(flag),check=symbol.querySelector('[data-motion-part="check"]'),length=check.getTotalLength();
   const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
   const travel=pole.y+pole.height-bounds.y-bounds.height-stroke;
   let progress=1;
@@ -142,11 +150,11 @@ const iconInteractions={
   });
  },
  nearestColumn(parts,x){
-  const distance=part=>{const b=part.getBBox();return Math.abs(x-b.x-b.width/2);};
+  const distance=part=>{const b=iconInteractions.bounds(part);return Math.abs(x-b.x-b.width/2);};
   return parts.reduce((nearest,part)=>distance(part)<distance(nearest)?part:nearest);
  },
  trackWithin(button,svg,part,anchor,area,inset){
-  const bounds=part.getBBox();
+  const bounds=iconInteractions.bounds(part);
   iconInteractions.onMouseMove(button,svg,point=>{
    const x=Math.max(area.x+inset-bounds.x,Math.min(area.x+area.width-inset-bounds.x-bounds.width,point.x-anchor.x));
    const y=Math.max(area.y+inset-bounds.y,Math.min(area.y+area.height-inset-bounds.y-bounds.height,point.y-anchor.y));
@@ -161,7 +169,7 @@ const iconInteractions={
  },
  cursor(button,svg,symbol){
   const cursor=symbol.querySelector('[data-motion-part="cursor"]');
-  const screen=symbol.querySelector('[data-motion-part="screen"]').getBBox();
+  const screen=iconInteractions.bounds(symbol.querySelector('[data-motion-part="screen"]'));
   const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
   iconInteractions.trackWithin(button,svg,cursor,cursor.getPointAtLength(0),screen,stroke);
  },
@@ -197,7 +205,7 @@ const iconInteractions={
   iconInteractions.followDial(button,svg,pivot,render,{relative:true});
  },
  bulb(button,svg,symbol){
-  const bulb=symbol.querySelector('[data-motion-part="bulb"]'),bounds=bulb.getBBox();
+  const bulb=symbol.querySelector('[data-motion-part="bulb"]'),bounds=iconInteractions.bounds(bulb);
   const centre={x:bounds.x+bounds.width/2,y:bounds.y+bounds.height/2},radius=Math.max(bounds.width,bounds.height)/2;
   iconInteractions.onMouseMove(button,svg,point=>{
    const proximity=Math.max(0,1-Math.hypot(point.x-centre.x,point.y-centre.y)/radius);
@@ -207,7 +215,7 @@ const iconInteractions={
  },
  layers(button,svg,symbol){
   const layers=[...symbol.querySelectorAll('[data-motion-part="layer"]')];
-  const bounds=layers.map(layer=>layer.getBBox()),last=bounds.at(-1);
+  const bounds=layers.map(layer=>iconInteractions.bounds(layer)),last=bounds.at(-1);
   const top=bounds[0].y,bottom=last.y+last.height;
   const travel=last.y-bounds.at(-2).y;
   iconInteractions.onMouseMove(button,svg,point=>{
@@ -234,9 +242,9 @@ const iconInteractions={
  },
  book(button,svg,symbol){
   const page=symbol.querySelector('[data-motion-part="page"]');
-  const spine=symbol.querySelector('[data-motion-part="spine"]').getBBox();
-  const cover=symbol.querySelector('[data-motion-part="cover"]').getBBox();
-  const sheet=page.getBBox();
+  const spine=iconInteractions.bounds(symbol.querySelector('[data-motion-part="spine"]'));
+  const cover=iconInteractions.bounds(symbol.querySelector('[data-motion-part="cover"]'));
+  const sheet=iconInteractions.bounds(page);
   iconInteractions.onMouseMove(button,svg,point=>{
    const progress=Math.max(0,Math.min(1,(cover.x+cover.width-point.x)/cover.width));
    const angle=progress*Math.PI,scale=Math.cos(angle);
@@ -251,7 +259,7 @@ const iconInteractions={
   iconInteractions.onMouseMove(button,svg,point=>{
    const bar=iconInteractions.nearestColumn(bars,point.x);
    const stroke=Number(symbol.firstElementChild.getAttribute('stroke-width'));
-   const ceiling=frame.getBBox().y+stroke*1.5;
+   const ceiling=iconInteractions.bounds(frame).y+stroke*1.5;
    bar.setAttribute('y2',Math.max(ceiling,Math.min(bar.y1.baseVal.value,point.y)));
   });
  },
@@ -294,7 +302,7 @@ const iconInteractions={
   const sliders=[...drawing.querySelectorAll('[data-motion-part="slider"]')];
   iconInteractions.onMouseMove(button,svg,point=>{
    const nearest=iconInteractions.nearestColumn(sliders,point.x);
-   const track=tracks.getBBox(),height=nearest.height.baseVal.value;
+   const track=iconInteractions.bounds(tracks),height=nearest.height.baseVal.value;
    const top=Math.max(track.y,Math.min(track.y+track.height-height,point.y-height/2));
    nearest.setAttribute('y',top);
   });

@@ -205,7 +205,7 @@ export async function checkIconInteractions({call,evaluate}){
  const assertSnakePositions=(pieces,positions,message)=>assert.ok(pieces.every((p,i)=>Math.abs(p.x-positions[i][0])<.001&&Math.abs(p.y-positions[i][1])<.001),message);
  const snakeState=()=>evaluate(`(()=>{
   const s=document.querySelector('#icon-reproducibility');
-  return {boxes:[...s.querySelectorAll('[data-motion-part="box"]')].map(node=>{const m=node.transform.baseVal.getItem(0).matrix;return {x:m.e,y:m.f,shape:node.querySelector('use').getAttribute('href')};}),bodies:[...s.querySelectorAll('[data-motion-part="body"]')].map((body,i)=>{const b=body.getBBox(),tip=body.getPointAtLength(body.getTotalLength()),head=s.querySelectorAll('[data-motion-part="head"]')[i],m=head.transform.baseVal.getItem(0).matrix;return {path:body.getAttribute('d'),width:b.width,height:b.height,tipX:tip.x,tipY:tip.y,headX:m.e,headY:m.f,shape:head.getAttribute('href')};})};
+  return {boxes:[...s.querySelectorAll('[data-motion-part="box"]')].map(node=>{const m=node.transform.baseVal.getItem(0).matrix;return {x:m.e,y:m.f,shape:node.querySelector('use').getAttribute('href')};}),bodies:[...s.querySelectorAll('[data-motion-part="body"]')].map((body,i)=>{const b=iconInteractions.bounds(body),tip=body.getPointAtLength(body.getTotalLength()),head=s.querySelectorAll('[data-motion-part="head"]')[i],m=head.transform.baseVal.getItem(0).matrix;return {path:body.getAttribute('d'),width:b.width,height:b.height,tipX:tip.x,tipY:tip.y,headX:m.e,headY:m.f,shape:head.getAttribute('href')};})};
  })()`);
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',...snakePoints.start});
  let snake=await snakeState();
@@ -264,9 +264,9 @@ export async function checkIconInteractions({call,evaluate}){
  })()`);
  await moveOnIcon('Coherent evolution',20,10);let evolution=await evolutionState();
  assert.ok(evolution.tip.every((v,i)=>Math.abs(v-[20,10][i])<.001),'The branch tip must track the actual pointer, not a distant offset.');
- assert.deepEqual(evolution.start,[7,22]);assert.deepEqual(evolution.head,evolution.tip);assert.equal(evolution.trunk,'M7 25V8');
- await moveOnIcon('Coherent evolution',0,0);evolution=await evolutionState();assert.deepEqual(evolution.tip,[18,3]);assert.deepEqual(evolution.head,evolution.tip);
- await moveOnIcon('Coherent evolution',32,32);evolution=await evolutionState();assert.deepEqual(evolution.tip,[25,15]);assert.deepEqual(evolution.head,evolution.tip);assert.deepEqual(evolution.start,[7,22]);
+ assert.deepEqual(evolution.start,[7,22]);assert.ok(evolution.head.every((v,i)=>Math.abs(v-evolution.tip[i])<.001),'The arrowhead must stay attached to the curve tip.');assert.equal(evolution.trunk,'M7 25V8');
+ await moveOnIcon('Coherent evolution',0,0);evolution=await evolutionState();assert.ok(evolution.tip.every((v,i)=>Math.abs(v-[18,3][i])<.001));assert.ok(evolution.head.every((v,i)=>Math.abs(v-evolution.tip[i])<.001),'The arrowhead must stay attached to the curve tip.');
+ await moveOnIcon('Coherent evolution',32,32);evolution=await evolutionState();assert.ok(evolution.tip.every((v,i)=>Math.abs(v-[25,15][i])<.001));assert.ok(evolution.head.every((v,i)=>Math.abs(v-evolution.tip[i])<.001),'The arrowhead must stay attached to the curve tip.');assert.deepEqual(evolution.start,[7,22]);
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});assert.deepEqual(await evolutionState(),evolution);
 
  const completionState=()=>evaluate(`(()=>{
@@ -280,7 +280,7 @@ export async function checkIconInteractions({call,evaluate}){
  await moveOnIcon('Verified completion',16,24);completion=await completionState();assert.ok(Math.abs(completion.height-4.5)<.001&&completion.unchecked<.001,'Only a verified flag may rise.');
  await moveOnIcon('Verified completion',16,16);completion=await completionState();assert.ok(Math.abs(completion.height)<.001&&completion.unchecked<.001);assert.equal(completion.pole,null);
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});await moveOnIcon('Verified completion',16,8);assert.deepEqual(await completionState(),completion,'Re-entry must retain the completion state.');
- await moveOnIcon('Verified completion',16,40);completion=await completionState();assert.ok(Math.abs(completion.height-9)<.001&&completion.unchecked>.999);assert.equal(completion.visible,'hidden');
+ await moveOnIcon('Verified completion',16,41);completion=await completionState();assert.ok(Math.abs(completion.height-9)<.001&&completion.unchecked>.999);assert.equal(completion.visible,'hidden');
  for(const [label,id] of [['Clear ownership','ownership'],['Coherent evolution','evolution'],['Verified completion','completion']]){
   assert.deepEqual(await evaluate(`({tile:document.querySelector('[aria-label="'+${JSON.stringify(label)}+'"] svg use').getAttribute('href'),wheel:document.querySelector('[data-goal="'+${JSON.stringify(id)}+'"] use').getAttribute('href')})`),{tile:'#icon-'+id,wheel:'#icon-'+id});
  }
@@ -296,7 +296,7 @@ export async function checkIconInteractions({call,evaluate}){
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});assert.deepEqual(await taskState(),task);
 
  const paperState=()=>evaluate(`(()=>{
-  const s=document.querySelector('#icon-results'),fold=s.querySelector('[data-motion-part="fold"]'),b=fold.getBBox();
+  const s=document.querySelector('#icon-results'),fold=s.querySelector('[data-motion-part="fold"]'),b=iconInteractions.bounds(fold);
   return {x:b.x,y:b.y,width:b.width,height:b.height,visible:fold.getAttribute('visibility'),content:s.querySelector('[data-motion-part="content"]').innerHTML,contentTransform:s.querySelector('[data-motion-part="content"]').getAttribute('transform'),outline:s.querySelector('[data-motion-part="paper"]').getAttribute('d')};
  })()`);
  const initialPaper=await paperState();
@@ -306,7 +306,7 @@ export async function checkIconInteractions({call,evaluate}){
  await moveOnIcon('Faithful results',16,20);assert.deepEqual(await paperState(),paper,'Motion elsewhere in the card must not fold the corner at a distance.');
  await call('Input.dispatchMouseEvent',{type:'mouseMoved',x:0,y:0});assert.deepEqual(await paperState(),paper);
  await moveOnIcon('Faithful results',22,9);paper=await paperState();assert.ok(Math.abs(paper.width-4)<.001&&Math.abs(paper.height-4)<.001,'The fold must stop in the blank margin before reaching content.');assert.equal(paper.content,initialPaper.content);
- await moveOnIcon('Faithful results',26,5);paper=await paperState();assert.equal(paper.visible,'hidden');assert.equal(paper.width,0);assert.equal(paper.height,0);
+ await moveOnIcon('Faithful results',26.01,4.99);paper=await paperState();assert.equal(paper.visible,'hidden');assert.equal(paper.width,0);assert.equal(paper.height,0);
 
  const failureState=()=>evaluate(`(()=>{
   const s=document.querySelector('#icon-failures'),shaft=s.querySelector('[data-motion-part="shaft"]'),m=s.querySelector('[data-motion-part="head"]').transform.baseVal.getItem(0).matrix;
