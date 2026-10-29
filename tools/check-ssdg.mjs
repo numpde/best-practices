@@ -36,6 +36,18 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  assert.equal(flipAnimation.background,'rgba(0, 0, 0, 0)','The tile container must stay transparent behind the rotating faces.');
  assert.ok(flipAnimation.running>0,'Flipping must animate, including when the system requests reduced motion.');
  assert.ok(flipAnimation.matrix.startsWith('matrix3d('),'The flip must visibly pass through a 3D intermediate orientation.');
+ const cadence=await evaluate(`(async()=>{
+  const card=document.querySelectorAll('.goal-card')[1],settings=tileInteractions.settings;
+  const push=()=>{card.click();return parseFloat(card.style.getPropertyValue('--flip-duration'));};
+  const durations=Array.from({length:10},push);
+  await new Promise(resolve=>setTimeout(resolve,settings.repeatWindowMs+30));
+  const reset=push();push();
+  return {durations,reset,initial:settings.initialFlipMs,minimum:settings.minimumFlipMs};
+ })()`);
+ assert.equal(cadence.durations[0],cadence.initial);
+ assert.ok(cadence.durations[1]<cadence.durations[0],'Sustained clicking must speed up the flips.');
+ assert.equal(cadence.durations.at(-1),cadence.minimum,'Repeated clicking must respect the speed limit.');
+ assert.equal(cadence.reset,cadence.initial,'A pause must restore the slower first flip.');
  const cardCount=await evaluate(`document.querySelectorAll('.goal-card').length`);
  assert.equal(cardCount,18);
  for(const [side,angle] of [['left',-180],['left',-360],['right',-180],['right',0]]){
@@ -52,6 +64,8 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
   assert.equal(card.cursor,'pointer');
   assert.equal(card.selection,'none');
  }
+ await nextFrames();
+ await evaluate(`Promise.all(document.getAnimations().map(animation=>animation.finished))`);
  for(const width of [1440,1000,768,521,390,320]){
   await call('Emulation.setDeviceMetricsOverride',{width,height:1000,deviceScaleFactor:1,mobile:false});
   const positions=await evaluate(`([...document.querySelectorAll('.goal-tile:not(.wheel-tile)')].map(tile=>{
