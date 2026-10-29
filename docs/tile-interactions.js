@@ -1,5 +1,5 @@
 const tileInteractions={
- settings:{initialFlipMs:650,minimumFlipMs:350,repeatSpeedFactor:.9,repeatWindowMs:1200},
+ settings:{initialFlipMs:650,minimumFlipMs:200,repeatSpeedFactor:.9,repeatWindowMs:1200},
  flip(button,{front,back,gestureTarget=button,dragThreshold=8}){
  let start=null,moved=false;
  gestureTarget.addEventListener('pointerdown',event=>{start={x:event.clientX,y:event.clientY};moved=false;});

@@ -39,7 +39,7 @@ export async function checkSSDG({call,evaluate,waitFor,delay,nextFrames}){
  const cadence=await evaluate(`(async()=>{
   const card=document.querySelectorAll('.goal-card')[1],settings=tileInteractions.settings;
   const push=()=>{card.click();return parseFloat(card.style.getPropertyValue('--flip-duration'));};
-  const durations=Array.from({length:10},push);
+  const durations=Array.from({length:16},push);
   await new Promise(resolve=>setTimeout(resolve,settings.repeatWindowMs+30));
   const reset=push();push();
   return {durations,reset,initial:settings.initialFlipMs,minimum:settings.minimumFlipMs};
